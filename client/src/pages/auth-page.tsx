@@ -241,21 +241,8 @@ export default function AuthPage() {
                             <Input
                               type="email"
                               placeholder="Enter your email"
-                              className={`${
-                                inputFocus.email ? 'border-primary ring-2 ring-primary/20' : ''
-                              } ${
-                                registerForm.formState.errors.email ? 'border-red-500' : ''
-                              }`}
                               {...field}
-                              onFocus={() => setInputFocus(prev => ({ ...prev, email: true }))}
-                              onBlur={(e) => {
-                                field.onBlur();
-                                setInputFocus(prev => ({ ...prev, email: false }));
-                                const email = e.target.value;
-                                if (email && email.includes('@')) {
-                                  emailCheckMutation.mutate(email);
-                                }
-                              }}
+                              value={field.value || ""}
                               onChange={(e) => {
                                 field.onChange(e);
                                 const email = e.target.value;
@@ -263,6 +250,16 @@ export default function AuthPage() {
                                   emailCheckMutation.mutate(email);
                                 }
                               }}
+                              onBlur={() => {
+                                field.onBlur();
+                                setInputFocus(prev => ({ ...prev, email: false }));
+                              }}
+                              onFocus={() => setInputFocus(prev => ({ ...prev, email: true }))}
+                              className={`${
+                                inputFocus.email ? 'border-primary ring-2 ring-primary/20' : ''
+                              } ${
+                                registerForm.formState.errors.email ? 'border-red-500' : ''
+                              }`}
                             />
                           </FormControl>
                           <FormMessage />
