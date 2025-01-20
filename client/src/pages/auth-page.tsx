@@ -118,8 +118,14 @@ export default function AuthPage() {
       if (isRegistering) {
         const { confirmPassword, ...registerData } = data as RegisterFormData;
         const submitData: InsertUser = {
-          ...registerData,
+          username: registerData.username,
+          email: registerData.email,
+          password: registerData.password,
+          firstName: registerData.firstName,
+          lastName: registerData.lastName,
           phone: registerData.phone || null,
+          isParent: false,
+          isAdmin: false,
           createdAt: new Date().toISOString(),
         };
 
