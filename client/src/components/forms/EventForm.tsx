@@ -1422,8 +1422,19 @@ const { getRootProps, getInputProps, isDragActive } = useDropzone({
   multiple: false,
 });
 
-  return (
-    <div className="container mx-auto py-8 space-y-8">
+const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  onDrop,
+  accept: {
+    'image/png': ['.png'],
+    'image/jpeg': ['.jpg', '.jpeg'],
+    'image/svg+xml': ['.svg']
+  },
+  maxFiles: 1,
+  multiple: false,
+});
+
+return (
+  <div className="container mx-auto py-8 space-y-8">
     <div className="flex items-center gap-4">
       <Button
         variant="ghost"
