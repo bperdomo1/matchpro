@@ -1,8 +1,10 @@
+
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation, useParams } from "wouter";
-import { EventForm, type EventData } from "@/components/forms/EventForm";
+import { EventForm } from "@/components/forms/EventForm";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function EditEvent() {
   const { id } = useParams();
@@ -24,11 +26,10 @@ export default function EditEvent() {
 
   // Mutation for updating event
   const updateEventMutation = useMutation({
-    mutationFn: async (data: EventData) => {
+    mutationFn: async (data: any) => {
       const formData = new FormData();
       formData.append('data', JSON.stringify(data));
 
-      // If there's a logo File object in the branding data, append it
       if (data.branding?.logo instanceof File) {
         formData.append('logo', data.branding.logo);
       }
@@ -73,21 +74,24 @@ export default function EditEvent() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <p className="text-destructive font-medium">Failed to load event details</p>
-        <button
+        <Button
           onClick={() => navigate("/admin")}
-          className="text-primary hover:underline"
+          variant="link"
+          className="text-primary"
         >
           Return to Dashboard
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
-    <EventForm
-      initialData={eventQuery.data}
-      onSubmit={(data) => updateEventMutation.mutate(data)}
-      isEdit={true}
-    />
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
+      <EventForm
+        initialData={eventQuery.data}
+        onSubmit={(data) => updateEventMutation.mutate(data)}
+        isEdit={true}
+      />
+    </div>
   );
 }
