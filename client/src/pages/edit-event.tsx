@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation, useParams } from "wouter";
 import { EventForm } from "@/components/forms/EventForm";
@@ -7,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function EditEvent() {
-  const { id, slug } = useParams();
+  const { id } = useParams();
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
   const eventQuery = useQuery({
     queryKey: ['event', id],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/events/${id}/edit`);
+      const response = await fetch(`/api/admin/events/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch event');
       }
