@@ -52,6 +52,33 @@ export function registerRoutes(app: Express): Server {
   setupWebSocketServer(httpServer);
 
   try {
+    // Public event endpoint
+    app.get('/api/events/:id', async (req, res) => {
+      try {
+        const eventId = parseInt(req.params.id);
+        const [event] = await db
+          .select({
+            id: events.id,
+            name: events.name,
+            startDate: events.startDate,
+            endDate: events.endDate,
+            applicationDeadline: events.applicationDeadline,
+            details: events.details,
+          })
+          .from(events)
+          .where(eq(events.id, eventId));
+
+        if (!event) {
+          return res.status(404).send("Event not found");
+        }
+
+        res.json(event);
+      } catch (error) {
+        console.error('Error fetching event:', error);
+        res.status(500).send("Failed to fetch event details");
+      }
+    });
+
     // Set up authentication first
     setupAuth(app);
     log("Authentication routes registered successfully");
@@ -1925,7 +1952,8 @@ export function registerRoutes(app: Express): Server {
           .returning();
 
         if (!deletedTeam) {
-          return res.status(404).send("Team not found");
+          <replit_final_file>
+return res.status(404).send("Team not found");
         }
 
         res.json(deletedTeam);
