@@ -14,7 +14,7 @@ export default function EditEvent() {
   const eventQuery = useQuery({
     queryKey: ['event', id],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/events/${id}`);
+      const response = await fetch(`/api/admin/events/${id}/edit`);
       if (!response.ok) {
         throw new Error('Failed to fetch event');
       }
