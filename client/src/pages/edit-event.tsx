@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function EditEvent() {
-  const { id } = useParams();
+  const { id, slug } = useParams();
   const [, navigate] = useLocation();
   const { toast } = useToast();
 

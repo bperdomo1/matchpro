@@ -253,22 +253,22 @@ export function EventsTable() {
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuLabel>Event Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/edit`)}>
+                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/${event.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/edit`)}>
                           <Edit className="h-4 w-4 mr-2" /> Edit Event
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/application-questions`)}>
+                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/${event.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/application-questions`)}>
                           <FileQuestion className="h-4 w-4 mr-2" /> Application Questions
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/player-questions`)}>
+                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/${event.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/player-questions`)}>
                           <User className="h-4 w-4 mr-2" /> Player Questions
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/discounts`)}>
+                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/${event.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/discounts`)}>
                           <TagsIcon className="h-4 w-4 mr-2" /> Discounts
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/game-cards`)}>
+                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/${event.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/game-cards`)}>
                           <Printer className="h-4 w-4 mr-2" /> Print Game Cards
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/red-cards`)}>
+                        <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/${event.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/red-cards`)}>
                           <AlertTriangle className="h-4 w-4 mr-2" /> Red Card Report
                         </DropdownMenuItem>
                       </DropdownMenuContent>
