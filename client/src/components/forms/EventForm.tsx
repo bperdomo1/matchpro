@@ -303,6 +303,18 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 
   // Event handlers
   const handleSubmit = async (data: EventInformationValues) => {
+    const validationErrors = getTabValidationState();
+    const hasErrors = Object.values(validationErrors).some(error => error);
+    
+    if (hasErrors) {
+      toast({
+        title: "Validation Error",
+        description: "Please complete all required fields across all tabs before saving",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
       const combinedData: EventData = {
@@ -1189,6 +1201,20 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 
   // State declarations using existing component context
 
+  const getTabValidationState = () => {
+    const errors: Record<EventTab, boolean> = {
+      'information': !form.formState.isValid,
+      'age-groups': ageGroups.length === 0,
+      'scoring': scoringRules.length === 0,
+      'complexes': selectedComplexIds.length === 0,
+      'settings': false, // Settings are optional
+      'administrators': false, // Administrators are managed separately
+    };
+    return errors;
+  };
+
+  const tabErrors = getTabValidationState();
+
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
@@ -1197,9 +1223,12 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
             <TabsTrigger
               key={tab}
               value={tab}
-              className="w-full capitalize"
+              className={`w-full capitalize relative ${tabErrors[tab] ? 'text-destructive' : ''}`}
             >
               {tab.replace('-', ' ')}
+              {tabErrors[tab] && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-destructive rounded-full" />
+              )}
             </TabsTrigger>
           ))}
         </TabsList>
