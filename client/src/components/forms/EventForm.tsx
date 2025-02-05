@@ -243,8 +243,32 @@ function AgeGroupDialog({
     }
   };
   
-  const EventFormComponent = () => {
-    return (
+  export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
+  // State declarations
+  const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState<EventTab>("information");
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>(initialData?.ageGroups || []);
+  const [selectedComplexIds, setSelectedComplexIds] = useState<number[]>(initialData?.selectedComplexIds || []);
+  const [complexFieldSizes, setComplexFieldSizes] = useState<Record<number, FieldSize>>(initialData?.complexFieldSizes || {});
+  const [isAgeGroupDialogOpen, setIsAgeGroupDialogOpen] = useState(false);
+  const [editingAgeGroup, setEditingAgeGroup] = useState<AgeGroup | null>(null);
+  const [scoringRules, setScoringRules] = useState<ScoringRule[]>(initialData?.scoringRules || []);
+  const [settings, setSettings] = useState<EventSetting[]>(initialData?.settings || []);
+  const [isScoringDialogOpen, setIsScoringDialogOpen] = useState(false);
+  const [editingScoringRule, setEditingScoringRule] = useState<ScoringRule | null>(null);
+  const [isSettingDialogOpen, setIsSettingDialogOpen] = useState(false);
+  const [editingSetting, setEditingSetting] = useState<EventSetting | null>(null);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [editingAdmin, setEditingAdmin] = useState<AdminModalProps['adminToEdit'] | null>(null);
+  const { toast } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
+  const [logo, setLogo] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.branding?.logoUrl || null);
+  const [primaryColor, setPrimaryColor] = useState(initialData?.branding?.primaryColor || '#000000');
+  const [secondaryColor, setSecondaryColor] = useState(initialData?.branding?.secondaryColor || '#ffffff');
+  const [isExtracting, setIsExtracting] = useState(false);
+  
+  return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent>
         <DialogHeader>
@@ -1425,9 +1449,6 @@ return (
 );
 };
 
-};
-  
-  return <EventFormComponent />;
 };
 
 export default EventForm;
