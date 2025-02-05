@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
@@ -175,7 +174,7 @@ export function EventsTable() {
                   onClick={() => handleSort("name")}
                 >
                   <div className="flex items-center">
-                    Event Name
+                    Name
                     <SortIcon field="name" />
                   </div>
                 </TableHead>
@@ -184,7 +183,7 @@ export function EventsTable() {
                   onClick={() => handleSort("date")}
                 >
                   <div className="flex items-center">
-                    Date Range
+                    Date
                     <SortIcon field="date" />
                   </div>
                 </TableHead>
@@ -193,7 +192,7 @@ export function EventsTable() {
                   onClick={() => handleSort("applications")}
                 >
                   <div className="flex items-center justify-end">
-                    Applications
+                    # Of Applications
                     <SortIcon field="applications" />
                   </div>
                 </TableHead>
@@ -202,7 +201,7 @@ export function EventsTable() {
                   onClick={() => handleSort("teams")}
                 >
                   <div className="flex items-center justify-end">
-                    Teams
+                    # of Accepted Teams
                     <SortIcon field="teams" />
                   </div>
                 </TableHead>
