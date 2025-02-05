@@ -1218,7 +1218,12 @@ function EventsView() {
                               navigator.clipboard.writeText(registrationUrl);
                               toast({
                                 title: "Registration Link Generated",
-                                description: "The registration link has been copied to your clipboard.",
+                                description: (
+                                  <div className="mt-2 p-2 bg-muted rounded text-sm font-mono break-all">
+                                    {registrationUrl}
+                                  </div>
+                                ),
+                                duration: 5000,
                               });
                             }}
                             className="text-blue-600 hover:text-blue-700"
