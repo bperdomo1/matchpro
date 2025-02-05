@@ -11,20 +11,17 @@ export default function EditEvent() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
-  // Query for event details
   const eventQuery = useQuery({
-    queryKey: [`/api/admin/events/${id}`],
+    queryKey: [`events/${id}`],
     queryFn: async () => {
       const response = await fetch(`/api/admin/events/${id}`);
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
+        throw new Error('Failed to fetch event');
       }
       return response.json();
     },
   });
 
-  // Mutation for updating event
   const updateEventMutation = useMutation({
     mutationFn: async (data: any) => {
       const formData = new FormData();
@@ -40,8 +37,7 @@ export default function EditEvent() {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
+        throw new Error('Failed to update event');
       }
 
       return response.json();
