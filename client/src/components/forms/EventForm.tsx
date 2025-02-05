@@ -285,7 +285,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const complexesQuery = useQuery({
     queryKey: ['complexes'],
     queryFn: async () => {
-      const response = await fetch('/api/complexes');
+      const response = await fetch('/api/admin/complexes');
       if (!response.ok) {
         throw new Error('Failed to fetch complexes');
       }
