@@ -1422,11 +1422,7 @@ const { getRootProps, getInputProps, isDragActive } = useDropzone({
   multiple: false,
 });
 
-const renderSettingsContent = () => (
-  <div className="space-y-6">
-    {/* Settings content */}
-  </div>
-);
+
 
 return (
     <div className="container mx-auto py-8 space-y-8">
