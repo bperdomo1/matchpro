@@ -1952,8 +1952,7 @@ export function registerRoutes(app: Express): Server {
           .returning();
 
         if (!deletedTeam) {
-          <replit_final_file>
-return res.status(404).send("Team not found");
+          return res.status(404).send("Team not found");
         }
 
         res.json(deletedTeam);
