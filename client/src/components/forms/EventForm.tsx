@@ -224,6 +224,25 @@ function AgeGroupDialog({
     onClose();
   };
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'information':
+        return renderInformationContent();
+      case 'age-groups':
+        return renderAgeGroupsContent();
+      case 'scoring':
+        return renderScoringContent();
+      case 'complexes':
+        return renderComplexesContent();
+      case 'settings':
+        return renderSettingsContent();
+      case 'administrators':
+        return renderAdministratorsContent();
+      default:
+        return null;
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent>
