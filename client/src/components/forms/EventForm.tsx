@@ -981,7 +981,7 @@ const renderScoringContent = () => (
         <Card key={rule.id}>
           <CardContent className="p-4 flex justify-between itemscenter">
             <div>
-              <h4<h4 className="font-semibold">{rule.title}</h4>
+              <h4 className="font-semibold">{rule.title}</h4>
               <p className="text-sm text-muted-foreground">
                 Win: {rule.win} | Tie: {rule.tie} | Loss: {rule.loss}
               </p>
