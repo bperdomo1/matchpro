@@ -285,6 +285,20 @@ export function EventsTable() {
                         >
                           <Link className="h-4 w-4 mr-2" /> Copy Registration Link
                         </DropdownMenuItem>
+                        <DropdownMenuItem 
+                            onClick={() => {
+                              const registrationUrl = `${window.location.origin}/register/event/${event.id}`;
+                              navigator.clipboard.writeText(registrationUrl);
+                              toast({
+                                title: "Registration Link Generated",
+                                description: "The registration link has been copied to your clipboard.",
+                              });
+                            }}
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            <Link className="h-4 w-4 mr-2" /> Generate Registration Link
+                          </DropdownMenuItem>
+
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
