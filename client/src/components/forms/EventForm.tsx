@@ -44,7 +44,6 @@ import {
   AdminModalProps,
 } from "./event-form-types";
 
-
 const AgeGroupDialog = ({
   open,
   onClose,
@@ -247,11 +246,11 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const [isSaving, setIsSaving] = useState(false);
   const [logo, setLogo] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.branding?.logoUrl || null);
-  const [primaryColor, setPrimaryColor] = useState(initialData?.branding?.primaryColor || '#000000');
-  const [secondaryColor, setSecondaryColor] = useState(initialData?.branding?.secondaryColor || '#ffffff');
+  const [primaryColor, setPrimaryColor] = useState(initialData?.branding?.primaryColor || '#007AFF');
+  const [secondaryColor, setSecondaryColor] = useState(initialData?.branding?.secondaryColor || '#34C759');
   const [isExtracting, setIsExtracting] = useState(false);
 
-  // Main form setup
+  // Form setup
   const form = useForm<EventInformationValues>({
     resolver: zodResolver(eventInformationSchema),
     defaultValues: initialData || {
@@ -303,18 +302,6 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 
   // Event handlers
   const handleSubmit = async (data: EventInformationValues) => {
-    const validationErrors = getTabValidationState();
-    const hasErrors = Object.values(validationErrors).some(error => error);
-    
-    if (hasErrors) {
-      toast({
-        title: "Validation Error",
-        description: "Please complete all required fields across all tabs before saving",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setIsSaving(true);
     try {
       const combinedData: EventData = {
@@ -1216,79 +1203,70 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const tabErrors = getTabValidationState();
 
   return (
-    <div className="w-full">
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
-        <TabsList className="w-full grid grid-cols-6 gap-4 mb-4">
-          {TAB_ORDER.map((tab) => (
-            <TabsTrigger
-              key={tab}
-              value={tab}
-              className={`w-full capitalize relative ${tabErrors[tab] ? 'text-destructive' : ''}`}
-            >
-              {tab.replace('-', ' ')}
-              {tabErrors[tab] && (
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-destructive rounded-full" />
-              )}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+    <div className="w-full max-w-7xl mx-auto px-4 py-6">
+      <Card className="bg-white shadow-sm border border-gray-200">
+        <CardContent className="p-6">
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
+            <TabsList className="w-full justify-start mb-6 gap-2 bg-[#F2F2F7] p-1 rounded-lg">
+              {TAB_ORDER.map((tab) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab}
+                  className="px-4 py-2 rounded-md text-sm font-medium transition-colors
+                    data-[state=active]:bg-white data-[state=active]:text-[#007AFF] data-[state=active]:shadow-sm
+                    text-[#1C1C1E] hover:text-[#007AFF]"
+                >
+                  {tab.replace('-', ' ').charAt(0).toUpperCase() + tab.slice(1).replace('-', ' ')}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-        <TabsContent value="information">
-          {renderInformationContent()}
-        </TabsContent>
+            <div className="mt-6">
+              <TabsContent value="information" className="space-y-6">
+                {renderInformationContent()}
+              </TabsContent>
 
-        <TabsContent value="age-groups">
-          {renderAgeGroupsContent()}
-        </TabsContent>
+              <TabsContent value="age-groups" className="space-y-6">
+                {renderAgeGroupsContent()}
+              </TabsContent>
 
-        <TabsContent value="scoring">
-          {renderScoringContent()}
-        </TabsContent>
+              <TabsContent value="scoring" className="space-y-6">
+                {renderScoringContent()}
+              </TabsContent>
 
-        <TabsContent value="complexes">
-          {renderComplexesContent()}
-        </TabsContent>
+              <TabsContent value="complexes" className="space-y-6">
+                {renderComplexesContent()}
+              </TabsContent>
 
-        <TabsContent value="settings">
-          {renderSettingsContent()}
-        </TabsContent>
+              <TabsContent value="settings" className="space-y-6">
+                {renderSettingsContent()}
+              </TabsContent>
 
-        <TabsContent value="administrators">
-          {renderAdministratorsContent()}
-        </TabsContent>
-      </Tabs>
+              <TabsContent value="administrators" className="space-y-6">
+                {renderAdministratorsContent()}
+              </TabsContent>
+            </div>
+          </Tabs>
 
-      <AgeGroupDialog
-        open={isAgeGroupDialogOpen}
-        onClose={() => {
-          setIsAgeGroupDialogOpen(false);
-          setEditingAgeGroup(null);
-        }}
-        onSubmit={handleAddAgeGroup}
-        defaultValues={editingAgeGroup || undefined}
-        isEdit={!!editingAgeGroup}
-      />
+          {/* Dialogs and Modals */}
+          <AgeGroupDialog
+            open={isAgeGroupDialogOpen}
+            onClose={() => {
+              setIsAgeGroupDialogOpen(false);
+              setEditingAgeGroup(null);
+            }}
+            onSubmit={handleAddAgeGroup}
+            defaultValues={editingAgeGroup || undefined}
+            isEdit={!!editingAgeGroup}
+          />
 
-      <Dialog open={isScoringDialogOpen} onOpenChange={setIsScoringDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {editingScoringRule ? 'Edit Scoring Rule' : 'Add Scoring Rule'}
-            </DialogTitle>
-          </DialogHeader>
-          <Form {...scoringForm}>
-            <form onSubmit={scoringForm.handleSubmit(handleAddScoringRule)} className="space-y-4">
-              {/* Scoring form fields */}
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-
-      <AdminModal
-        open={isAdminModalOpen}
-        onOpenChange={setIsAdminModalOpen}
-        adminToEdit={editingAdmin}
-      />
+          <AdminModal
+            open={isAdminModalOpen}
+            onOpenChange={setIsAdminModalOpen}
+            adminToEdit={editingAdmin}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
