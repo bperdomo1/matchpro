@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
@@ -93,9 +94,10 @@ export function EventsTable() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border">
-        <Table>
+    <div className="space-y-6">
+      <Card>
+        <CardContent className="p-0">
+          <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Event Name</TableHead>
@@ -163,7 +165,8 @@ export function EventsTable() {
             ))}
           </TableBody>
         </Table>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
