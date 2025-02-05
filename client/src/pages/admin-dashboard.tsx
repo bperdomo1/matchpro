@@ -1212,6 +1212,21 @@ function EventsView() {
                             View Details
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              const registrationUrl = `${window.location.origin}/register/event/${event.id}`;
+                              navigator.clipboard.writeText(registrationUrl);
+                              toast({
+                                title: "Registration Link Generated",
+                                description: "The registration link has been copied to your clipboard.",
+                              });
+                            }}
+                            className="text-blue-600 hover:text-blue-700"
+                          >
+                            <Link className="mr-2 h-4 w-4" />
+                            Generate Registration Link
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-red-600">
                             <Trash className="mr-2 h-4 w-4" />
                             Delete
