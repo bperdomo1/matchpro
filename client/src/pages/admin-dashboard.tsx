@@ -14,6 +14,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "@/hooks/use-theme";
 import { SelectUser } from "@db/schema";
 import { useToast } from "@/hooks/use-toast";
+import { LogoutOverlay } from "@/components/ui/logout-overlay";
 import {
   Calendar,
   Shield,
@@ -1333,9 +1334,14 @@ function AdminDashboard() {
     }
   }, [user, setLocation]);
 
+  const [showLogoutOverlay, setShowLogoutOverlay] = useState(false);
+
   const handleLogout = () => {
-    logout();
-  }
+    setShowLogoutOverlay(true);
+    setTimeout(async () => {
+      await logout();
+    }, 1500);
+  };
 
   const renderView = () => {
     switch (activeView) {
@@ -1564,6 +1570,9 @@ function AdminDashboard() {
         open={showUpdatesLog} 
         onOpenChange={setShowUpdatesLog}
       />
+      {showLogoutOverlay && (
+        <LogoutOverlay onFinished={() => setShowLogoutOverlay(false)} />
+      )}
     </div>
   );
 }
