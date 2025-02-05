@@ -1420,10 +1420,9 @@ const { getRootProps, getInputProps, isDragActive } = useDropzone({
   },
   maxFiles: 1,
   multiple: false,
-});
-
-return (
-  <div className="container mx-auto py-8 space-y-8">
+}) => {
+  return (
+    <div className="container mx-auto py-8 space-y-8">
     <div className="flex items-center gap-4">
       <Button
         variant="ghost"
