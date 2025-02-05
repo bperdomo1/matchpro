@@ -19,15 +19,19 @@ export default function EditEvent() {
         throw new Error('Failed to fetch event');
       }
       const data = await response.json();
+      if (!data) {
+        throw new Error('No event data found');
+      }
       return {
         ...data,
-        startDate: data.startDate.split('T')[0],
-        endDate: data.endDate.split('T')[0],
-        applicationDeadline: data.applicationDeadline.split('T')[0],
+        startDate: data.startDate?.split('T')[0] || '',
+        endDate: data.endDate?.split('T')[0] || '',
+        applicationDeadline: data.applicationDeadline?.split('T')[0] || '',
       };
     },
-    retry: false,
-    refetchOnWindowFocus: false
+    retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 30000,
   });
 
   const updateEventMutation = useMutation({
@@ -67,47 +71,39 @@ export default function EditEvent() {
     }
   });
 
-  if (eventQuery.isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (eventQuery.error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <p className="text-destructive font-medium">Failed to load event details</p>
-        <Button
-          onClick={() => navigate("/admin")}
-          variant="link"
-          className="text-primary"
-        >
-          Return to Dashboard
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
-      {eventQuery.isLoading ? (
-        <div className="flex items-center justify-center min-h-[200px]">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      ) : eventQuery.error ? (
-        <div className="text-center text-destructive">
-          <p className="mb-4">Failed to load event details</p>
-          <Button onClick={() => navigate("/admin")}>Return to Dashboard</Button>
-        </div>
-      ) : (
-        <EventForm
-          initialData={eventQuery.data}
-          onSubmit={(data) => updateEventMutation.mutate(data)}
-          isEdit={true}
-        />
-      )}
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/admin")}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h2 className="text-2xl font-bold">Edit Event</h2>
+      </div>
+
+      <Card>
+        <CardContent className="p-6">
+          {eventQuery.isLoading ? (
+            <div className="flex items-center justify-center min-h-[200px]">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : eventQuery.error ? (
+            <div className="text-center text-destructive space-y-4">
+              <p>Failed to load event details</p>
+              <Button onClick={() => navigate("/admin")}>Return to Dashboard</Button>
+            </div>
+          ) : eventQuery.data ? (
+            <EventForm
+              initialData={eventQuery.data}
+              onSubmit={(data) => updateEventMutation.mutate(data)}
+              isEdit={true}
+            />
+          ) : null}
+        </CardContent>
+      </Card>
     </div>
   );
 }
