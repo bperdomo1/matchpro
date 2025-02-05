@@ -242,8 +242,9 @@ function AgeGroupDialog({
         return null;
     }
   };
-
-  return (
+  
+  const EventFormComponent = () => {
+    return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent>
         <DialogHeader>
@@ -1422,6 +1423,11 @@ return (
     />
   </div>
 );
+};
+
+};
+  
+  return <EventFormComponent />;
 };
 
 export default EventForm;
