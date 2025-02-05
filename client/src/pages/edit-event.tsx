@@ -19,7 +19,12 @@ export default function EditEvent() {
         throw new Error('Failed to fetch event');
       }
       const data = await response.json();
-      return data;
+      return {
+        ...data,
+        startDate: data.startDate.split('T')[0],
+        endDate: data.endDate.split('T')[0],
+        applicationDeadline: data.applicationDeadline.split('T')[0],
+      };
     },
     retry: false,
     refetchOnWindowFocus: false
@@ -87,11 +92,22 @@ export default function EditEvent() {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
-      <EventForm
-        initialData={eventQuery.data}
-        onSubmit={(data) => updateEventMutation.mutate(data)}
-        isEdit={true}
-      />
+      {eventQuery.isLoading ? (
+        <div className="flex items-center justify-center min-h-[200px]">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      ) : eventQuery.error ? (
+        <div className="text-center text-destructive">
+          <p className="mb-4">Failed to load event details</p>
+          <Button onClick={() => navigate("/admin")}>Return to Dashboard</Button>
+        </div>
+      ) : (
+        <EventForm
+          initialData={eventQuery.data}
+          onSubmit={(data) => updateEventMutation.mutate(data)}
+          isEdit={true}
+        />
+      )}
     </div>
   );
 }
