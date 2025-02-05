@@ -1192,12 +1192,12 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   return (
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
-        <TabsList className="w-full justify-start mb-4 overflow-x-auto">
+        <TabsList className="w-full grid grid-cols-6 gap-4 mb-4">
           {TAB_ORDER.map((tab) => (
             <TabsTrigger
               key={tab}
               value={tab}
-              className="capitalize"
+              className="w-full capitalize"
             >
               {tab.replace('-', ' ')}
             </TabsTrigger>
