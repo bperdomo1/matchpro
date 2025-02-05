@@ -1278,6 +1278,5 @@ const EventFormComponent = () => (
     />
   </div>
 );
-};
 
 export default EventForm;
