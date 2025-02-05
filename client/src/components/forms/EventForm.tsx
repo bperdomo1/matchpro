@@ -51,14 +51,12 @@ const AgeGroupDialog = ({
   onSubmit,
   defaultValues,
   isEdit,
-  scoringRules,
 }: {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: AgeGroupValues) => void;
   defaultValues?: AgeGroup;
   isEdit?: boolean;
-  scoringRules: ScoringRule[];
 }) => {
   const form = useForm<AgeGroupValues>({
     resolver: zodResolver(ageGroupSchema),
@@ -88,7 +86,7 @@ const AgeGroupDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>
             {isEdit ? 'Edit Age Group' : 'Add Age Group'}
@@ -96,206 +94,130 @@ const AgeGroupDialog = ({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Coed">Coed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ageGroup"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Age Group</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="e.g., U10, U12" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="gender"
+                name="birthDateStart"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Gender *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Male">Male</SelectItem>
-                        <SelectItem value="Female">Female</SelectItem>
-                        <SelectItem value="Coed">Coed</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Birth Date Start</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name="projectedTeams"
+                name="birthDateEnd"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Projected # of Teams</FormLabel>
+                    <FormLabel>Birth Date End</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="200"
-                        className="w-full"
-                        placeholder="0"
-                        {...field}
-                        onChange={e => field.onChange(Number(e.target.value))}
-                      />
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <FormField
-                  control={form.control}
-                  name="birthDateStart"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Birth Date Range (Start) *</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="space-y-2">
-                <FormField
-                  control={form.control}
-                  name="birthDateEnd"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Birth Date Range (End) *</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="scoringRule"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Scoring Rule</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select scoring rule" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="default">Default Scoring</SelectItem>
-                        {scoringRules.map(rule => (
-                          <SelectItem key={rule.id} value={rule.id}>{rule.title}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="ageGroup"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Age Group *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select age group" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Array.from({ length: 22 }, (_, i) => i + 4).map((age) => (
-                          <SelectItem key={age} value={`U${age}`}>
-                            U{age}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="Open">Open</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="fieldSize"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Field Size</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select field size" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {['3v3', '4v4', '5v5', '6v6', '7v7', '8v8', '9v9', '10v10', '11v11', 'N/A'].map((size) => (
-                          <SelectItem key={size} value={size}>
-                            {size}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="amountDue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Amount Due (optional)</FormLabel>
+            <FormField
+              control={form.control}
+              name="projectedTeams"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Projected Teams</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="fieldSize"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Field Size</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <div className="relative">
-                        <span className="absolute left-3 top-2.5">$</span>
-                        <Input
-                          type="number"
-                          className="pl-7"
-                          placeholder="0.00"
-                          step="0.01"
-                          min="0"
-                          {...field}
-                          value={field.value ?? ''}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(value === '' ? null : Number(value));
-                          }}
-                        />
-                      </div>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select field size" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  onClose();
-                  form.reset();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">
-                {isEdit ? 'Update Age Group' : 'Add Age Group'}
-              </Button>
-            </div>
+                    <SelectContent>
+                      {['3v3', '4v4', '5v5', '6v6', '7v7', '8v8', '9v9', '10v10', '11v11', 'N/A'].map((size) => (
+                        <SelectItem key={size} value={size}>
+                          {size}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="amountDue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount Due (optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">
+              {isEdit ? 'Update Age Group' : 'Add Age Group'}
+            </Button>
           </form>
         </Form>
       </DialogContent>
