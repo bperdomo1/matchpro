@@ -131,7 +131,7 @@ export const insertFieldSchema = createInsertSchema(fields, {
 export const selectFieldSchema = createSelectSchema(fields);
 
 export const events = pgTable("events", {
-  id: serial("id").primaryKey(),
+  id: text("id").primaryKey(),
   name: text("name").notNull(),
   startDate: text("start_date").notNull(),
   endDate: text("end_date").notNull(),
