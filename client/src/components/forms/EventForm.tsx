@@ -1006,7 +1006,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 
             <div>
               <Label htmlFor="secondaryColor">Secondary Color</Label>
-              <              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 <Input
                   id="secondaryColor"
                   type="color"
