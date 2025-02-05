@@ -1236,47 +1236,4 @@ const renderComplexesContent = () => {
   );
 };
 
-const EventFormComponent = () => (
-  <div className="container mx-auto py-6 space-y-6">
-    <div className="flex items-center gap-4">
-      <Button variant="ghost" size="icon" onClick={() => setLocation('/admin')}>
-        <ArrowLeft className="h-4 w-4" />
-      </Button>
-      <h2 className="text-2xl font-bold">
-        {isEdit ? 'Edit Event' : 'Create Event'}
-      </h2>
-    </div>
-
-    <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
-      <TabsList className="grid w-full grid-cols-6">
-        {TAB_ORDER.map((tab) => (
-          <TabsTrigger key={tab} value={tab} className="capitalize">
-            {tab.replace('-', ' ')}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      <TabsContent value={activeTab}>
-        {renderContent()}
-      </TabsContent>
-    </Tabs>
-
-    <AdminModal
-      open={isAdminModalOpen}
-      onOpenChange={setIsAdminModalOpen}
-      adminToEdit={editingAdmin}
-    />
-
-    <AgeGroupDialog
-      open={isAgeGroupDialogOpen}
-      onClose={() => {
-        setIsAgeGroupDialogOpen(false);
-        setEditingAgeGroup(null);
-      }}
-      onSubmit={handleAddAgeGroup}
-      defaultValues={editingAgeGroup || undefined}
-      isEdit={!!editingAgeGroup}
-    />
-  </div>
-);
-
 export default EventForm;
