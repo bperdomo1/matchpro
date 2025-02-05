@@ -242,8 +242,9 @@ function AgeGroupDialog({
         return null;
     }
   };
-  
-  export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
+};
+
+export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
   // State declarations
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<EventTab>("information");
@@ -1447,8 +1448,6 @@ return (
     />
   </div>
 );
-};
-
 };
 
 export default EventForm;
