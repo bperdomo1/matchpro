@@ -12,17 +12,21 @@ export default function EditEvent() {
   const { toast } = useToast();
 
   const eventQuery = useQuery({
-    queryKey: [`events/${id}`],
+    queryKey: ['event', id],
     queryFn: async () => {
       const response = await fetch(`/api/admin/events/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch event');
       }
-      return response.json();
+      const data = await response.json();
+      return data;
     },
+    retry: false,
+    refetchOnWindowFocus: false
   });
 
   const updateEventMutation = useMutation({
+    mutationKey: ['updateEvent', id],
     mutationFn: async (data: any) => {
       const formData = new FormData();
       formData.append('data', JSON.stringify(data));
