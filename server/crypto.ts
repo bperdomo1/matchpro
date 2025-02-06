@@ -5,8 +5,8 @@ import { promisify } from "util";
 const scryptAsync = promisify(scrypt);
 
 const generateEventId = () => {
-  // Generate a random 13-digit integer (between 1000000000000 and 9999999999999)
-  return Math.floor(1000000000000 + Math.random() * 9000000000000).toString();
+  // Generate a random 10-digit integer to stay within safe bounds
+  return Math.floor(1000000000 + Math.random() * 9000000000).toString();
 };
 
 export const crypto = {

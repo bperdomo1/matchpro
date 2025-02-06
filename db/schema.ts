@@ -146,7 +146,7 @@ export const events = pgTable("events", {
 
 export const eventAgeGroups = pgTable("event_age_groups", {
   id: serial("id").primaryKey(),
-  eventId: text("event_id").notNull().references(() => events.id),
+  eventId: bigint("event_id").notNull().references(() => events.id),
   gender: text("gender").notNull(),
   projectedTeams: integer("projected_teams").notNull(),
   birthDateStart: text("birth_date_start").notNull(),
