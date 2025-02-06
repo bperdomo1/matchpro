@@ -189,7 +189,7 @@ export type SelectEvent = typeof events.$inferSelect;
 
 export const gameTimeSlots = pgTable("game_time_slots", {
   id: serial("id").primaryKey(),
-  eventId: text("event_id").notNull().references(() => events.id),
+  eventId: text("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
   fieldId: integer("field_id").notNull().references(() => fields.id),
   startTime: text("start_time").notNull(),
   endTime: text("end_time").notNull(),
@@ -211,7 +211,7 @@ export const tournamentGroups = pgTable("tournament_groups", {
 
 export const teams = pgTable("teams", {
   id: serial("id").primaryKey(),
-  eventId: text("event_id").notNull().references(() => events.id),
+  eventId: text("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
   ageGroupId: integer("age_group_id").notNull().references(() => eventAgeGroups.id),
   groupId: integer("group_id").references(() => tournamentGroups.id),
   name: text("name").notNull(),
@@ -225,7 +225,7 @@ export const teams = pgTable("teams", {
 
 export const games = pgTable("games", {
   id: serial("id").primaryKey(),
-  eventId: text("event_id").notNull().references(() => events.id),
+  eventId: text("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
   ageGroupId: integer("age_group_id").notNull().references(() => eventAgeGroups.id),
   groupId: integer("group_id").references(() => tournamentGroups.id),
   fieldId: integer("field_id").references(() => fields.id),
