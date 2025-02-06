@@ -832,11 +832,11 @@ export default function CreateEvent() {
 
       const formValues = form.getValues();
       const eventData = {
-        name: formValues.name,
-        startDate: formValues.startDate,
-        endDate: formValues.endDate,
-        timezone: formValues.timezone,
-        applicationDeadline: formValues.applicationDeadline,
+        name: formValues.name?.trim(),
+        startDate: formValues.startDate?.trim(),
+        endDate: formValues.endDate?.trim(),
+        timezone: formValues.timezone?.trim(),
+        applicationDeadline: formValues.applicationDeadline?.trim(),
         details: formValues.details || "",
         agreement: formValues.agreement || "",
         refundPolicy: formValues.refundPolicy || "",
