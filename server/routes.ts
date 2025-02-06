@@ -55,7 +55,7 @@ export function registerRoutes(app: Express): Server {
     // Public event endpoint
     app.get('/api/events/:id', async (req, res) => {
       try {
-        const eventId = parseInt(req.params.id);
+        const eventId = req.params.id;
         const [event] = await db
           .select({
             id: events.id,
@@ -1208,7 +1208,7 @@ export function registerRoutes(app: Express): Server {
     // Add this new update endpoint after the existing event creation endpoint
     app.patch('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
-        const eventId = parseInt(req.params.id);
+        const eventId = req.params.id;
         const eventData = req.body;
 
         // Start a transaction to update event and related records
@@ -1952,7 +1952,7 @@ export function registerRoutes(app: Express): Server {
           .returning();
 
         if (!deletedTeam) {
-          return res.status(404).send("Team not found");
+          return res.status(404).send(""Team not found");
         }
 
         res.json(deletedTeam);
