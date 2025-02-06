@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect, lazy, Suspense, useCallback } from "react";
-import { useLocation, Link } from "wouter";
+import { useLocation } from "wouter";
+import { Link2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Collapsible,
   CollapsibleContent,
@@ -1118,6 +1120,7 @@ function ComplexesView() {
 function EventsView() {
   const [, navigate] = useLocation();
   const { user } = useUser();
+  const { toast } = useToast();
   const eventsQuery = useQuery({
     queryKey: ['/api/admin/events'],
     queryFn: async () => {
@@ -1228,7 +1231,7 @@ function EventsView() {
                             }}
                             className="text-blue-600 hover:text-blue-700"
                           >
-                            <Link className="mr-2 h-4 w-4" />
+                            <Link2 className="mr-2 h-4 w-4" />
                             Generate Registration Link
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
