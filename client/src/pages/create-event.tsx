@@ -78,19 +78,55 @@ interface EventData {
 
 function validateEventData(data: Partial<EventData>): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
+  const requiredFields = {
+    'name': 'Event name',
+    'startDate': 'Start date',
+    'endDate': 'End date',
+    'timezone': 'Time zone',
+    'applicationDeadline': 'Application deadline',
+    'details': 'Event details',
+    'agreement': 'Event agreement',
+    'refundPolicy': 'Refund policy'
+  };
 
-  if (!data.name) errors.push("Event name is required");
-  if (!data.startDate) errors.push("Event start date is required");
-  if (!data.endDate) errors.push("Event end date is required");
-  if (!data.timezone) errors.push("Time zone is required");
-  if (!data.applicationDeadline) errors.push("Application deadline is required");
+  // Check all required text fields
+  Object.entries(requiredFields).forEach(([field, label]) => {
+    if (!data[field as keyof typeof data] || data[field as keyof typeof data]?.trim() === '') {
+      errors.push(`${label} is required`);
+    }
+  });
 
-  if (!data.ageGroups?.length) {
-    errors.push("At least one age group is required");
+  // Validate dates are in the future
+  const now = new Date();
+  if (data.startDate && new Date(data.startDate) < now) {
+    errors.push("Start date must be in the future");
+  }
+  if (data.endDate && new Date(data.endDate) < new Date(data.startDate || '')) {
+    errors.push("End date must be after start date");
+  }
+  if (data.applicationDeadline && new Date(data.applicationDeadline) > new Date(data.startDate || '')) {
+    errors.push("Application deadline must be before event start date");
   }
 
+  // Check age groups
+  if (!data.ageGroups?.length) {
+    errors.push("At least one age group is required");
+  } else {
+    data.ageGroups.forEach((group, index) => {
+      if (!group.ageGroup || !group.gender || !group.fieldSize) {
+        errors.push(`Age group ${index + 1} is missing required information`);
+      }
+    });
+  }
+
+  // Check complexes
   if (!data.selectedComplexIds?.length) {
     errors.push("At least one complex must be selected");
+  }
+
+  // Check field sizes for selected complexes
+  if (data.selectedComplexIds?.length && Object.keys(data.complexFieldSizes || {}).length === 0) {
+    errors.push("Field sizes must be specified for selected complexes");
   }
 
   return {
@@ -819,15 +855,19 @@ export default function CreateEvent() {
 
     if (!isValid) {
       toast({
-        title: "Missing Required Fields",
+        title: "Form Validation Error",
         description: (
-          <ul className="list-disc pl-4">
-            {errors.map((error, index) => (
-              <li key={index}>{error}</li>
-            ))}
-          </ul>
+          <div className="space-y-2">
+            <p className="font-medium text-destructive">Please correct the following issues:</p>
+            <ul className="list-disc pl-4 space-y-1">
+              {errors.map((error, index) => (
+                <li key={index} className="text-sm">{error}</li>
+              ))}
+            </ul>
+          </div>
         ),
         variant: "destructive",
+        duration: 5000,
       });
       return;
     }
