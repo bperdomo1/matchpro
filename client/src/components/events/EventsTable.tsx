@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link2 } from "lucide-react";
 import { useLocation } from "wouter";
 import {
   Table,
@@ -284,7 +285,7 @@ export function EventsTable() {
                           }}
                           className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                         >
-                          <Eye className="mr-2 h-4 w-4" />
+                          <Link2 className="mr-2 h-4 w-4" />
                           Generate Registration Link
                         </DropdownMenuItem>
                         <DropdownMenuItem 
