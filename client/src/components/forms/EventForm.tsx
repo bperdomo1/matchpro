@@ -306,8 +306,16 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const handleSubmit = async (data: EventInformationValues) => {
     setIsSaving(true);
     try {
+      if (!data.name || !data.startDate || !data.endDate || !data.timezone || !data.applicationDeadline) {
+        throw new Error('Required fields are missing');
+      }
+      
       const combinedData: EventData = {
-        ...data,
+        name: data.name,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        timezone: data.timezone,
+        applicationDeadline: data.applicationDeadline,
         details: data.details || "",
         agreement: data.agreement || "",
         refundPolicy: data.refundPolicy || "",
