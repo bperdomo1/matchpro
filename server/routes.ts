@@ -532,6 +532,77 @@ export function registerRoutes(app: Express): Server {
 
         // Mark invitation as accepted
         await db
+
+    // Seasonal Scope Management Routes
+    app.get('/api/admin/seasonal-scopes', isAdmin, async (req, res) => {
+      try {
+        const scopes = await db
+          .select()
+          .from(seasonalScopes)
+          .orderBy(seasonalScopes.startYear);
+
+        res.json(scopes);
+      } catch (error) {
+        console.error('Error fetching seasonal scopes:', error);
+        res.status(500).send("Failed to fetch seasonal scopes");
+      }
+    });
+
+    app.post('/api/admin/seasonal-scopes', isAdmin, async (req, res) => {
+      try {
+        const { name, startYear, endYear } = req.body;
+
+        const [newScope] = await db
+          .insert(seasonalScopes)
+          .values({
+            name,
+            startYear: parseInt(startYear),
+            endYear: parseInt(endYear),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .returning();
+
+        res.json(newScope);
+      } catch (error) {
+        console.error('Error creating seasonal scope:', error);
+        res.status(500).send("Failed to create seasonal scope");
+      }
+    });
+
+    app.put('/api/admin/seasonal-scopes/:id/age-groups', isAdmin, async (req, res) => {
+      try {
+        const scopeId = parseInt(req.params.id);
+        const { ageGroups } = req.body;
+
+        await db.transaction(async (tx) => {
+          // Delete existing age groups for this scope
+          await tx
+            .delete(ageGroupSettings)
+            .where(eq(ageGroupSettings.seasonalScopeId, scopeId));
+
+          // Insert new age groups
+          for (const group of ageGroups) {
+            await tx
+              .insert(ageGroupSettings)
+              .values({
+                seasonalScopeId: scopeId,
+                ageGroup: group.ageGroup,
+                minBirthYear: group.minBirthYear,
+                maxBirthYear: group.maxBirthYear,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              });
+          }
+        });
+
+        res.json({ message: "Age groups updated successfully" });
+      } catch (error) {
+        console.error('Error updating age groups:', error);
+        res.status(500).send("Failed to update age groups");
+      }
+    });
+
           .update(householdInvitations)
           .set({ status: 'accepted' })
           .where(eq(householdInvitations.id, invitation.id));

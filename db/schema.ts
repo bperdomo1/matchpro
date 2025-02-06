@@ -483,3 +483,26 @@ export const selectUpdateSchema = createSelectSchema(updates);
 
 export type InsertUpdate = typeof updates.$inferInsert;
 export type SelectUpdate = typeof updates.$inferSelect;
+
+export const seasonalScopes = pgTable("seasonal_scopes", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  startYear: integer("start_year").notNull(),
+  endYear: integer("end_year").notNull(),
+  isActive: boolean("is_active").default(false).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const ageGroupSettings = pgTable("age_group_settings", {
+  id: serial("id").primaryKey(),
+  seasonalScopeId: integer("seasonal_scope_id").notNull().references(() => seasonalScopes.id),
+  ageGroup: text("age_group").notNull(),
+  minBirthYear: integer("min_birth_year").notNull(),
+  maxBirthYear: integer("max_birth_year").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertSeasonalScopeSchema = createInsertSchema(seasonalScopes);
+export const insertAgeGroupSettingSchema = createInsertSchema(ageGroupSettings);
