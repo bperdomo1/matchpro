@@ -883,9 +883,9 @@ export default function CreateEvent() {
         }
       };
 
-      const { isValid, errors } = validateEventData(eventData);
+      const validationResult = validateEventData(eventData);
 
-      if (!isValid) {
+      if (!validationResult.isValid) {
         toast({
           title: "Form Validation Error",
           description: (
