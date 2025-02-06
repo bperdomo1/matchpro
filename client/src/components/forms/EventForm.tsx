@@ -354,9 +354,22 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
       setLocation("/admin");
     } catch (error) {
       console.error('Submit error:', error);
+      let errorMessage = "Failed to save event";
+      if (error instanceof Error) {
+        try {
+          const errorData = JSON.parse(error.message);
+          if (errorData.missingFields) {
+            errorMessage = `Missing fields: ${errorData.missingFields.join(', ')}`;
+          } else {
+            errorMessage = error.message;
+          }
+        } catch {
+          errorMessage = error.message;
+        }
+      }
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save event",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

@@ -1131,8 +1131,19 @@ export function registerRoutes(app: Express): Server {
         const eventData = req.body;
 
         // Validate required fields
-        if (!eventData.name || !eventData.startDate || !eventData.endDate || !eventData.timezone || !eventData.applicationDeadline) {
-          return res.status(400).send("Missing required fields");
+        const missingFields = [];
+        if (!eventData.name) missingFields.push('name');
+        if (!eventData.startDate) missingFields.push('startDate');
+        if (!eventData.endDate) missingFields.push('endDate');
+        if (!eventData.timezone) missingFields.push('timezone');
+        if (!eventData.applicationDeadline) missingFields.push('applicationDeadline');
+
+        if (missingFields.length > 0) {
+          console.log('Missing fields:', missingFields);
+          return res.status(400).json({ 
+            error: "Missing required fields",
+            missingFields 
+          });
         }
 
         // Start a transaction to create event and related records
