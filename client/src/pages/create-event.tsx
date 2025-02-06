@@ -825,15 +825,40 @@ export default function CreateEvent() {
   const handleCreateEvent = async () => {
     setIsSaving(true);
     try {
-      await form.trigger();
+      // Trigger full form validation
+      const isValid = await form.trigger();
+      if (!isValid) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields correctly",
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
+      }
+
       const formValues = form.getValues();
 
-      // Validate required fields
+      // Enhanced validation with specific checks
       const requiredFields = ['name', 'startDate', 'endDate', 'timezone', 'applicationDeadline'];
-      const missingFields = requiredFields.filter(field => !formValues[field]?.trim());
+      const missingFields = requiredFields.filter(field => !formValues[field]?.toString().trim());
 
       if (missingFields.length > 0) {
-        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+        // Mark invalid fields
+        missingFields.forEach(field => {
+          form.setError(field as any, {
+            type: 'required',
+            message: `${field.charAt(0).toUpperCase() + field.slice(1)} is required`
+          });
+        });
+
+        toast({
+          title: "Missing Required Fields",
+          description: `Please fill in: ${missingFields.map(f => f.charAt(0).toUpperCase() + f.slice(1)).join(', ')}`,
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
       }
 
       const eventData = {
@@ -891,9 +916,20 @@ export default function CreateEvent() {
           body: formData,
         });
 
+        const responseData = await response.json();
+
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText);
+          if (responseData.missingFields) {
+            // Handle specific missing fields error
+            responseData.missingFields.forEach((field: string) => {
+              form.setError(field as any, {
+                type: 'required',
+                message: `${field.charAt(0).toUpperCase() + field.slice(1)} is required`
+              });
+            });
+            throw new Error(`Missing required fields: ${responseData.missingFields.join(', ')}`);
+          }
+          throw new Error(responseData.error || 'Failed to create event');
         }
 
         toast({
