@@ -995,6 +995,7 @@ export default function CreateEvent() {
                             init={{
                               height: 300,
                               menubar: true,
+                              document_base_url: 'https://matchpro.replit.app',
                               plugins: [
                                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -1026,6 +1027,7 @@ export default function CreateEvent() {
                             init={{
                               height: 300,
                               menubar: true,
+                              document_base_url: 'https://matchpro.replit.app',
                               plugins: [
                                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -1057,6 +1059,7 @@ export default function CreateEvent() {
                             init={{
                               height: 300,
                               menubar: true,
+                              document_base_url: 'https://matchpro.replit.app',
                               plugins: [
                                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
