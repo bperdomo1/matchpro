@@ -160,7 +160,7 @@ export const eventAgeGroups = pgTable("event_age_groups", {
 
 export const eventComplexes = pgTable("event_complexes", {
   id: serial("id").primaryKey(),
-  eventId: text("event_id").notNull().references(() => events.id),
+  eventId: text("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
   complexId: integer("complex_id").notNull().references(() => complexes.id),
   createdAt: text("created_at").notNull(),
 });
