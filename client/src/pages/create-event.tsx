@@ -822,15 +822,39 @@ export default function CreateEvent() {
   );
 
   const handleCreateEvent = async () => {
+    const formValues = form.getValues();
+    
+    // Validate required fields
+    const requiredFields = {
+      name: formValues.name?.trim(),
+      startDate: formValues.startDate?.trim(),
+      endDate: formValues.endDate?.trim(),
+      timezone: formValues.timezone?.trim(),
+      applicationDeadline: formValues.applicationDeadline?.trim()
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([_, value]) => !value)
+      .map(([key]) => key);
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in: ${missingFields.join(", ")}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     const eventData = {
-      name: form.getValues().name,
-      startDate: form.getValues().startDate,
-      endDate: form.getValues().endDate,
-      timezone: form.getValues().timezone,
-      applicationDeadline: form.getValues().applicationDeadline,
-      details: form.getValues().details,
-      agreement: form.getValues().agreement,
-      refundPolicy: form.getValues().refundPolicy,
+      name: formValues.name,
+      startDate: formValues.startDate,
+      endDate: formValues.endDate,
+      timezone: formValues.timezone,
+      applicationDeadline: formValues.applicationDeadline,
+      details: formValues.details || "",
+      agreement: formValues.agreement || "",
+      refundPolicy: formValues.refundPolicy || "",
       ageGroups: ageGroups.map(({ id, ...rest }) => ({
         ...rest,
         scoringRule: rest.scoringRule || null
