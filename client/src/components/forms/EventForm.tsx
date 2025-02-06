@@ -306,6 +306,28 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const handleSubmit = async (data: EventInformationValues) => {
     setIsSaving(true);
     try {
+      // Validate required fields
+      const requiredFields = {
+        name: data.name,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        timezone: data.timezone,
+        applicationDeadline: data.applicationDeadline
+      };
+
+      const missingFields = Object.entries(requiredFields)
+        .filter(([_, value]) => !value)
+        .map(([key]) => key);
+
+      if (missingFields.length > 0) {
+        toast({
+          title: "Missing Required Fields",
+          description: `Please fill in: ${missingFields.join(', ')}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
       const combinedData: EventData = {
         ...data,
         ageGroups,
