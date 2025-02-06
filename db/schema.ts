@@ -201,7 +201,7 @@ export const gameTimeSlots = pgTable("game_time_slots", {
 
 export const tournamentGroups = pgTable("tournament_groups", {
   id: serial("id").primaryKey(),
-  eventId: text("event_id").notNull().references(() => events.id),
+  eventId: text("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
   ageGroupId: integer("age_group_id").notNull().references(() => eventAgeGroups.id),
   name: text("name").notNull(),
   type: text("type").notNull(),
