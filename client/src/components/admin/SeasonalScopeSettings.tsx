@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,12 +14,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash, Save } from "lucide-react";
+import { Plus } from "lucide-react";
+
+interface AgeGroup {
+  division: string;
+  ageGroup: string;
+  birthYear: number;
+}
 
 export function SeasonalScopeSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [editingScope, setEditingScope] = useState(null);
   const [newScope, setNewScope] = useState({ name: "", startYear: "", endYear: "" });
 
   const scopesQuery = useQuery({
@@ -46,6 +52,26 @@ export function SeasonalScopeSettings() {
       setNewScope({ name: "", startYear: "", endYear: "" });
     },
   });
+
+  const calculateAgeGroups = (startYear: number): AgeGroup[] => {
+    const ageGroups: AgeGroup[] = [];
+    const competitionYear = startYear;
+    
+    for (let age = 4; age <= 21; age++) {
+      const birthYear = competitionYear - age;
+      const genders = ['B', 'G'];
+      
+      genders.forEach(gender => {
+        ageGroups.push({
+          division: `U${age}`,
+          ageGroup: `${gender}${birthYear}`,
+          birthYear,
+        });
+      });
+    }
+    
+    return ageGroups.sort((a, b) => b.birthYear - a.birthYear);
+  };
 
   return (
     <Card>
@@ -92,35 +118,31 @@ export function SeasonalScopeSettings() {
             </div>
           </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Years</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {scopesQuery.data?.map((scope) => (
-                <TableRow key={scope.id}>
-                  <TableCell>{scope.name}</TableCell>
-                  <TableCell>{scope.startYear}-{scope.endYear}</TableCell>
-                  <TableCell>{scope.isActive ? "Active" : "Inactive"}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {scopesQuery.data?.map((scope) => (
+            <Card key={scope.id} className="mt-4">
+              <CardContent className="p-4">
+                <h3 className="text-lg font-semibold mb-4">{scope.name}</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Division</TableHead>
+                      <TableHead>Age Groups</TableHead>
+                      <TableHead>Birth Year</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {calculateAgeGroups(scope.startYear).map((group) => (
+                      <TableRow key={`${group.division}-${group.ageGroup}`}>
+                        <TableCell>{group.division}</TableCell>
+                        <TableCell>{group.ageGroup}</TableCell>
+                        <TableCell>{group.birthYear}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </CardContent>
     </Card>
