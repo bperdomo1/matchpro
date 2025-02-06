@@ -825,25 +825,12 @@ export default function CreateEvent() {
   const handleCreateEvent = async () => {
     setIsSaving(true);
     try {
-      const formValues = form.getValues();
-
-      // Validate required fields with trimming
-      const requiredFields = {
-        name: formValues.name?.trim(),
-        startDate: formValues.startDate?.trim(),
-        endDate: formValues.endDate?.trim(),
-        timezone: formValues.timezone?.trim(),
-        applicationDeadline: formValues.applicationDeadline?.trim()
-      };
-
-      const missingFields = Object.entries(requiredFields)
-        .filter(([_, value]) => !value)
-        .map(([key]) => key);
-
-      if (missingFields.length > 0) {
-        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+      await form.trigger(); // Trigger form validation
+      if (!form.formState.isValid) {
+        throw new Error('Please fill in all required fields');
       }
 
+      const formValues = form.getValues();
       const eventData = {
         name: formValues.name,
         startDate: formValues.startDate,
