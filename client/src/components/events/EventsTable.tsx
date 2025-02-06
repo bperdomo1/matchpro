@@ -34,6 +34,7 @@ import {
   ChevronUp,
   ChevronDown,
   Search,
+  Eye,
 } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import {
@@ -283,7 +284,40 @@ export function EventsTable() {
                           }}
                           className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                         >
-                          <Link className="h-4 w-4 mr-2" /> Generate Registration Link
+                          <Eye className="mr-2 h-4 w-4" />
+                          Generate Registration Link
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => {
+                            const registrationUrl = `${window.location.origin}/register/event/${event.id}`;
+                            toast({
+                              title: "Registration Link",
+                              description: (
+                                <div className="mt-2 p-2 bg-muted rounded text-sm font-mono break-all">
+                                  {registrationUrl}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="ml-2"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigator.clipboard.writeText(registrationUrl);
+                                      toast({
+                                        title: "Copied",
+                                        description: "Link copied to clipboard",
+                                      });
+                                    }}
+                                  >
+                                    Copy
+                                  </Button>
+                                </div>
+                              ),
+                              duration: 5000,
+                            });
+                          }}
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          View Registration Link
                         </DropdownMenuItem>
 
                       </DropdownMenuContent>
