@@ -1103,15 +1103,6 @@ export default function CreateEvent() {
                         Add New Age Group
                       </Button>
                     </DialogTrigger>
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button onClick={() => {
-                        setEditingAgeGroup(null);ageGroupForm.reset();
-                      }}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add New Age Group
-                      </Button>
-                    </DialogTrigger>
                     <DialogContent className="max-w-2xl">
                       <DialogHeader>
                         <DialogTitle>
