@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { SoccerFieldBackground } from "@/components/ui/SoccerFieldBackground";
 
 interface Event {
-  id: number;
+  id: string; // Updated ID type to string
   name: string;
   startDate: string;
   endDate: string;
@@ -85,7 +84,7 @@ export default function EventRegistration() {
                 <p>{new Date(event.applicationDeadline).toLocaleDateString()}</p>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <h3 className="font-semibold text-[#1E88E5]">Event Details</h3>
               <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: event.details }} />

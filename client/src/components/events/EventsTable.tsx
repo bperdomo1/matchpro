@@ -276,7 +276,7 @@ export function EventsTable() {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
                           onClick={() => {
-                            const registrationUrl = `${window.location.origin}/register/event/${event.id}`;
+                            const registrationUrl = `${window.location.origin}/register/event/${event.id.toString()}`;
                             navigator.clipboard.writeText(registrationUrl);
                             toast({
                               title: "Registration Link Generated",
