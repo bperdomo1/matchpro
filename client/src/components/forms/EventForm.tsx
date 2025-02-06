@@ -77,7 +77,9 @@ const AgeGroupDialog = ({
     }
   }, [defaultValues, form]);
 
-  const handleSubmit = (data: AgeGroupValues) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = form.getValues();
     onSubmit(data);
     form.reset();
     onClose();
