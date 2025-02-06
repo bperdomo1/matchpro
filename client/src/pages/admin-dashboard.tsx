@@ -15,7 +15,6 @@ import { useUser } from "@/hooks/use-user";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "@/hooks/use-theme";
 import { SelectUser } from "@db/schema";
-import { useToast } from "@/hooks/use-toast";
 import { LogoutOverlay } from "@/components/ui/logout-overlay";
 import {
   Calendar,
