@@ -306,16 +306,11 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const handleSubmit = async (data: EventInformationValues) => {
     setIsSaving(true);
     try {
-      const formData = form.getValues();
       const combinedData: EventData = {
-        name: formData.name,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        timezone: formData.timezone,
-        applicationDeadline: formData.applicationDeadline,
-        details: formData.details || "",
-        agreement: formData.agreement || "",
-        refundPolicy: formData.refundPolicy || "",
+        ...data,
+        details: data.details || "",
+        agreement: data.agreement || "",
+        refundPolicy: data.refundPolicy || "",
         ageGroups,
         scoringRules,
         settings,
