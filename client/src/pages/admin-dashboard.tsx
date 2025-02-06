@@ -1380,6 +1380,9 @@ function AdminDashboard() {
       case 'scheduling':
         return <SchedulingView />;
       case 'settings':
+        if (activeSettingsView === 'general') {
+          return <GeneralSettingsView />;
+        }
         return <SettingsView activeSettingsView={activeSettingsView} />;
       case 'reports':
         return <ReportsView />;
