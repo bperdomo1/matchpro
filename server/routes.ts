@@ -1391,7 +1391,7 @@ export function registerRoutes(app: Express): Server {
     // Add this new endpoint to get event details for editing
     app.get('/api/admin/events/:id/edit', isAdmin, async (req, res) => {
       try {
-        const eventId = parseInt(req.params.id);
+        const eventId = req.params.id;
 
         // Get event details
         const [event] = await db
@@ -1509,7 +1509,7 @@ export function registerRoutes(app: Express): Server {
     // Add this new endpoint after the existing event endpoints
     app.get('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
-        const eventId = parseInt(req.params.id);
+        const eventId = req.params.id;
 
         // Get event details
         const [event] = await db
@@ -1952,7 +1952,7 @@ export function registerRoutes(app: Express): Server {
           .returning();
 
         if (!deletedTeam) {
-          return res.status(404).send("Team not found");
+          return res.status(404).send("Team notfound");
         }
 
         res.json(deletedTeam);
@@ -1996,7 +1996,7 @@ export function registerRoutes(app: Express): Server {
 
     app.delete('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
-        const eventId = parseInt(req.params.id);
+        const eventId = req.params.id;
 
         // Start a transaction to handle cascade deletion
         await db.transaction(async (tx) => {
