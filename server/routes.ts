@@ -603,7 +603,8 @@ export function registerRoutes(app: Express): Server {
       }
     });
 
-          .update(householdInvitations)
+    // Continue with household invitations update
+    await db
           .set({ status: 'accepted' })
           .where(eq(householdInvitations.id, invitation.id));
 
