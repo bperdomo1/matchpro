@@ -4,6 +4,15 @@ import { promisify } from "util";
 
 const scryptAsync = promisify(scrypt);
 
+const generateEventId = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let id = '';
+  for (let i = 0; i < 13; i++) {
+    id += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return id;
+};
+
 export const crypto = {
   hash: async (password: string) => {
     const salt = randomBytes(16).toString("hex");
@@ -22,10 +31,5 @@ export const crypto = {
     return timingSafeEqual(hashedPasswordBuf, suppliedPasswordBuf);
   },
 
-  generateEventId: (): string => {
-    return randomBytes(8)
-      .toString('base64')
-      .replace(/[+/=]/g, '')  // Remove non-alphanumeric chars
-      .substring(0, 13);      // Ensure exactly 13 chars
-  }
+  generateEventId,
 };
