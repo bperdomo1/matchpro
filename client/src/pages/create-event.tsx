@@ -83,13 +83,10 @@ function validateEventData(data: Partial<EventData>): { isValid: boolean; errors
     'startDate': 'Start date',
     'endDate': 'End date',
     'timezone': 'Time zone',
-    'applicationDeadline': 'Application deadline',
-    'details': 'Event details',
-    'agreement': 'Event agreement',
-    'refundPolicy': 'Refund policy'
+    'applicationDeadline': 'Application deadline'
   };
 
-  // Check all required text fields
+  // Check required text fields
   Object.entries(requiredFields).forEach(([field, label]) => {
     if (!data[field as keyof typeof data] || data[field as keyof typeof data]?.trim() === '') {
       errors.push(`${label} is required`);
@@ -122,11 +119,6 @@ function validateEventData(data: Partial<EventData>): { isValid: boolean; errors
   // Check complexes
   if (!data.selectedComplexIds?.length) {
     errors.push("At least one complex must be selected");
-  }
-
-  // Check field sizes for selected complexes
-  if (data.selectedComplexIds?.length && Object.keys(data.complexFieldSizes || {}).length === 0) {
-    errors.push("Field sizes must be specified for selected complexes");
   }
 
   return {
