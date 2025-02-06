@@ -556,11 +556,11 @@ export function registerRoutes(app: Express): Server {
           .insert(seasonalScopes)
           .values({
             name,
-            startYear: parseInt(startYear),
-            endYear: parseInt(endYear),
-            isActive: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            start_year: parseInt(startYear),
+            end_year: parseInt(endYear),
+            is_active: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           })
           .returning();
 
