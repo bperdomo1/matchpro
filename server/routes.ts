@@ -1130,13 +1130,18 @@ export function registerRoutes(app: Express): Server {
       try {
         const eventData = req.body;
 
+        // Validate required fields
+        if (!eventData.name || !eventData.startDate || !eventData.endDate || !eventData.timezone || !eventData.applicationDeadline) {
+          return res.status(400).send("Missing required fields");
+        }
+
         // Start a transaction to create event and related records
         await db.transaction(async (tx) => {
           // Create the event
           const [event] = await tx
             .insert(events)
             .values({
-              id: Math.floor(Math.random() * 1000000) + 1,
+              id: String(Math.floor(Math.random() * 1000000) + 1),
               name: eventData.name,
               startDate: eventData.startDate,
               endDate: eventData.endDate,
