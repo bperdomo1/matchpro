@@ -825,18 +825,23 @@ export default function CreateEvent() {
   const handleCreateEvent = async () => {
     setIsSaving(true);
     try {
-      await form.trigger(); // Trigger form validation
-      if (!form.formState.isValid) {
-        throw new Error('Please fill in all required fields');
+      await form.trigger();
+      const formValues = form.getValues();
+
+      // Validate required fields
+      const requiredFields = ['name', 'startDate', 'endDate', 'timezone', 'applicationDeadline'];
+      const missingFields = requiredFields.filter(field => !formValues[field]?.trim());
+
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
       }
 
-      const formValues = form.getValues();
       const eventData = {
-        name: formValues.name?.trim(),
-        startDate: formValues.startDate?.trim(),
-        endDate: formValues.endDate?.trim(),
-        timezone: formValues.timezone?.trim(),
-        applicationDeadline: formValues.applicationDeadline?.trim(),
+        name: formValues.name.trim(),
+        startDate: formValues.startDate.trim(),
+        endDate: formValues.endDate.trim(),
+        timezone: formValues.timezone.trim(),
+        applicationDeadline: formValues.applicationDeadline.trim(),
         details: formValues.details || "",
         agreement: formValues.agreement || "",
         refundPolicy: formValues.refundPolicy || "",
@@ -849,6 +854,7 @@ export default function CreateEvent() {
         branding: {
           primaryColor,
           secondaryColor,
+          logoUrl: previewUrl,
         }
       };
 
@@ -915,8 +921,7 @@ export default function CreateEvent() {
         variant: "destructive",
       });
     } finally {
-      setIsSaving(false);
-    }
+      setIsSaving(false);    }
   };
 
   return (
