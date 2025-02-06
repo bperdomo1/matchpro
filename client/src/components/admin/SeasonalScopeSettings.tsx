@@ -109,11 +109,26 @@ export function SeasonalScopeSettings() {
             </div>
             <div className="flex items-end">
               <Button 
-                onClick={() => createScopeMutation.mutate(newScope)}
+                onClick={() => {
+                  if (!newScope.name || !newScope.startYear || !newScope.endYear) {
+                    toast({
+                      title: "Error",
+                      description: "Please fill in all fields",
+                      variant: "destructive"
+                    });
+                    return;
+                  }
+                  createScopeMutation.mutate({
+                    name: newScope.name,
+                    startYear: parseInt(newScope.startYear),
+                    endYear: parseInt(newScope.endYear)
+                  });
+                }}
                 className="w-full"
+                disabled={createScopeMutation.isLoading}
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Add Scope
+                {createScopeMutation.isLoading ? "Adding..." : "Add Scope"}
               </Button>
             </div>
           </div>
