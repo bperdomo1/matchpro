@@ -825,23 +825,12 @@ export default function CreateEvent() {
   const handleCreateEvent = async () => {
     setIsSaving(true);
     try {
-      // Trigger full form validation
-      const isValid = await form.trigger();
-      if (!isValid) {
-        toast({
-          title: "Validation Error",
-          description: "Please fill in all required fields correctly",
-          variant: "destructive",
-        });
-        setIsSaving(false);
-        return;
-      }
-
+      // Get form values first
       const formValues = form.getValues();
-
-      // Enhanced validation with specific checks
+      
+      // Validate required fields
       const requiredFields = ['name', 'startDate', 'endDate', 'timezone', 'applicationDeadline'];
-      const missingFields = requiredFields.filter(field => !formValues[field]?.toString().trim());
+      const missingFields = requiredFields.filter(field => !formValues[field] || formValues[field].toString().trim() === '');
 
       if (missingFields.length > 0) {
         // Mark invalid fields
@@ -862,11 +851,11 @@ export default function CreateEvent() {
       }
 
       const eventData = {
-        name: formValues.name.trim(),
-        startDate: formValues.startDate.trim(),
-        endDate: formValues.endDate.trim(),
-        timezone: formValues.timezone.trim(),
-        applicationDeadline: formValues.applicationDeadline.trim(),
+        name: formValues.name?.trim() || '',
+        startDate: formValues.startDate?.trim() || '',
+        endDate: formValues.endDate?.trim() || '',
+        timezone: formValues.timezone?.trim() || '',
+        applicationDeadline: formValues.applicationDeadline?.trim() || '',
         details: formValues.details || "",
         agreement: formValues.agreement || "",
         refundPolicy: formValues.refundPolicy || "",
