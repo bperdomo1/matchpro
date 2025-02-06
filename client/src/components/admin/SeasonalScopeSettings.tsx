@@ -22,6 +22,12 @@ interface AgeGroup {
   birthYear: number;
 }
 
+interface SeasonalScope {
+  name: string;
+  startYear: number;
+  endYear: number;
+}
+
 export function SeasonalScopeSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -37,7 +43,7 @@ export function SeasonalScopeSettings() {
   });
 
   const createScopeMutation = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: SeasonalScope) => {
       const response = await fetch('/api/admin/seasonal-scopes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,20 +115,31 @@ export function SeasonalScopeSettings() {
             </div>
             <div className="flex items-end">
               <Button 
-                onClick={() => {
-                  if (!newScope.name || !newScope.startYear || !newScope.endYear) {
+                onClick={async () => {
+                  try {
+                    if (!newScope.name || !newScope.startYear || !newScope.endYear) {
+                      toast({
+                        title: "Error",
+                        description: "Please fill in all fields",
+                        variant: "destructive"
+                      });
+                      return;
+                    }
+                    
+                    await createScopeMutation.mutateAsync({
+                      name: newScope.name,
+                      startYear: Number(newScope.startYear),
+                      endYear: Number(newScope.endYear)
+                    });
+                    
+                    setNewScope({ name: "", startYear: "", endYear: "" });
+                  } catch (error) {
                     toast({
                       title: "Error",
-                      description: "Please fill in all fields",
+                      description: "Failed to create seasonal scope",
                       variant: "destructive"
                     });
-                    return;
                   }
-                  createScopeMutation.mutate({
-                    name: newScope.name,
-                    startYear: parseInt(newScope.startYear),
-                    endYear: parseInt(newScope.endYear)
-                  });
                 }}
                 className="w-full"
                 disabled={createScopeMutation.isLoading}
