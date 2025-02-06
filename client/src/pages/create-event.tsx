@@ -256,6 +256,7 @@ export default function CreateEvent() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [primaryColor, setPrimaryColor] = useState('#000000');
   const [secondaryColor, setSecondaryColor] = useState('#ffffff');
+  const [isSaving, setIsSaving] = useState(false);
 
 
   const complexesQuery = useQuery({
@@ -822,105 +823,112 @@ export default function CreateEvent() {
   );
 
   const handleCreateEvent = async () => {
-    const formValues = form.getValues();
-    
-    // Validate required fields
-    const requiredFields = {
-      name: formValues.name?.trim(),
-      startDate: formValues.startDate?.trim(),
-      endDate: formValues.endDate?.trim(),
-      timezone: formValues.timezone?.trim(),
-      applicationDeadline: formValues.applicationDeadline?.trim()
-    };
-
-    const missingFields = Object.entries(requiredFields)
-      .filter(([_, value]) => !value)
-      .map(([key]) => key);
-
-    if (missingFields.length > 0) {
-      toast({
-        title: "Missing Required Fields",
-        description: `Please fill in: ${missingFields.join(", ")}`,
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const eventData = {
-      name: formValues.name,
-      startDate: formValues.startDate,
-      endDate: formValues.endDate,
-      timezone: formValues.timezone,
-      applicationDeadline: formValues.applicationDeadline,
-      details: formValues.details || "",
-      agreement: formValues.agreement || "",
-      refundPolicy: formValues.refundPolicy || "",
-      ageGroups: ageGroups.map(({ id, ...rest }) => ({
-        ...rest,
-        scoringRule: rest.scoringRule || null
-      })),
-      complexFieldSizes: eventFieldSizes,
-      selectedComplexIds: selectedComplexes.map(complex => complex.id),
-      branding: {
-        primaryColor,
-        secondaryColor,
-      }
-    };
-
-    const { isValid, errors } = validateEventData(eventData);
-
-    if (!isValid) {
-      toast({
-        title: "Form Validation Error",
-        description: (
-          <div className="space-y-2">
-            <p className="font-medium text-destructive">Please correct the following issues:</p>
-            <ul className="list-disc pl-4 space-y-1">
-              {errors.map((error, index) => (
-                <li key={index} className="text-sm">{error}</li>
-              ))}
-            </ul>
-          </div>
-        ),
-        variant: "destructive",
-        duration: 5000,
-      });
-      return;
-    }
-
+    setIsSaving(true);
     try {
-      const formData = new FormData();
-      formData.append('data', JSON.stringify(eventData));
-      if (logo) {
-        formData.append('logo', logo);
+      const formValues = form.getValues();
+
+      // Validate required fields with trimming
+      const requiredFields = {
+        name: formValues.name?.trim(),
+        startDate: formValues.startDate?.trim(),
+        endDate: formValues.endDate?.trim(),
+        timezone: formValues.timezone?.trim(),
+        applicationDeadline: formValues.applicationDeadline?.trim()
+      };
+
+      const missingFields = Object.entries(requiredFields)
+        .filter(([_, value]) => !value)
+        .map(([key]) => key);
+
+      if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
       }
 
-      const response = await fetch('/api/admin/events', {
-        method: 'POST',
-        body: formData,
-      });
+      const eventData = {
+        name: formValues.name,
+        startDate: formValues.startDate,
+        endDate: formValues.endDate,
+        timezone: formValues.timezone,
+        applicationDeadline: formValues.applicationDeadline,
+        details: formValues.details || "",
+        agreement: formValues.agreement || "",
+        refundPolicy: formValues.refundPolicy || "",
+        ageGroups: ageGroups.map(({ id, ...rest }) => ({
+          ...rest,
+          scoringRule: rest.scoringRule || null
+        })),
+        complexFieldSizes: eventFieldSizes,
+        selectedComplexIds: selectedComplexes.map(complex => complex.id),
+        branding: {
+          primaryColor,
+          secondaryColor,
+        }
+      };
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
+      const { isValid, errors } = validateEventData(eventData);
+
+      if (!isValid) {
+        toast({
+          title: "Form Validation Error",
+          description: (
+            <div className="space-y-2">
+              <p className="font-medium text-destructive">Please correct the following issues:</p>
+              <ul className="list-disc pl-4 space-y-1">
+                {errors.map((error, index) => (
+                  <li key={index} className="text-sm">{error}</li>
+                ))}
+              </ul>
+            </div>
+          ),
+          variant: "destructive",
+          duration: 5000,
+        });
+        return;
       }
 
-      toast({
-        title: "Success",
-        description: "Event created successfully! Redirecting to dashboard...",
-        variant: "default",
-      });
+      try {
+        const formData = new FormData();
+        formData.append('data', JSON.stringify(eventData));
+        if (logo) {
+          formData.append('logo', logo);
+        }
 
-      setTimeout(() => {
-        navigate("/admin");
-      }, 1500);
+        const response = await fetch('/api/admin/events', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
+
+        toast({
+          title: "Success",
+          description: "Event created successfully! Redirecting to dashboard...",
+          variant: "default",
+        });
+
+        setTimeout(() => {
+          navigate("/admin");
+        }, 1500);
+      } catch (error) {
+        console.error('Error creating event:', error);
+        toast({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to create event. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error('Error creating event:', error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create event. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to create event.",
         variant: "destructive",
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
