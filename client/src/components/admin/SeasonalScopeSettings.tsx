@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,11 +61,11 @@ export function SeasonalScopeSettings() {
   const calculateAgeGroups = (startYear: number): AgeGroup[] => {
     const ageGroups: AgeGroup[] = [];
     const competitionYear = startYear;
-    
+
     for (let age = 4; age <= 21; age++) {
       const birthYear = competitionYear - age;
       const genders = ['B', 'G'];
-      
+
       genders.forEach(gender => {
         ageGroups.push({
           division: `U${age}`,
@@ -75,7 +74,7 @@ export function SeasonalScopeSettings() {
         });
       });
     }
-    
+
     return ageGroups.sort((a, b) => b.birthYear - a.birthYear);
   };
 
@@ -125,13 +124,13 @@ export function SeasonalScopeSettings() {
                       });
                       return;
                     }
-                    
+
                     await createScopeMutation.mutateAsync({
                       name: newScope.name,
-                      startYear: Number(newScope.startYear),
-                      endYear: Number(newScope.endYear)
+                      start_year: Number(newScope.startYear),
+                      end_year: Number(newScope.endYear)
                     });
-                    
+
                     setNewScope({ name: "", startYear: "", endYear: "" });
                   } catch (error) {
                     toast({
