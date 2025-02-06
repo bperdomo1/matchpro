@@ -1671,12 +1671,7 @@ function SettingsView({ activeSettingsView }: { activeSettingsView: SettingsView
         </BrandingPreviewProvider>
       );
     case 'general':
-      return (
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold">General Settings</h2>
-          <SeasonalScopeSettings />
-        </div>
-      );
+      return <GeneralSettingsView />;
     default:
       return (
         <div className="space-y-6">
