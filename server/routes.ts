@@ -1136,7 +1136,7 @@ export function registerRoutes(app: Express): Server {
           const [event] = await tx
             .insert(events)
             .values({
-              id: crypto.generateEventId(),
+              id: Math.floor(Math.random() * 1000000) + 1,
               name: eventData.name,
               startDate: eventData.startDate,
               endDate: eventData.endDate,
