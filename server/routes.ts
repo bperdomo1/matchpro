@@ -1227,11 +1227,11 @@ export function registerRoutes(app: Express): Server {
             .insert(events)
             .values({
               id: String(Math.floor(Math.random() * 1000000) + 1),
-              name: eventData.name,
-              startDate: eventData.startDate,
-              endDate: eventData.endDate,
-              timezone: eventData.timezone,
-              applicationDeadline: eventData.applicationDeadline,
+              name: eventData.name || "Untitled Event",
+              startDate: eventData.startDate || new Date().toISOString(),
+              endDate: eventData.endDate || new Date().toISOString(),
+              timezone: eventData.timezone || "America/New_York",
+              applicationDeadline: eventData.applicationDeadline || new Date().toISOString(),
               details: eventData.details || null,
               agreement: eventData.agreement || null,
               refundPolicy: eventData.refundPolicy || null,
