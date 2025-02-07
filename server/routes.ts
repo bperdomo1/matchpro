@@ -1307,7 +1307,13 @@ export function registerRoutes(app: Express): Server {
     app.patch('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
         const eventId = req.params.id;
-        const eventData = req.body;
+        let eventData;
+        
+        if (req.headers['content-type']?.includes('multipart/form-data')) {
+          eventData = JSON.parse(req.body.data);
+        } else {
+          eventData = req.body;
+        }
 
         // Start a transaction to update event and related records
         await db.transaction(async (tx) => {
@@ -1327,6 +1333,45 @@ export function registerRoutes(app: Express): Server {
             })
             .where(eq(events.id, eventId))
             .returning();
+
+          if (!updatedEvent) {
+            throw new Error("Event not found");
+          }
+
+          // Update complex assignments
+          await tx
+            .delete(eventComplexes)
+            .where(eq(eventComplexes.eventId, eventId));
+
+          if (eventData.selectedComplexIds && eventData.selectedComplexIds.length > 0) {
+            for (const complexId of eventData.selectedComplexIds) {
+              await tx
+                .insert(eventComplexes)
+                .values({
+                  eventId,
+                  complexId,
+                  createdAt: new Date().toISOString(),
+                });
+            }
+          }
+
+          // Update field size assignments
+          await tx
+            .delete(eventFieldSizes)
+            .where(eq(eventFieldSizes.eventId, eventId));
+
+          if (eventData.complexFieldSizes) {
+            for (const [fieldId, fieldSize] of Object.entries(eventData.complexFieldSizes)) {
+              await tx
+                .insert(eventFieldSizes)
+                .values({
+                  eventId,
+                  fieldId: parseInt(fieldId),
+                  fieldSize: fieldSize as string,
+                  createdAt: new Date().toISOString(),
+                });
+            }
+          }
 
           if (!updatedEvent) {
             throw new Error("Event not found");

@@ -317,6 +317,11 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
         throw new Error('Required fields are missing');
       }
 
+      // Validate complex selections
+      if (selectedComplexIds.length === 0) {
+        throw new Error('Please select at least one complex');
+      }
+
       const combinedData: EventData = {
         name: data.name,
         startDate: data.startDate,
