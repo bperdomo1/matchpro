@@ -1208,15 +1208,16 @@ export function registerRoutes(app: Express): Server {
 
         // Sanitize the data
         const sanitizedEventData = {
-          ...eventData,
-          name: eventData.name?.trim() || "",
-          startDate: eventData.startDate?.trim() || "",
-          endDate: eventData.endDate?.trim() || "",
-          timezone: eventData.timezone?.trim() || "",
-          applicationDeadline: eventData.applicationDeadline?.trim() || "",
-          details: eventData.details?.trim() || "",
-          agreement: eventData.agreement?.trim() || "",
-          refundPolicy: eventData.refundPolicy?.trim() || ""
+          name: eventData.name?.trim() || "Untitled Event",
+          startDate: eventData.startDate?.trim() || new Date().toISOString().split('T')[0],
+          endDate: eventData.endDate?.trim() || new Date().toISOString().split('T')[0],
+          timezone: eventData.timezone?.trim() || "America/New_York",
+          applicationDeadline: eventData.applicationDeadline?.trim() || new Date().toISOString().split('T')[0],
+          details: eventData.details?.trim() || null,
+          agreement: eventData.agreement?.trim() || null,
+          refundPolicy: eventData.refundPolicy?.trim() || null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         };
 
         // Start a transaction to create event and related records
