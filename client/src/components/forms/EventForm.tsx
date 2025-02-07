@@ -1022,11 +1022,11 @@ const renderSettingsContent = () => (
           <h4 className="text-sm font-medium mb-4">Event Branding</h4>
           <div className="mb-2 text-sm text-muted-foreground">
             <p>Requirements:</p>
-            <ul className="list-disc pl-4 space-y1</ul>
-            <li>File types: PNG, JPEG, or SVG</li>
-            <li>Maximum size: 5MB</li>
-            <li>Recommended: Images with distinct colors for better color extraction</li>
-          </ul>
+            <ul className="list-disc pl-4 space-y-1">
+              <li>File types: PNG, JPEG, or SVG</li>
+              <li>Maximum size: 5MB</li>
+              <li>Recommended: Images with distinct colors for better color extraction</li>
+            </ul>
         </div>
         <div
           {...getRootProps()}
