@@ -330,7 +330,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
         scoringRules,
         settings,
         complexFieldSizes,
-        selectedComplexIds,
+        selectedComplexIds: selectedComplexIds,
         administrators: initialData?.administrators || [],
         branding: {
           primaryColor,
