@@ -921,7 +921,7 @@ export default function CreateEvent() {
                 return (
                   <TabsTrigger
                     key={tab}
-                    value={tab                    value={tab}
+                    value={tab}
                     className={`relative flex items-center justify-center gap-2 ${
                       isComplete ? 'text-[#43A047]' : ''
                     }`}
