@@ -1275,12 +1275,11 @@ const renderComplexesContent = () => {
 
 const tabErrors = getTabValidationState();
 
-const renderContent = () => {
-  return (
+const renderContent = () => (
     <div className="w-full max-w-7xl mx-auto px-4 py-6">
       <Card className="bg-white shadow-sm border border-gray-200">
         <CardContent className="p-6">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
           <TabsList className="w-full grid grid-cols-6 gap-4 mb-6 bg-[#F2F2F7] p-1 rounded-lg">
             {TAB_ORDER.map((tab) => (
               <TabsTrigger
@@ -1322,32 +1321,26 @@ const renderContent = () => {
           </div>
         </Tabs>
 
-        <AgeGroupDialog
-          open={isAgeGroupDialogOpen}
-          onClose={() => {
-            setIsAgeGroupDialogOpen(false);
-            setEditingAgeGroup(null);
-          }}
-          onSubmit={handleAddAgeGroup}
-          defaultValues={editingAgeGroup || undefined}
-          isEdit={!!editingAgeGroup}
-        />
+          <AgeGroupDialog
+            open={isAgeGroupDialogOpen}
+            onClose={() => {
+              setIsAgeGroupDialogOpen(false);
+              setEditingAgeGroup(null);
+            }}
+            onSubmit={handleAddAgeGroup}
+            defaultValues={editingAgeGroup || undefined}
+            isEdit={!!editingAgeGroup}
+          />
 
-        <AdminModal
-          open={isAdminModalOpen}
-          onOpenChange={setIsAdminModalOpen}
-          adminToEdit={editingAdmin}
-        />
-      </CardContent>
-    </Card>
-  </div>
-);
-
-</CardContent>
-    </Card>
-  </div>
+          <AdminModal
+            open={isAdminModalOpen}
+            onOpenChange={setIsAdminModalOpen}
+            adminToEdit={editingAdmin}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
-};
 
 return renderContent();
 };
