@@ -1343,9 +1343,8 @@ const content = (
   </div>
 );
 
-
-// Define content variable for the component UI
-const content = (
+// Return the UI directly
+return (
   <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
@@ -1411,8 +1410,6 @@ const content = (
     </Card>
   </div>
 );
-
-return content;
 };
 
 export default EventForm;
