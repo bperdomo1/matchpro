@@ -766,7 +766,6 @@ interface EventAdministrator {
       </form>
     </Form>
   );
-};
 
 const renderAgeGroupsContent = () => (
   <div className="space-y-6">
@@ -1342,8 +1341,6 @@ const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) =>
       </Card>
     </div>
   );
-
-);
 };
 
 export default EventForm;
