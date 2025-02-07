@@ -233,7 +233,7 @@ interface EventAdministrator {
   roles: string[];
 }
 
-export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
+// Component implementation continues...
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<EventTab>("information");
   const { toast } = useToast();
@@ -1273,9 +1273,10 @@ const renderComplexesContent = () => {
   );
 };
 
-const tabErrors = getTabValidationState();
-
-return (
+const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
+  const tabErrors = getTabValidationState();
+  
+  return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6">
       <Card className="bg-white shadow-sm border border-gray-200">
         <CardContent className="p-6">
