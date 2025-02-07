@@ -1202,8 +1202,17 @@ export function registerRoutes(app: Express): Server {
     // Add this new event creation endpoint
     app.post('/api/admin/events', isAdmin, async (req, res) => {
       try {
-        const formData = req.body;
-        const eventData = typeof formData.data === 'string' ? JSON.parse(formData.data) : formData;
+        let eventData;
+        try {
+            eventData = typeof req.body.data === 'string' ? JSON.parse(req.body.data) : req.body;
+        } catch (error) {
+            console.error('Error parsing event data:', error);
+            return res.status(400).send("Invalid event data format");
+        }
+
+        if (!eventData || !Array.isArray(eventData.ageGroups)) {
+            return res.status(400).send("Missing or invalid age groups data");
+        }
 
         // Sanitize the data
         const sanitizedEventData = {
