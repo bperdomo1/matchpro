@@ -1275,7 +1275,10 @@ const renderComplexesContent = () => {
 
 const tabErrors = getTabValidationState();
 
-const renderContent = () => (
+const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
+  // ... all the existing state and handlers remain the same ...
+
+  return (
   <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
@@ -1342,10 +1345,10 @@ const renderContent = () => (
   </div>
 );
 
-</div>
-);
-
-return renderContent();
+</CardContent>
+    </Card>
+  </div>
+  );
 };
 
 export default EventForm;
