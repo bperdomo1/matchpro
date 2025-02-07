@@ -1023,7 +1023,7 @@ const renderSettingsContent = () => (
           <div className="mb-2 text-sm text-muted-foreground">
             <p>Requirements:</p>
             <ul className="list-disc pl-4 space-y-1">
-              <li>File types: PNG, JPEG, or SVG</li>
+              <li>File types: PNG, JPEG,or SVG</li>
               <li>Maximum size: 5MB</li>
               <li>Recommended: Images with distinct colors for better color extraction</li>
             </ul>
@@ -1275,8 +1275,7 @@ const renderComplexesContent = () => {
 
 const tabErrors = getTabValidationState();
 
-// Render the main UI
-const content = (
+const mainContent = (
   <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
@@ -1343,73 +1342,7 @@ const content = (
   </div>
 );
 
-return (
-  <div className="w-full max-w-7xl mx-auto px-4 py-6">
-    <Card className="bg-white shadow-sm border border-gray-200">
-      <CardContent className="p-6">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
-          <TabsList className="w-full grid grid-cols-6 gap-4 mb-6 bg-[#F2F2F7] p-1 rounded-lg">
-            {TAB_ORDER.map((tab) => (
-              <TabsTrigger
-                key={tab}
-                value={tab}
-                className="w-full px-4 py-2 rounded-md text-sm font-medium transition-colors
-                  data-[state=active]:bg-white data-[state=active]:text-[#007AFF] data-[state=active]:shadow-sm
-                  text-[#1C1C1E] hover:text-[#007AFF]"
-              >
-                {tab.replace('-', ' ').charAt(0).toUpperCase() + tab.slice(1).replace('-', ' ')}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <div className="mt-6">
-            <TabsContent value="information" className="space-y-6">
-              {renderInformationContent()}
-            </TabsContent>
-
-            <TabsContent value="age-groups" className="space-y-6">
-              {renderAgeGroupsContent()}
-            </TabsContent>
-
-            <TabsContent value="scoring" className="space-y-6">
-              {renderScoringContent()}
-            </TabsContent>
-
-            <TabsContent value="complexes" className="space-y-6">
-              {renderComplexesContent()}
-            </TabsContent>
-
-            <TabsContent value="settings" className="space-y-6">
-              {renderSettingsContent()}
-            </TabsContent>
-
-            <TabsContent value="administrators" className="space-y-6">
-              {renderAdministratorsContent()}
-            </TabsContent>
-          </div>
-        </Tabs>
-
-        <AgeGroupDialog
-          open={isAgeGroupDialogOpen}
-          onClose={() => {
-            setIsAgeGroupDialogOpen(false);
-            setEditingAgeGroup(null);
-          }}
-          onSubmit={handleAddAgeGroup}
-          defaultValues={editingAgeGroup || undefined}
-          isEdit={!!editingAgeGroup}
-        />
-
-        <AdminModal
-          open={isAdminModalOpen}
-          onOpenChange={setIsAdminModalOpen}
-          adminToEdit={editingAdmin}
-        />
-      </CardContent>
-    </Card>
-  </div>
-);
-
+return mainContent;
 };
 
 export default EventForm;
