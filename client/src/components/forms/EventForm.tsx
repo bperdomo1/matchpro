@@ -1275,31 +1275,6 @@ const renderComplexesContent = () => {
 
 const tabErrors = getTabValidationState();
 
-// Move all the rendering logic inside the component function
-const renderInformationContent = () => (
-  // ... existing renderInformationContent code ...
-);
-
-const renderAgeGroupsContent = () => (
-  // ... existing renderAgeGroupsContent code ...
-);
-
-const renderScoringContent = () => (
-  // ... existing renderScoringContent code ...
-);
-
-const renderSettingsContent = () => (
-  // ... existing renderSettingsContent code ...
-);
-
-const renderAdministratorsContent = () => (
-  // ... existing renderAdministratorsContent code ...
-);
-
-const renderComplexesContent = () => {
-  // ... existing renderComplexesContent code ...
-};
-
 return (
   <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card className="bg-white shadow-sm border border-gray-200">
