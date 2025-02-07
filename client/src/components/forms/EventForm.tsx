@@ -1275,11 +1275,10 @@ const renderComplexesContent = () => {
 
 const tabErrors = getTabValidationState();
 
-// Render the main form UI
-const renderFormContent = () => {
-  return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6">
-      <Card className="bg-white shadow-sm border border-gray-200">
+// Main component return
+return (
+  <div className="w-full max-w-7xl mx-auto px-4 py-6">
+    <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
           <TabsList className="w-full grid grid-cols-6 gap-4 mb-6 bg-[#F2F2F7] p-1 rounded-lg">
@@ -1323,7 +1322,6 @@ const renderFormContent = () => {
           </div>
         </Tabs>
 
-        {/* Additional UI components */}
         <AgeGroupDialog
           open={isAgeGroupDialogOpen}
           onClose={() => {
@@ -1343,10 +1341,7 @@ const renderFormContent = () => {
       </CardContent>
     </Card>
   </div>
-  );
-};
-
-return renderFormContent();
+);
 };
 
 export default EventForm;
