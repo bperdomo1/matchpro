@@ -1202,9 +1202,8 @@ export function registerRoutes(app: Express): Server {
     // Add this new event creation endpoint
     app.post('/api/admin/events', isAdmin, async (req, res) => {
       try {
-        const eventData = req.body;
-
-        // All fields are optional now
+        const formData = req.body;
+        const eventData = typeof formData.data === 'string' ? JSON.parse(formData.data) : formData;
 
         // Sanitize the data
         const sanitizedEventData = {
