@@ -1275,7 +1275,7 @@ const renderComplexesContent = () => {
 
 const tabErrors = getTabValidationState();
 
-return (
+const renderContent = () => (
   <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
@@ -1344,6 +1344,8 @@ return (
 
 </div>
 );
+
+return renderContent();
 };
 
 export default EventForm;
