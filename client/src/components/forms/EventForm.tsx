@@ -1343,8 +1343,8 @@ const content = (
   </div>
 );
 
-// Return the UI directly
-return (
+// Define the component's JSX
+const EventFormContent = (
   <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card className="bg-white shadow-sm border border-gray-200">
       <CardContent className="p-6">
@@ -1410,6 +1410,9 @@ return (
     </Card>
   </div>
 );
+
+// Return the component content
+return EventFormContent;
 };
 
 export default EventForm;
