@@ -1204,21 +1204,7 @@ export function registerRoutes(app: Express): Server {
       try {
         const eventData = req.body;
 
-        // Validate required fields with trimming
-        const missingFields = [];
-        if (!eventData.name?.trim()) missingFields.push('name');
-        if (!eventData.startDate?.trim()) missingFields.push('startDate');
-        if (!eventData.endDate?.trim()) missingFields.push('endDate');
-        if (!eventData.timezone?.trim()) missingFields.push('timezone');
-        if (!eventData.applicationDeadline?.trim()) missingFields.push('applicationDeadline');
-
-        if (missingFields.length > 0) {
-          console.log('Missing fields:', missingFields);
-          return res.status(400).json({ 
-            error: "Missing required fields",
-            missingFields 
-          });
-        }
+        // All fields are optional now
 
         // Sanitize the data
         const sanitizedEventData = {
