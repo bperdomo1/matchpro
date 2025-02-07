@@ -1209,11 +1209,11 @@ export function registerRoutes(app: Express): Server {
         // Sanitize the data
         const sanitizedEventData = {
           ...eventData,
-          name: eventData.name.trim(),
-          startDate: eventData.startDate.trim(),
-          endDate: eventData.endDate.trim(),
-          timezone: eventData.timezone.trim(),
-          applicationDeadline: eventData.applicationDeadline.trim(),
+          name: eventData.name?.trim() || "",
+          startDate: eventData.startDate?.trim() || "",
+          endDate: eventData.endDate?.trim() || "",
+          timezone: eventData.timezone?.trim() || "",
+          applicationDeadline: eventData.applicationDeadline?.trim() || "",
           details: eventData.details?.trim() || "",
           agreement: eventData.agreement?.trim() || "",
           refundPolicy: eventData.refundPolicy?.trim() || ""
