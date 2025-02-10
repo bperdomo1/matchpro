@@ -69,13 +69,8 @@ export function OrganizationSettingsForm() {
 
       <div className="pt-6 border-t">
         <h3 className="text-lg font-semibold mb-4">Seasonal Settings</h3>
-        {/* Ensure SeasonalScopeSettings is rendered within proper React Context */}
-        <div className="seasonal-settings-wrapper">
-          <SeasonalScopeSettings />
-        </div>
+        <SeasonalScopeSettings />
       </div>
-      {/* Add Toaster component at root level */}
-      <Toaster />
     </div>
   );
 }
