@@ -1199,7 +1199,9 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   );
 
   const renderComplexesContent = () => {
-    if (complexesQuery.isLoading) {
+    const { isLoading, isError, data } = complexesQuery;
+
+    if (isLoading) {
       return (
         <div className="flex justify-center items-center h-[200px]">
           <Loader2 className="h-8 w-8 animate-spin" />
@@ -1207,7 +1209,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
       );
     }
 
-    if (complexesQuery.isError) {
+    if (isError) {
       return (
         <div className="text-center text-destructive">
           Failed to load complexes. Please try again.
@@ -1215,7 +1217,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
       );
     }
 
-    if (!complexesQuery.data?.length) {
+    if (!data?.length) {
       return (
         <div className="text-center text-muted-foreground">
           No complexes found.
