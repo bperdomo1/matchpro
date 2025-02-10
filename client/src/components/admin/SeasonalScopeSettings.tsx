@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AgeGroup {
   birthYear: number;
@@ -30,7 +31,10 @@ interface SeasonalScope {
 export function SeasonalScopeSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [newScope, setNewScope] = useState({ name: "", startYear: "", endYear: "" });
+  const [selectedStartYear, setSelectedStartYear] = useState<string>("");
+  const [selectedEndYear, setSelectedEndYear] = useState<string>("");
+  const [scopeName, setScopeName] = useState<string>("");
+  const [birthYearMappings, setBirthYearMappings] = useState<{[key: number]: string}>({});
 
   const scopesQuery = useQuery({
     queryKey: ['/api/admin/seasonal-scopes'],
@@ -54,42 +58,50 @@ export function SeasonalScopeSettings() {
     onSuccess: () => {
       queryClient.invalidateQueries(['/api/admin/seasonal-scopes']);
       toast({ title: "Success", description: "Seasonal scope created successfully" });
-      setNewScope({ name: "", startYear: "", endYear: "" });
+      setSelectedStartYear("");
+      setSelectedEndYear("");
+      setScopeName("");
+      setBirthYearMappings({});
     },
   });
 
-  const calculateMatrixAgeGroups = (endYear: number): AgeGroup[] => {
-    const ageGroups: AgeGroup[] = [];
-    const birthYears = Array.from({ length: 17 }, (_, i) => endYear - i).reverse();
-
-    birthYears.forEach(birthYear => {
-      const age = endYear - birthYear;
-      let division = '';
-
-      if (age <= 5) {
-        division = `U${age}`;
-      } else if (age <= 8) {
-        division = `U${age}`;
-      } else if (age <= 10) {
-        division = 'U10';
-      } else if (age <= 12) {
-        division = 'U12';
-      } else if (age <= 14) {
-        division = 'U14';
-      } else if (age <= 16) {
-        division = 'U16';
-      }
-
-      if (division) {
-        ageGroups.push({
-          birthYear,
-          division,
-        });
-      }
-    });
-
-    return ageGroups;
+  const generateBirthYears = (endYear: number) => {
+    return Array.from({ length: 17 }, (_, i) => endYear - i).reverse();
   };
+
+  const handleAgeGroupChange = (birthYear: number, division: string) => {
+    setBirthYearMappings(prev => ({
+      ...prev,
+      [birthYear]: division
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!scopeName || !selectedStartYear || !selectedEndYear) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await createScopeMutation.mutateAsync({
+        name: scopeName,
+        startYear: parseInt(selectedStartYear),
+        endYear: parseInt(selectedEndYear)
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create seasonal scope",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const divisions = ["U6", "U7", "U8", "U9", "U10", "U12", "U14", "U16"];
 
   return (
     <Card>
@@ -98,12 +110,12 @@ export function SeasonalScopeSettings() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <Label>Name</Label>
               <Input
-                value={newScope.name}
-                onChange={(e) => setNewScope({ ...newScope, name: e.target.value })}
+                value={scopeName}
+                onChange={(e) => setScopeName(e.target.value)}
                 placeholder="2024-2025 Season"
               />
             </div>
@@ -111,8 +123,8 @@ export function SeasonalScopeSettings() {
               <Label>Start Year</Label>
               <Input
                 type="number"
-                value={newScope.startYear}
-                onChange={(e) => setNewScope({ ...newScope, startYear: e.target.value })}
+                value={selectedStartYear}
+                onChange={(e) => setSelectedStartYear(e.target.value)}
                 placeholder="2024"
               />
             </div>
@@ -120,45 +132,72 @@ export function SeasonalScopeSettings() {
               <Label>End Year</Label>
               <Input
                 type="number"
-                value={newScope.endYear}
-                onChange={(e) => setNewScope({ ...newScope, endYear: e.target.value })}
+                value={selectedEndYear}
+                onChange={(e) => {
+                  setSelectedEndYear(e.target.value);
+                  if (e.target.value) {
+                    const years = generateBirthYears(parseInt(e.target.value));
+                    const initialMappings: {[key: number]: string} = {};
+                    years.forEach(year => {
+                      initialMappings[year] = "";
+                    });
+                    setBirthYearMappings(initialMappings);
+                  }
+                }}
                 placeholder="2025"
               />
             </div>
-            <div className="flex items-end">
-              <Button 
-                onClick={async () => {
-                  try {
-                    if (!newScope.name || !newScope.startYear || !newScope.endYear) {
-                      toast({
-                        title: "Error",
-                        description: "Please fill in all fields",
-                        variant: "destructive"
-                      });
-                      return;
-                    }
-
-                    await createScopeMutation.mutateAsync({
-                      name: newScope.name,
-                      startYear: parseInt(newScope.startYear),
-                      endYear: parseInt(newScope.endYear)
-                    });
-                  } catch (error) {
-                    toast({
-                      title: "Error",
-                      description: "Failed to create seasonal scope",
-                      variant: "destructive"
-                    });
-                  }
-                }}
-                className="w-full"
-                disabled={createScopeMutation.isLoading}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                {createScopeMutation.isLoading ? "Adding..." : "Add Scope"}
-              </Button>
-            </div>
           </div>
+
+          {selectedEndYear && (
+            <Card className="mt-4">
+              <CardContent className="p-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Birth Year</TableHead>
+                      <TableHead>Age in {selectedEndYear}</TableHead>
+                      <TableHead>Division</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {generateBirthYears(parseInt(selectedEndYear)).map((birthYear) => (
+                      <TableRow key={birthYear}>
+                        <TableCell>{birthYear}</TableCell>
+                        <TableCell>{parseInt(selectedEndYear) - birthYear}</TableCell>
+                        <TableCell>
+                          <Select
+                            value={birthYearMappings[birthYear] || ""}
+                            onValueChange={(value) => handleAgeGroupChange(birthYear, value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select division" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {divisions.map((div) => (
+                                <SelectItem key={div} value={div}>
+                                  {div}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          <Button 
+            onClick={handleSubmit}
+            className="w-full mt-4"
+            disabled={createScopeMutation.isLoading}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {createScopeMutation.isLoading ? "Adding..." : "Add Scope"}
+          </Button>
 
           {scopesQuery.data?.map((scope: any) => (
             <Card key={scope.id} className="mt-4">
@@ -173,11 +212,11 @@ export function SeasonalScopeSettings() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {calculateMatrixAgeGroups(scope.endYear).map((group) => (
-                      <TableRow key={group.birthYear}>
-                        <TableCell>{group.birthYear}</TableCell>
-                        <TableCell>{group.division}</TableCell>
-                        <TableCell>{scope.endYear - group.birthYear}</TableCell>
+                    {generateBirthYears(scope.endYear).map((birthYear) => (
+                      <TableRow key={birthYear}>
+                        <TableCell>{birthYear}</TableCell>
+                        <TableCell>{birthYearMappings[birthYear] || "-"}</TableCell>
+                        <TableCell>{scope.endYear - birthYear}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
