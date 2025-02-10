@@ -938,7 +938,7 @@ export default function CreateEvent() {
                 )}
                 <p className="text-sm text-muted-foreground text-center">
                   {isDragActive
-                    ? "Drop the event logo here"
+                                        ? "Drop the event logo here"
                     : "Drag & drop your event logo here, or click to select"}
                 </p>
               </div>
