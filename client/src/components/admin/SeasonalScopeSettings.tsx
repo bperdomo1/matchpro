@@ -433,49 +433,50 @@ export function SeasonalScopeSettings() {
           </div>
 
           {/* View Modal */}
-          <Dialog open={!!viewingScope} onOpenChange={() => setViewingScope(null)}>
+          <Dialog open={!!viewingScope} onOpenChange={(open) => !open && setViewingScope(null)}>
             <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>{viewingScope?.name}</DialogTitle>
+                <DialogTitle>{viewingScope?.name || ''}</DialogTitle>
               </DialogHeader>
-              <div className="mt-4">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <span className="text-sm text-muted-foreground">Start Year:</span>
-                    <span className="ml-2">{viewingScope?.startYear}</span>
+              {viewingScope && (
+                <div className="mt-4">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <span className="text-sm text-muted-foreground">Start Year:</span>
+                      <span className="ml-2">{viewingScope.startYear}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-muted-foreground">End Year:</span>
+                      <span className="ml-2">{viewingScope.endYear}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-sm text-muted-foreground">End Year:</span>
-                    <span className="ml-2">{viewingScope?.endYear}</span>
-                  </div>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Birth Year</TableHead>
-                      <TableHead>Division Code</TableHead>
-                      <TableHead>Age Group</TableHead>
-                      <TableHead>Gender</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {viewingScope?.ageGroups?.sort((a, b) => {
-                      // Sort first by birthYear, then by gender
-                      if (a.birthYear !== b.birthYear) {
-                        return b.birthYear - a.birthYear;
-                      }
-                      return a.gender.localeCompare(b.gender);
-                    }).map((group: AgeGroupSettings) => (
-                      <TableRow key={`${group.gender}-${group.birthYear}`}>
-                        <TableCell>{group.birthYear}</TableCell>
-                        <TableCell>{group.divisionCode}</TableCell>
-                        <TableCell>{group.ageGroup}</TableCell>
-                        <TableCell>{group.gender}</TableCell>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Birth Year</TableHead>
+                        <TableHead>Division Code</TableHead>
+                        <TableHead>Age Group</TableHead>
+                        <TableHead>Gender</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {viewingScope.ageGroups?.sort((a, b) => {
+                        if (a.birthYear !== b.birthYear) {
+                          return b.birthYear - a.birthYear;
+                        }
+                        return a.gender.localeCompare(b.gender);
+                      }).map((group) => (
+                        <TableRow key={`${group.gender}-${group.birthYear}`}>
+                          <TableCell>{group.birthYear}</TableCell>
+                          <TableCell>{group.divisionCode}</TableCell>
+                          <TableCell>{group.ageGroup}</TableCell>
+                          <TableCell>{group.gender}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
             </DialogContent>
           </Dialog>
         </div>
