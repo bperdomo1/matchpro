@@ -779,65 +779,66 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
           <Plus className="h-4 w-4 mr-2" />
           Add Age Group
         </Button>
-      </div>
-
-      <div className="grid gap-4">
-        {ageGroups.map((group) => (
-          <Card key={group.id}>
-            <CardContent className="p-4">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h4 className="font-semibold">{group.ageGroup} ({group.gender})</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Birth Date Range: {new Date(group.birthDateStart).toLocaleDateString()} to {new Date(group.birthDateEnd).toLocaleDateString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Field Size: {group.fieldSize} | Projected Teams: {group.projectedTeams}
-                  </p>
-                  {group.amountDue && (
-                    <p className="text-sm text-muted-foreground">
-                      Amount Due: ${group.amountDue}
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEditAgeGroup(group)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteAgeGroup(group.id)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <AgeGroupDialog
-        open={isAgeGroupDialogOpen}
-        onClose={() => {
-          setIsAgeGroupDialogOpen(false);
-          setEditingAgeGroup(null);
-        }}
-        onSubmit={handleAddAgeGroup}
-        defaultValues={editingAgeGroup || undefined}
-        isEdit={!!editingAgeGroup}
-      />
-      {isEdit && (
-        <div className="flex justify-end mt-6">
-          <SaveButton />
+          </div>
         </div>
-      )}
-    </div>
+
+        <div className="grid gap-4">
+          {ageGroups.map((group) => (
+            <Card key={group.id}>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <h4 className="font-semibold">{group.ageGroup} ({group.gender})</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Birth Date Range: {new Date(group.birthDateStart).toLocaleDateString()} to {new Date(group.birthDateEnd).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Field Size: {group.fieldSize} | Projected Teams: {group.projectedTeams}
+                    </p>
+                    {group.amountDue && (
+                      <p className="text-sm text-muted-foreground">
+                        Amount Due: ${group.amountDue}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditAgeGroup(group)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteAgeGroup(group.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <AgeGroupDialog
+          open={isAgeGroupDialogOpen}
+          onClose={() => {
+            setIsAgeGroupDialogOpen(false);
+            setEditingAgeGroup(null);
+          }}
+          onSubmit={handleAddAgeGroup}
+          defaultValues={editingAgeGroup || undefined}
+          isEdit={!!editingAgeGroup}
+        />
+        {isEdit && (
+          <div className="flex justify-end mt-6">
+            <SaveButton />
+          </div>
+        )}
+      </div>
   );
 
   const renderScoringContent = () => (
@@ -1020,7 +1021,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
         <CardContent className="pt-6 space-y-6">
           <div>
             <h4 className="text-sm font-medium mb-4">Event Branding</h4>
-            <div className="mb-2 text-sm text-muted-foreground">
+            <div<div className="mb-2 text-sm text-muted-foreground">
               <p>Requirements:</p>
               <ul className="list-disc pl-4 space-y-1">
                 <li>File types: PNG, JPEG, or SVG</li>
@@ -1250,16 +1251,16 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
-        {isEdit && (
-          <div className="flex justify-end mt-6">
-            <SaveButton />
-          </div>
+          ))
         )}
       </div>
-    );
-  };
+      {isEdit && (
+        <div className="flex justify-end mt-6">
+          <SaveButton />
+        </div>
+      )}
+    </div>
+  );
 
   // State declarations using existing component context
 
