@@ -1204,20 +1204,17 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
         {complexesQuery.isLoading ? (
           <div className="flex justify-center items-center h-[200px]">
             <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      </div>
+          </div>
         ) : complexesQuery.isError ? (
           <div className="text-center text-destructive">
             Failed to load complexes. Please try again.
-        </div>
-      </div>
+          </div>
         ) : !complexesQuery.data?.length ? (
           <div className="text-center text-muted-foreground">
             No complexes found.
-        </div>
+          </div>
         ) : (
           complexesQuery.data.map((complex) => (
-          {complexesQuery.data.map((complex) => (
             <Card key={complex.id}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
