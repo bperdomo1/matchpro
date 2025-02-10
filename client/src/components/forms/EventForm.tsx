@@ -1021,7 +1021,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
         <CardContent className="pt-6 space-y-6">
           <div>
             <h4 className="text-sm font-medium mb-4">Event Branding</h4>
-            <div<div className="mb-2 text-sm text-muted-foreground">
+            <div className="mb-2 text-sm text-muted-foreground">
               <p>Requirements:</p>
               <ul className="list-disc pl-4 space-y-1">
                 <li>File types: PNG, JPEG, or SVG</li>
