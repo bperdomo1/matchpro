@@ -741,77 +741,75 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
     </Form>
   );
 
-  const renderAgeGroupsContent = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Age Groups</h3>
-        <Button onClick={() => {
-          setEditingAgeGroup(null);
-          setIsAgeGroupDialogOpen(true);
-        }}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Age Group
-        </Button>
-      </div>
+  const renderAgeGroupsContent = () => {
+    const scopesQuery = useQuery({
+      queryKey: ['/api/admin/seasonal-scopes'],
+      queryFn: async () => {
+        const response = await fetch('/api/admin/seasonal-scopes');
+        if (!response.ok) throw new Error('Failed to fetch seasonal scopes');
+        return response.json();
+      }
+    });
 
-      <div className="grid gap-4">
-        {ageGroups.map((group) => (
-          <Card key={group.id}>
-            <CardContent className="p-4">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h4 className="font-semibold">{group.ageGroup} ({group.gender})</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Birth Date Range: {new Date(group.birthDateStart).toLocaleDateString()} to {new Date(group.birthDateEnd).toLocaleDateString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Field Size: {group.fieldSize} | Projected Teams: {group.projectedTeams}
-                  </p>
-                  {group.amountDue && (
-                    <p className="text-sm text-muted-foreground">
-                      Amount Due: ${group.amountDue}
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEditAgeGroup(group)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteAgeGroup(group.id)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    const [selectedScopeId, setSelectedScopeId] = useState<string>("");
 
-      <AgeGroupDialog
-        open={isAgeGroupDialogOpen}
-        onClose={() => {
-          setIsAgeGroupDialogOpen(false);
-          setEditingAgeGroup(null);
-        }}
-        onSubmit={handleAddAgeGroup}
-        defaultValues={editingAgeGroup || undefined}
-        isEdit={!!editingAgeGroup}
-      />
-      {isEdit && (
-        <div className="flex justify-end mt-6">
-          <SaveButton />
+    const handleScopeSelection = (scopeId: string) => {
+      setSelectedScopeId(scopeId);
+      const scope = scopesQuery.data?.find((s: any) => s.id.toString() === scopeId);
+      if (scope) {
+        setAgeGroups(scope.ageGroups.map((group: any) => ({
+          ...group,
+          id: generateId(), // Assumed generateId function exists
+          selected: false
+        })));
+      }
+    };
+
+    if (scopesQuery.isLoading) {
+      return <div>Loading...</div>;
+    }
+
+    if (scopesQuery.isError) {
+      return <div>Error loading seasonal scopes: {scopesQuery.error.message}</div>;
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => navigateTab('prev')}> {/* Assumed navigateTab function exists */}
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+            <h3 className="text-lg font-semibold">Select Age Groups</h3>
+          </div>
         </div>
-      )}
-    </div>
-  );
+
+        <Card>
+          <CardContent className="p-4">
+            <Label>Select Seasonal Scope</Label>
+            <Select value={selectedScopeId} onValueChange={handleScopeSelection}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose a seasonal scope" />
+              </SelectTrigger>
+              <SelectContent>
+                {scopesQuery.data?.map((scope: any) => (
+                  <SelectItem key={scope.id} value={scope.id.toString()}>
+                    {scope.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+        {isEdit && (
+          <div className="flex justify-end mt-6">
+            <SaveButton />
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderScoringContent = () => (
     <div className="space-y-6">
@@ -1013,8 +1011,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
                   <div className="flex flex-col items-center gap-2">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     <p className="text-sm text-muted-foreground">Extracting colors...</p>
-                  </div>
-                ) : previewUrl ? (
+                  </div>) : previewUrl ? (
                   <img
                     src={previewUrl}
                     alt="Event logo"
@@ -1332,3 +1329,15 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 };
 
 export default EventForm;
+
+const generateId = () => {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+
+const navigateTab = (direction: 'prev' | 'next') => {
+  const currentIndex = TAB_ORDER.indexOf(activeTab);
+  const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
+  if (newIndex >= 0 && newIndex < TAB_ORDER.length) {
+    setActiveTab(TAB_ORDER[newIndex]);
+  }
+};
