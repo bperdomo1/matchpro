@@ -244,6 +244,16 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   const [complexFieldSizes, setComplexFieldSizes] = useState<Record<number, FieldSize>>(initialData?.complexFieldSizes || {});
   const [isAgeGroupDialogOpen, setIsAgeGroupDialogOpen] = useState(false);
   const [editingAgeGroup, setEditingAgeGroup] = useState<AgeGroup | null>(null);
+  const [selectedSeasonalScope, setSelectedSeasonalScope] = useState<string>("");
+
+  const seasonalScopesQuery = useQuery({
+    queryKey: ['seasonal-scopes'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/seasonal-scopes');
+      if (!response.ok) throw new Error('Failed to fetch seasonal scopes');
+      return response.json();
+    }
+  });
   const [scoringRules, setScoringRules] = useState<ScoringRule[]>(initialData?.scoringRules || []);
   const [settings, setSettings] = useState<EventSetting[]>(initialData?.settings || []);
   const [isScoringDialogOpen, setIsScoringDialogOpen] = useState(false);
@@ -743,9 +753,26 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 
   const renderAgeGroupsContent = () => (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Age Groups</h3>
-        <Button onClick={() => {
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Age Groups</h3>
+          <div className="flex gap-4 items-center">
+            <Select 
+              value={selectedSeasonalScope}
+              onValueChange={setSelectedSeasonalScope}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select season" />
+              </SelectTrigger>
+              <SelectContent>
+                {seasonalScopesQuery.data?.map((scope: any) => (
+                  <SelectItem key={scope.id} value={scope.id.toString()}>
+                    {scope.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button onClick={() => {
           setEditingAgeGroup(null);
           setIsAgeGroupDialogOpen(true);
         }}>

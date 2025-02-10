@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -75,27 +74,51 @@ export function SeasonalScopeSettings() {
     if (endYear) {
       const year = parseInt(endYear);
       const initialMappings: AgeGroup[] = [];
-      
-      // Generate 15 years of age groups (U4 to U19)
-      for (let i = 0; i < 15; i++) {
-        const birthYear = year - (4 + i);
-        const ageGroup = calculateAgeGroup(birthYear, year);
-        
-        // Add both boys and girls divisions
-        initialMappings.push({
-          birthYear,
-          ageGroup,
-          gender: 'Boys',
-          divisionCode: `B${birthYear}`
-        });
-        initialMappings.push({
-          birthYear,
-          ageGroup,
-          gender: 'Girls',
-          divisionCode: `G${birthYear}`
-        });
-      }
-      setAgeGroupMappings(initialMappings);
+
+    // Generate age groups based on end year
+    for (let birthYear = year - 19; birthYear <= year - 4; birthYear++) {
+      const ageGroup = `U${year - birthYear}`;
+      initialMappings.push({
+        birthYear,
+        ageGroup,
+        gender: 'Boys',
+        divisionCode: `B${birthYear}`
+      });
+      initialMappings.push({
+        birthYear,
+        ageGroup,
+        gender: 'Girls',
+        divisionCode: `G${birthYear}`
+      });
+    }
+    setAgeGroupMappings(initialMappings);
+  }
+};
+
+  const handleSaveScope = async () => {
+    if (!scopeName || !selectedStartYear || !selectedEndYear) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await createScopeMutation.mutateAsync({
+        name: scopeName,
+        startYear: parseInt(selectedStartYear),
+        endYear: parseInt(selectedEndYear),
+        ageGroups: ageGroupMappings
+      });
+      resetForm();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create seasonal scope",
+        variant: "destructive"
+      });
     }
   };
 
@@ -161,6 +184,13 @@ export function SeasonalScopeSettings() {
             </div>
           </div>
 
+          <Button 
+            onClick={handleSaveScope}
+            className="w-full mt-4"
+            disabled={createScopeMutation.isLoading}
+          >
+            {createScopeMutation.isLoading ? "Saving..." : "Save Seasonal Scope"}
+          </Button>
           {selectedEndYear && (
             <Card className="mt-4">
               <CardContent className="p-4">
