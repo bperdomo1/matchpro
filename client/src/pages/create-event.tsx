@@ -1243,7 +1243,37 @@ const complexSelectionSchema = z.object({
   selectedComplexIds: z.array(z.number()).optional()
 });
 
-const CreateEvent = () => {
+export default function CreateEvent() {
+  const [, navigate] = useLocation();
+  const [activeTab, setActiveTab] = useState<EventTab>('information');
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingAgeGroup, setEditingAgeGroup] = useState<AgeGroup | null>(null);
+  const [scoringRules, setScoringRules] = useState<ScoringRule[]>([]);
+  const [isScoringModalOpen, setIsScoringModalOpen] = useState(false);
+  const [editingScoringRule, setEditingScoringRule] = useState<ScoringRule | null>(null);
+  const [selectedComplexes, setSelectedComplexes] = useState<SelectedComplex[]>([]);
+  const [viewingComplexId, setViewingComplexId] = useState<number | null>(null);
+  const [eventFieldSizes, setEventFieldSizes] = useState<Record<number, FieldSize>>({});
+  const { toast } = useToast();
+  const [isComplexDialogOpen, setIsComplexDialogOpen] = useState(false);
+  const [editingComplex, setEditingComplex] = useState<Complex | null>(null);
+  const queryClient = useQueryClient();
+  const [logo, setLogo] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [primaryColor, setPrimaryColor] = useState('#000000');
+  const [secondaryColor, setSecondaryColor] = useState('#ffffff');
+  const [isSaving, setIsSaving] = useState(false);
+  const [selectedComplexIds, setSelectedComplexIds] = useState<number[]>([]);
+  const [tabErrors, setTabErrors] = useState<Record<EventTab, boolean>>({
+    information: false,
+    'age-groups': false,
+    scoring: false,
+    complexes: false,
+    settings: false,
+    administrators: false,
+  });
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
     <div className="flex items-center gap-4 mb-6">
