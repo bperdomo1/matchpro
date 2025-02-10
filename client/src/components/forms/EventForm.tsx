@@ -1264,17 +1264,14 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
 
   // State declarations using existing component context
 
-  const getTabValidationState = () => {
-    const errors = {
-      'information': !form.formState.isValid,
-      'age-groups': ageGroups.length === 0,
-      'scoring': scoringRules.length === 0,
-      'complexes': selectedComplexIds.length === 0,
-      'settings': false, // Settings are optional
-      'administrators': false // Administrators are managed separately
-    } as Record<EventTab, boolean>;
-    return errors;
-  };
+  const getTabValidationState = (): Record<EventTab, boolean> => ({
+    'information': !form.formState.isValid,
+    'age-groups': ageGroups.length === 0,
+    'scoring': scoringRules.length === 0,
+    'complexes': selectedComplexIds.length === 0,
+    'settings': false, // Settings are optional
+    'administrators': false // Administrators are managed separately
+  });
 
   const tabErrors = getTabValidationState();
 
