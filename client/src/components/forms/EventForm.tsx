@@ -752,17 +752,31 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
     });
 
     const [selectedScopeId, setSelectedScopeId] = useState<string>("");
+    const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
 
     const handleScopeSelection = (scopeId: string) => {
       setSelectedScopeId(scopeId);
+      setSelectedGroups([]);
       const scope = scopesQuery.data?.find((s: any) => s.id.toString() === scopeId);
       if (scope) {
         setAgeGroups(scope.ageGroups.map((group: any) => ({
           ...group,
-          id: generateId(), // Assumed generateId function exists
-          selected: false
+          id: generateId(),
+          selected: false,
+          projectedTeams: 0,
+          amountDue: null
         })));
       }
+    };
+
+    const handleGroupSelection = (groupId: string) => {
+      setSelectedGroups(prev => {
+        const isSelected = prev.includes(groupId);
+        if (isSelected) {
+          return prev.filter(id => id !== groupId);
+        }
+        return [...prev, groupId];
+      });
     };
 
     if (scopesQuery.isLoading) {
@@ -777,7 +791,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => navigateTab('prev')}> {/* Assumed navigateTab function exists */}
+            <Button variant="outline" onClick={() => navigateTab('prev')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
@@ -786,20 +800,91 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
         </div>
 
         <Card>
-          <CardContent className="p-4">
-            <Label>Select Seasonal Scope</Label>
-            <Select value={selectedScopeId} onValueChange={handleScopeSelection}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose a seasonal scope" />
-              </SelectTrigger>
-              <SelectContent>
-                {scopesQuery.data?.map((scope: any) => (
-                  <SelectItem key={scope.id} value={scope.id.toString()}>
-                    {scope.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <CardContent className="p-4 space-y-4">
+            <div>
+              <Label>Select Seasonal Scope</Label>
+              <Select value={selectedScopeId} onValueChange={handleScopeSelection}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a seasonal scope" />
+                </SelectTrigger>
+                <SelectContent>
+                  {scopesQuery.data?.map((scope: any) => (
+                    <SelectItem key={scope.id} value={scope.id.toString()}>
+                      {scope.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedScopeId && (
+              <div>
+                <Label>Available Age Groups</Label>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Select</TableHead>
+                      <TableHead>Division Code</TableHead>
+                      <TableHead>Birth Year</TableHead>
+                      <TableHead>Age Group</TableHead>
+                      <TableHead>Projected Teams</TableHead>
+                      <TableHead>Amount Due</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {ageGroups.map((group) => (
+                      <TableRow key={group.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedGroups.includes(group.id)}
+                            onCheckedChange={() => handleGroupSelection(group.id)}
+                          />
+                        </TableCell>
+                        <TableCell>{group.divisionCode}</TableCell>
+                        <TableCell>{group.birthYear}</TableCell>
+                        <TableCell>{group.ageGroup}</TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={group.projectedTeams}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value) || 0;
+                              setAgeGroups(prev =>
+                                prev.map(g =>
+                                  g.id === group.id
+                                    ? { ...g, projectedTeams: value }
+                                    : g
+                                )
+                              );
+                            }}
+                            disabled={!selectedGroups.includes(group.id)}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={group.amountDue || ''}
+                            onChange={(e) => {
+                              const value = e.target.value ? parseInt(e.target.value) : null;
+                              setAgeGroups(prev =>
+                                prev.map(g =>
+                                  g.id === group.id
+                                    ? { ...g, amountDue: value }
+                                    : g
+                                )
+                              );
+                            }}
+                            disabled={!selectedGroups.includes(group.id)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </CardContent>
         </Card>
         {isEdit && (

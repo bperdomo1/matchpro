@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,9 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 
 interface AgeGroup {
+  id: string;
   birthYear: number;
   ageGroup: string;
-  gender: string;
   divisionCode: string;
 }
 
@@ -64,21 +65,22 @@ export function SeasonalScopeSettings() {
 
   const calculateAgeGroups = (endYear: number): AgeGroup[] => {
     const ageGroups: AgeGroup[] = [];
-    const birthYears = Array.from({ length: 17 }, (_, i) => endYear - i).reverse();
+    const birthYears = Array.from({ length: 17 }, (_, i) => endYear - (i + 4));
 
     birthYears.forEach(birthYear => {
       const age = endYear - birthYear;
       ['Boys', 'Girls'].forEach(gender => {
+        const prefix = gender === 'Boys' ? 'B' : 'G';
         ageGroups.push({
+          id: `${prefix}${birthYear}`,
           birthYear,
           ageGroup: `U${age}`,
-          gender,
-          divisionCode: `${gender === 'Boys' ? 'B' : 'G'}${birthYear}`
+          divisionCode: `${prefix}${birthYear}`
         });
       });
     });
 
-    return ageGroups;
+    return ageGroups.sort((a, b) => b.birthYear - a.birthYear);
   };
 
   const handleSubmit = async () => {
@@ -153,19 +155,17 @@ export function SeasonalScopeSettings() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Birth Year</TableHead>
                   <TableHead>Division Code</TableHead>
+                  <TableHead>Birth Year</TableHead>
                   <TableHead>Age Group</TableHead>
-                  <TableHead>Gender</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {scope.ageGroups?.map((group: AgeGroup) => (
-                  <TableRow key={`${group.gender}-${group.birthYear}`}>
-                    <TableCell>{group.birthYear}</TableCell>
+                {scope.ageGroups?.map((group) => (
+                  <TableRow key={group.id}>
                     <TableCell>{group.divisionCode}</TableCell>
+                    <TableCell>{group.birthYear}</TableCell>
                     <TableCell>{group.ageGroup}</TableCell>
-                    <TableCell>{group.gender}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
