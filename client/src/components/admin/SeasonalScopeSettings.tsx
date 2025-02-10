@@ -60,21 +60,25 @@ export function SeasonalScopeSettings() {
 
   const calculateMatrixAgeGroups = (endYear: number): AgeGroup[] => {
     const ageGroups: AgeGroup[] = [];
-    const currentYear = endYear;
-    
-    // Generate age groups based on birth year
-    for (let birthYear = currentYear - 20; birthYear <= currentYear; birthYear++) {
-      const age = currentYear - birthYear;
+    const birthYears = Array.from({ length: 17 }, (_, i) => endYear - i).reverse();
+
+    birthYears.forEach(birthYear => {
+      const age = endYear - birthYear;
       let division = '';
 
-      // Determine division based on age according to the matrix pattern
-      if (age <= 5) division = `U${age}`;
-      else if (age <= 8) division = `U${age}`;
-      else if (age <= 10) division = 'U10';
-      else if (age <= 12) division = 'U12';
-      else if (age <= 14) division = 'U14';
-      else if (age <= 16) division = 'U16';
-      else continue; // Skip ages above 16
+      if (age <= 5) {
+        division = `U${age}`;
+      } else if (age <= 8) {
+        division = `U${age}`;
+      } else if (age <= 10) {
+        division = 'U10';
+      } else if (age <= 12) {
+        division = 'U12';
+      } else if (age <= 14) {
+        division = 'U14';
+      } else if (age <= 16) {
+        division = 'U16';
+      }
 
       if (division) {
         ageGroups.push({
@@ -82,9 +86,9 @@ export function SeasonalScopeSettings() {
           division,
         });
       }
-    }
+    });
 
-    return ageGroups.sort((a, b) => b.birthYear - a.birthYear);
+    return ageGroups;
   };
 
   return (
@@ -139,8 +143,6 @@ export function SeasonalScopeSettings() {
                       startYear: parseInt(newScope.startYear),
                       endYear: parseInt(newScope.endYear)
                     });
-
-                    setNewScope({ name: "", startYear: "", endYear: "" });
                   } catch (error) {
                     toast({
                       title: "Error",
@@ -158,7 +160,7 @@ export function SeasonalScopeSettings() {
             </div>
           </div>
 
-          {scopesQuery.data?.map((scope) => (
+          {scopesQuery.data?.map((scope: any) => (
             <Card key={scope.id} className="mt-4">
               <CardContent className="p-4">
                 <h3 className="text-lg font-semibold mb-4">{scope.name}</h3>
