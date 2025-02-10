@@ -1243,7 +1243,7 @@ const complexSelectionSchema = z.object({
   selectedComplexIds: z.array(z.number()).optional()
 });
 
-export default function CreateEvent() {
+function CreateEvent() {
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<EventTab>('information');
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([]);
