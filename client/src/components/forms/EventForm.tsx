@@ -1252,7 +1252,7 @@ const getTabValidationState = () => {
   return errors;
 };
 
-const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormProps) => {
+function EventForm({ initialData, onSubmit, isEdit = false }: EventFormProps) {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<EventTab>("information");
   const { toast } = useToast();
