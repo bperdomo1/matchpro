@@ -5,27 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AgeGroup {
   birthYear: number;
-  division: string;
+  ageGroup: string;
+  gender: string;
+  divisionCode: string;
 }
 
 interface SeasonalScope {
   name: string;
   startYear: number;
   endYear: number;
+  ageGroups: AgeGroup[];
 }
 
 export function SeasonalScopeSettings() {
@@ -34,7 +30,7 @@ export function SeasonalScopeSettings() {
   const [selectedStartYear, setSelectedStartYear] = useState<string>("");
   const [selectedEndYear, setSelectedEndYear] = useState<string>("");
   const [scopeName, setScopeName] = useState<string>("");
-  const [birthYearMappings, setBirthYearMappings] = useState<{[key: number]: string}>({});
+  const [ageGroupMappings, setAgeGroupMappings] = useState<AgeGroup[]>([]);
 
   const scopesQuery = useQuery({
     queryKey: ['/api/admin/seasonal-scopes'],
@@ -58,22 +54,49 @@ export function SeasonalScopeSettings() {
     onSuccess: () => {
       queryClient.invalidateQueries(['/api/admin/seasonal-scopes']);
       toast({ title: "Success", description: "Seasonal scope created successfully" });
-      setSelectedStartYear("");
-      setSelectedEndYear("");
-      setScopeName("");
-      setBirthYearMappings({});
+      resetForm();
     },
   });
 
-  const generateBirthYears = (endYear: number) => {
-    return Array.from({ length: 17 }, (_, i) => endYear - i).reverse();
+  const resetForm = () => {
+    setSelectedStartYear("");
+    setSelectedEndYear("");
+    setScopeName("");
+    setAgeGroupMappings([]);
   };
 
-  const handleAgeGroupChange = (birthYear: number, division: string) => {
-    setBirthYearMappings(prev => ({
-      ...prev,
-      [birthYear]: division
-    }));
+  const calculateAgeGroup = (birthYear: number, endYear: number) => {
+    const age = endYear - birthYear;
+    return `U${age}`;
+  };
+
+  const handleEndYearChange = (endYear: string) => {
+    setSelectedEndYear(endYear);
+    if (endYear) {
+      const year = parseInt(endYear);
+      const initialMappings: AgeGroup[] = [];
+      
+      // Generate 15 years of age groups (U4 to U19)
+      for (let i = 0; i < 15; i++) {
+        const birthYear = year - (4 + i);
+        const ageGroup = calculateAgeGroup(birthYear, year);
+        
+        // Add both boys and girls divisions
+        initialMappings.push({
+          birthYear,
+          ageGroup,
+          gender: 'Boys',
+          divisionCode: `B${birthYear}`
+        });
+        initialMappings.push({
+          birthYear,
+          ageGroup,
+          gender: 'Girls',
+          divisionCode: `G${birthYear}`
+        });
+      }
+      setAgeGroupMappings(initialMappings);
+    }
   };
 
   const handleSubmit = async () => {
@@ -90,7 +113,8 @@ export function SeasonalScopeSettings() {
       await createScopeMutation.mutateAsync({
         name: scopeName,
         startYear: parseInt(selectedStartYear),
-        endYear: parseInt(selectedEndYear)
+        endYear: parseInt(selectedEndYear),
+        ageGroups: ageGroupMappings
       });
     } catch (error) {
       toast({
@@ -100,8 +124,6 @@ export function SeasonalScopeSettings() {
       });
     }
   };
-
-  const divisions = ["U6", "U7", "U8", "U9", "U10", "U12", "U14", "U16"];
 
   return (
     <Card>
@@ -133,17 +155,7 @@ export function SeasonalScopeSettings() {
               <Input
                 type="number"
                 value={selectedEndYear}
-                onChange={(e) => {
-                  setSelectedEndYear(e.target.value);
-                  if (e.target.value) {
-                    const years = generateBirthYears(parseInt(e.target.value));
-                    const initialMappings: {[key: number]: string} = {};
-                    years.forEach(year => {
-                      initialMappings[year] = "";
-                    });
-                    setBirthYearMappings(initialMappings);
-                  }
-                }}
+                onChange={(e) => handleEndYearChange(e.target.value)}
                 placeholder="2025"
               />
             </div>
@@ -156,32 +168,18 @@ export function SeasonalScopeSettings() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Birth Year</TableHead>
-                      <TableHead>Age in {selectedEndYear}</TableHead>
-                      <TableHead>Division</TableHead>
+                      <TableHead>Division Code</TableHead>
+                      <TableHead>Age Group</TableHead>
+                      <TableHead>Gender</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {generateBirthYears(parseInt(selectedEndYear)).map((birthYear) => (
-                      <TableRow key={birthYear}>
-                        <TableCell>{birthYear}</TableCell>
-                        <TableCell>{parseInt(selectedEndYear) - birthYear}</TableCell>
-                        <TableCell>
-                          <Select
-                            value={birthYearMappings[birthYear] || ""}
-                            onValueChange={(value) => handleAgeGroupChange(birthYear, value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select division" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {divisions.map((div) => (
-                                <SelectItem key={div} value={div}>
-                                  {div}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
+                    {ageGroupMappings.map((mapping) => (
+                      <TableRow key={`${mapping.gender}-${mapping.birthYear}`}>
+                        <TableCell>{mapping.birthYear}</TableCell>
+                        <TableCell>{mapping.divisionCode}</TableCell>
+                        <TableCell>{mapping.ageGroup}</TableCell>
+                        <TableCell>{mapping.gender}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -207,16 +205,18 @@ export function SeasonalScopeSettings() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Birth Year</TableHead>
-                      <TableHead>Division</TableHead>
-                      <TableHead>Age in {scope.endYear}</TableHead>
+                      <TableHead>Division Code</TableHead>
+                      <TableHead>Age Group</TableHead>
+                      <TableHead>Gender</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {generateBirthYears(scope.endYear).map((birthYear) => (
-                      <TableRow key={birthYear}>
-                        <TableCell>{birthYear}</TableCell>
-                        <TableCell>{birthYearMappings[birthYear] || "-"}</TableCell>
-                        <TableCell>{scope.endYear - birthYear}</TableCell>
+                    {scope.ageGroups?.map((group: AgeGroup) => (
+                      <TableRow key={`${group.gender}-${group.birthYear}`}>
+                        <TableCell>{group.birthYear}</TableCell>
+                        <TableCell>{group.divisionCode}</TableCell>
+                        <TableCell>{group.ageGroup}</TableCell>
+                        <TableCell>{group.gender}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
