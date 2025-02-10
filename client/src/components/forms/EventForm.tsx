@@ -1198,34 +1198,25 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
     </div>
   );
 
-  const renderComplexesContent = () => {
-    if (!complexesQuery || complexesQuery.isLoading) {
-      return (
-        <div className="flex justify-center items-center h-[200px]">
-          <Loader2 className="h-8 w-8 animate-spin" />
+  const renderComplexesContent = () => (
+    <div className="space-y-6">
+      <div className="grid gap-4">
+        {complexesQuery.isLoading ? (
+          <div className="flex justify-center items-center h-[200px]">
+            <Loader2 className="h-8 w-8 animate-spin" />
         </div>
-      );
-    }
-
-    if (complexesQuery.isError) {
-      return (
-        <div className="text-center text-destructive">
-          Failed to load complexes. Please try again.
+      </div>
+        ) : complexesQuery.isError ? (
+          <div className="text-center text-destructive">
+            Failed to load complexes. Please try again.
         </div>
-      );
-    }
-
-    if (!complexesQuery.data?.length) {
-      return (
-        <div className="text-center text-muted-foreground">
-          No complexes found.
+      </div>
+        ) : !complexesQuery.data?.length ? (
+          <div className="text-center text-muted-foreground">
+            No complexes found.
         </div>
-      );
-    }
-
-    return (
-      <div className="space-y-6">
-        <div className="grid gap-4">
+        ) : (
+          complexesQuery.data.map((complex) => (
           {complexesQuery.data.map((complex) => (
             <Card key={complex.id}>
               <CardContent className="p-4">
