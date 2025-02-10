@@ -48,6 +48,8 @@ export function SeasonalScopeSettings() {
   const [editingScope, setEditingScope] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<SeasonalScope>>({});
   const [viewingScope, setViewingScope] = useState<SeasonalScope | null>(null);
+  const [isLoadingView, setIsLoadingView] = useState(false); // Added loading state
+
 
   const scopesQuery = useQuery({
     queryKey: ['/api/admin/seasonal-scopes'],
@@ -77,10 +79,10 @@ export function SeasonalScopeSettings() {
             divisionCode: group.divisionCode,
             minBirthYear: group.minBirthYear,
             maxBirthYear: group.maxBirthYear,
-            seasonalScopeId: data.id || 0, 
-            id: group.id, 
-            createdAt: group.createdAt, 
-            updatedAt: group.updatedAt, 
+            seasonalScopeId: data.id || 0,
+            id: group.id,
+            createdAt: group.createdAt,
+            updatedAt: group.updatedAt,
 
           }))
         }),
@@ -95,16 +97,16 @@ export function SeasonalScopeSettings() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/seasonal-scopes'] });
-      toast({ 
-        title: "Success", 
+      toast({
+        title: "Success",
         description: "Seasonal scope created successfully",
         variant: "default"
       });
       resetForm();
     },
     onError: (error) => {
-      toast({ 
-        title: "Error", 
+      toast({
+        title: "Error",
         description: error instanceof Error ? error.message : "Failed to create seasonal scope",
         variant: "destructive"
       });
@@ -128,8 +130,8 @@ export function SeasonalScopeSettings() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/seasonal-scopes'] });
-      toast({ 
-        title: "Success", 
+      toast({
+        title: "Success",
         description: "Seasonal scope updated successfully",
         variant: "default"
       });
@@ -137,8 +139,8 @@ export function SeasonalScopeSettings() {
       setEditForm({});
     },
     onError: (error) => {
-      toast({ 
-        title: "Error", 
+      toast({
+        title: "Error",
         description: error instanceof Error ? error.message : "Failed to update seasonal scope",
         variant: "destructive"
       });
@@ -170,28 +172,28 @@ export function SeasonalScopeSettings() {
 
         // Add both boys and girls divisions
         initialMappings.push({
-          id: 0, 
-          seasonalScopeId: 0, 
+          id: 0,
+          seasonalScopeId: 0,
           birthYear,
           ageGroup,
           gender: 'Boys',
           divisionCode: `B${birthYear}`,
           minBirthYear: birthYear,
           maxBirthYear: birthYear,
-          createdAt: "", 
-          updatedAt: "" 
+          createdAt: "",
+          updatedAt: ""
         });
         initialMappings.push({
-          id: 0, 
-          seasonalScopeId: 0, 
+          id: 0,
+          seasonalScopeId: 0,
           birthYear,
           ageGroup,
           gender: 'Girls',
           divisionCode: `G${birthYear}`,
           minBirthYear: birthYear,
           maxBirthYear: birthYear,
-          createdAt: "", 
-          updatedAt: "" 
+          createdAt: "",
+          updatedAt: ""
         });
       }
       setAgeGroupMappings(initialMappings);
@@ -323,7 +325,7 @@ export function SeasonalScopeSettings() {
             </Card>
           )}
 
-          <Button 
+          <Button
             onClick={handleSubmit}
             className="w-full mt-4"
             disabled={createScopeMutation.isPending}
@@ -410,7 +412,10 @@ export function SeasonalScopeSettings() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setViewingScope(scope)}
+                            onClick={() => {
+                              setViewingScope(scope);
+                              setIsLoadingView(true); //Set loading state to true
+                            }}
                           >
                             <Eye className="h-4 w-4 mr-2" />
                             View
@@ -433,12 +438,21 @@ export function SeasonalScopeSettings() {
           </div>
 
           {/* View Modal */}
-          <Dialog open={!!viewingScope} onOpenChange={(open) => !open && setViewingScope(null)}>
+          <Dialog open={!!viewingScope} onOpenChange={(open) => {
+            if (!open) {
+              setViewingScope(null);
+              setIsLoadingView(false); //reset loading state
+            }
+          }}>
             <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{viewingScope?.name || ''}</DialogTitle>
               </DialogHeader>
-              {viewingScope && (
+              {isLoadingView ? ( //Show loading indicator
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : viewingScope && viewingScope.ageGroups ? ( //Conditional rendering to prevent errors
                 <div className="mt-4">
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
@@ -476,6 +490,8 @@ export function SeasonalScopeSettings() {
                     </TableBody>
                   </Table>
                 </div>
+              ) : (
+                <p>No data available</p> //Handle case where ageGroups is empty
               )}
             </DialogContent>
           </Dialog>
