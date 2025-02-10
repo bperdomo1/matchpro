@@ -1243,8 +1243,9 @@ const complexSelectionSchema = z.object({
   selectedComplexIds: z.array(z.number()).optional()
 });
 
-return (
-  <div className="container mx-auto px-4 py-6 max-w-7xl">
+const CreateEvent = () => {
+  return (
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
     <div className="flex items-center gap-4 mb-6">
       <Button
         variant="ghost"
