@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,9 +17,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
 
 interface AgeGroup {
-  division: string;
-  ageGroup: string;
   birthYear: number;
+  division: string;
 }
 
 interface SeasonalScope {
@@ -58,21 +58,30 @@ export function SeasonalScopeSettings() {
     },
   });
 
-  const calculateAgeGroups = (startYear: number): AgeGroup[] => {
+  const calculateMatrixAgeGroups = (endYear: number): AgeGroup[] => {
     const ageGroups: AgeGroup[] = [];
-    const competitionYear = startYear;
+    const currentYear = endYear;
+    
+    // Generate age groups based on birth year
+    for (let birthYear = currentYear - 20; birthYear <= currentYear; birthYear++) {
+      const age = currentYear - birthYear;
+      let division = '';
 
-    for (let age = 4; age <= 21; age++) {
-      const birthYear = competitionYear - age;
-      const genders = ['B', 'G'];
+      // Determine division based on age according to the matrix pattern
+      if (age <= 5) division = `U${age}`;
+      else if (age <= 8) division = `U${age}`;
+      else if (age <= 10) division = 'U10';
+      else if (age <= 12) division = 'U12';
+      else if (age <= 14) division = 'U14';
+      else if (age <= 16) division = 'U16';
+      else continue; // Skip ages above 16
 
-      genders.forEach(gender => {
+      if (division) {
         ageGroups.push({
-          division: `U${age}`,
-          ageGroup: `${gender}${birthYear}`,
           birthYear,
+          division,
         });
-      });
+      }
     }
 
     return ageGroups.sort((a, b) => b.birthYear - a.birthYear);
@@ -127,8 +136,8 @@ export function SeasonalScopeSettings() {
 
                     await createScopeMutation.mutateAsync({
                       name: newScope.name,
-                      start_year: Number(newScope.startYear),
-                      end_year: Number(newScope.endYear)
+                      startYear: parseInt(newScope.startYear),
+                      endYear: parseInt(newScope.endYear)
                     });
 
                     setNewScope({ name: "", startYear: "", endYear: "" });
@@ -156,17 +165,17 @@ export function SeasonalScopeSettings() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Division</TableHead>
-                      <TableHead>Age Groups</TableHead>
                       <TableHead>Birth Year</TableHead>
+                      <TableHead>Division</TableHead>
+                      <TableHead>Age in {scope.endYear}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {calculateAgeGroups(scope.startYear).map((group) => (
-                      <TableRow key={`${group.division}-${group.ageGroup}`}>
-                        <TableCell>{group.division}</TableCell>
-                        <TableCell>{group.ageGroup}</TableCell>
+                    {calculateMatrixAgeGroups(scope.endYear).map((group) => (
+                      <TableRow key={group.birthYear}>
                         <TableCell>{group.birthYear}</TableCell>
+                        <TableCell>{group.division}</TableCell>
+                        <TableCell>{scope.endYear - group.birthYear}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
