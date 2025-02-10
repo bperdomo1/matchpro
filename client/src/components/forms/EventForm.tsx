@@ -1199,7 +1199,7 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
   );
 
   const renderComplexesContent = () => {
-    if (complexesQuery.isLoading) {
+    if (!complexesQuery || complexesQuery.isLoading) {
       return (
         <div className="flex justify-center items-center h-[200px]">
           <Loader2 className="h-8 w-8 animate-spin" />
