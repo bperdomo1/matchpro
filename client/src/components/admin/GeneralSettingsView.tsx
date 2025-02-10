@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useOrganizationSettings } from "@/hooks/use-organization-settings";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { SeasonalScopeSettings } from "./SeasonalScopeSettings";
 
 export function GeneralSettingsView() {
   const { settings, isLoading, updateSettings } = useOrganizationSettings();
@@ -87,6 +88,10 @@ export function GeneralSettingsView() {
           </form>
         </CardContent>
       </Card>
+      
+      <div className="pt-6">
+        <SeasonalScopeSettings />
+      </div>
     </div>
   );
 }
