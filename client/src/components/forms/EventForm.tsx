@@ -741,77 +741,112 @@ export const EventForm = ({ initialData, onSubmit, isEdit = false }: EventFormPr
     </Form>
   );
 
-  const renderAgeGroupsContent = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Age Groups</h3>
-        <Button onClick={() => {
-          setEditingAgeGroup(null);
-          setIsAgeGroupDialogOpen(true);
-        }}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Age Group
-        </Button>
-      </div>
+  const renderAgeGroupsContent = () => {
+    const scopesQuery = useQuery({
+      queryKey: ['/api/admin/seasonal-scopes'],
+      queryFn: async () => {
+        const response = await fetch('/api/admin/seasonal-scopes');
+        if (!response.ok) throw new Error('Failed to fetch seasonal scopes');
+        return response.json();
+      }
+    });
 
-      <div className="grid gap-4">
-        {ageGroups.map((group) => (
-          <Card key={group.id}>
-            <CardContent className="p-4">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <h4 className="font-semibold">{group.ageGroup} ({group.gender})</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Birth Date Range: {new Date(group.birthDateStart).toLocaleDateString()} to {new Date(group.birthDateEnd).toLocaleDateString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Field Size: {group.fieldSize} | Projected Teams: {group.projectedTeams}
-                  </p>
-                  {group.amountDue && (
-                    <p className="text-sm text-muted-foreground">
-                      Amount Due: ${group.amountDue}
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEditAgeGroup(group)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteAgeGroup(group.id)}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    const handleScopeSelect = (scopeId: string) => {
+      const selectedScope = scopesQuery.data?.find(scope => scope.id === scopeId);
+      if (selectedScope) {
+        setAgeGroups(selectedScope.ageGroups);
+        toast({
+          title: "Success",
+          description: "Age groups updated from selected scope"
+        });
+      }
+    };
 
-      <AgeGroupDialog
-        open={isAgeGroupDialogOpen}
-        onClose={() => {
-          setIsAgeGroupDialogOpen(false);
-          setEditingAgeGroup(null);
-        }}
-        onSubmit={handleAddAgeGroup}
-        defaultValues={editingAgeGroup || undefined}
-        isEdit={!!editingAgeGroup}
-      />
-      {isEdit && (
-        <div className="flex justify-end mt-6">
-          <SaveButton />
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => navigateTab('prev')}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+            <h3 className="text-lg font-semibold">Age Groups</h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select onValueChange={handleScopeSelect}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select a seasonal scope" />
+              </SelectTrigger>
+              <SelectContent>
+                {scopesQuery.data?.map((scope) => (
+                  <SelectItem key={scope.id} value={scope.id}>
+                    {scope.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      )}
-    </div>
-  );
+
+        <div className="grid gap-4">
+          {ageGroups.map((group) => (
+            <Card key={group.id}>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <h4 className="font-semibold">{group.ageGroup} ({group.gender})</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Birth Date Range: {new Date(group.birthDateStart).toLocaleDateString()} to {new Date(group.birthDateEnd).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Field Size: {group.fieldSize} | Projected Teams: {group.projectedTeams}
+                    </p>
+                    {group.amountDue && (
+                      <p className="text-sm text-muted-foreground">
+                        Amount Due: ${group.amountDue}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditAgeGroup(group)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteAgeGroup(group.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <AgeGroupDialog
+          open={isAgeGroupDialogOpen}
+          onClose={() => {
+            setIsAgeGroupDialogOpen(false);
+            setEditingAgeGroup(null);
+          }}
+          onSubmit={handleAddAgeGroup}
+          defaultValues={editingAgeGroup || undefined}
+          isEdit={!!editingAgeGroup}
+        />
+        {isEdit && (
+          <div className="flex justify-end mt-6">
+            <SaveButton />
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderScoringContent = () => (
     <div className="space-y-6">

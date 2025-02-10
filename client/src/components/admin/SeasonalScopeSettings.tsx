@@ -58,6 +58,32 @@ export function SeasonalScopeSettings() {
     },
   });
 
+  const handleSaveScope = async () => {
+    if (!scopeName || !selectedStartYear || !selectedEndYear) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await createScopeMutation.mutateAsync({
+        name: scopeName,
+        startYear: parseInt(selectedStartYear),
+        endYear: parseInt(selectedEndYear),
+        ageGroups: ageGroupMappings
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save seasonal scope",
+        variant: "destructive"
+      });
+    }
+  };
+
   const resetForm = () => {
     setSelectedStartYear("");
     setSelectedEndYear("");
