@@ -23,7 +23,8 @@ router.get('/', async (req, res) => {
             maxBirthYear: true,
             createdAt: true,
             updatedAt: true,
-          }
+          },
+          orderBy: [{minBirthYear: 'desc'}, {gender: 'asc'}]
         }
       }
     });
@@ -128,7 +129,8 @@ router.patch('/:id', async (req, res) => {
             maxBirthYear: true,
             createdAt: true,
             updatedAt: true,
-          }
+          },
+          orderBy: [{minBirthYear: 'desc'}, {gender: 'asc'}]
         }
       }
     });

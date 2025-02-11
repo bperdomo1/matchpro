@@ -293,9 +293,10 @@ export function SeasonalScopeSettings() {
 
       const validGroups = scope.ageGroups.filter(group => 
         group && 
-        (typeof group.birthYear === 'number' || typeof group.minBirthYear === 'number') && 
-        typeof group.gender === 'string' &&
-        typeof group.ageGroup === 'string'
+        group.minBirthYear && 
+        group.gender && 
+        group.ageGroup &&
+        group.divisionCode
       );
 
       console.log('Valid groups:', validGroups);
