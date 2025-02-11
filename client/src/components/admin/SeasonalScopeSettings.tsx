@@ -282,7 +282,7 @@ export function SeasonalScopeSettings() {
     try {
       console.log('Rendering table for scope:', scope);
 
-      if (!scope || !scope.ageGroups) {
+      if (!scope || !scope.ageGroups || scope.ageGroups.length === 0) {
         console.log('No scope or age groups provided');
         return (
           <div className="text-center py-4">
@@ -293,8 +293,9 @@ export function SeasonalScopeSettings() {
 
       const validGroups = scope.ageGroups.filter(group => 
         group && 
-        typeof group.minBirthYear === 'number' && 
-        typeof group.gender === 'string'
+        (typeof group.birthYear === 'number' || typeof group.minBirthYear === 'number') && 
+        typeof group.gender === 'string' &&
+        typeof group.ageGroup === 'string'
       );
 
       console.log('Valid groups:', validGroups);
