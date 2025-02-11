@@ -5,7 +5,6 @@ import { and, eq } from 'drizzle-orm';
 
 const router = Router();
 
-// Get all seasonal scopes with their age groups
 router.get('/', async (req, res) => {
   try {
     console.log('Fetching seasonal scopes...');
@@ -23,8 +22,7 @@ router.get('/', async (req, res) => {
             maxBirthYear: true,
             createdAt: true,
             updatedAt: true,
-          },
-          orderBy: [{minBirthYear: 'desc'}, {gender: 'asc'}]
+          }
         }
       }
     });
@@ -36,13 +34,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create a new seasonal scope with age groups
 router.post('/', async (req, res) => {
   try {
     const { name, startYear, endYear, ageGroups } = req.body;
     console.log('Creating seasonal scope with data:', { name, startYear, endYear, ageGroups });
 
-    // Create the seasonal scope
     const [scope] = await db.insert(seasonalScopes).values({
       name,
       startYear,
@@ -52,14 +48,8 @@ router.post('/', async (req, res) => {
       updatedAt: new Date()
     }).returning();
 
-    // Create age group settings for the scope
     if (ageGroups && ageGroups.length > 0) {
-      const ageGroupsToInsert = ageGroups.map((group: { 
-        ageGroup: string; 
-        birthYear: number;
-        gender: string;
-        divisionCode: string;
-      }) => ({
+      const ageGroupsToInsert = ageGroups.map((group) => ({
         seasonalScopeId: scope.id,
         ageGroup: group.ageGroup,
         birthYear: group.birthYear,
@@ -71,11 +61,9 @@ router.post('/', async (req, res) => {
         updatedAt: new Date()
       }));
 
-      console.log('Inserting age groups:', JSON.stringify(ageGroupsToInsert, null, 2));
       await db.insert(ageGroupSettings).values(ageGroupsToInsert);
     }
 
-    // Fetch the created scope with its age groups
     const createdScope = await db.query.seasonalScopes.findFirst({
       where: eq(seasonalScopes.id, scope.id),
       with: {
@@ -83,22 +71,18 @@ router.post('/', async (req, res) => {
       }
     });
 
-    console.log('Created scope with age groups:', JSON.stringify(createdScope, null, 2));
     res.status(200).json(createdScope);
   } catch (error) {
     console.error('Error creating seasonal scope:', error);
-    console.error('Detailed error:', error instanceof Error ? error.message : error);
     res.status(500).json({ message: 'Failed to create seasonal scope' });
   }
 });
 
-// Update a seasonal scope
 router.patch('/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { name, startYear, endYear } = req.body;
 
-    // Update the seasonal scope
     const [updatedScope] = await db.update(seasonalScopes)
       .set({
         name,
@@ -113,32 +97,16 @@ router.patch('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Seasonal scope not found' });
     }
 
-    // Fetch the updated scope with its age groups
     const scope = await db.query.seasonalScopes.findFirst({
       where: eq(seasonalScopes.id, id),
       with: {
-        ageGroups: {
-          columns: {
-            id: true,
-            seasonalScopeId: true,
-            ageGroup: true,
-            birthYear: true,
-            gender: true,
-            divisionCode: true,
-            minBirthYear: true,
-            maxBirthYear: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-          orderBy: [{minBirthYear: 'desc'}, {gender: 'asc'}]
-        }
+        ageGroups: true
       }
     });
 
     res.json(scope);
   } catch (error) {
     console.error('Error updating seasonal scope:', error);
-    console.error('Detailed error:', error instanceof Error ? error.message : error);
     res.status(500).json({ message: 'Failed to update seasonal scope' });
   }
 });
