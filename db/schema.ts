@@ -273,6 +273,14 @@ export const eventComplexes = pgTable("event_complexes", {
   createdAt: text("created_at").notNull().default(new Date().toISOString()),
 });
 
+export const eventFieldSizes = pgTable("event_field_sizes", {
+  id: serial("id").primaryKey(),
+  eventId: text("event_id").notNull().references(() => events.id),
+  fieldId: integer("field_id").notNull().references(() => fields.id),
+  fieldSize: text("field_size").notNull(),
+  createdAt: text("created_at").notNull().default(new Date().toISOString()),
+});
+
 export const eventScoringRules = pgTable("event_scoring_rules", {
   id: serial("id").primaryKey(),
   eventId: text("event_id").notNull().references(() => events.id),
