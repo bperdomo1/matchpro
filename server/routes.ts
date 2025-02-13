@@ -1199,13 +1199,10 @@ export function registerRoutes(app: Express): Server {
 
           // Create complex assignments
           for(const complexId of eventData.selectedComplexIds) {
-            await tx
-              .insert(eventComplexes)
-              .values({
-                eventId: event.id,
-                complexId: complexId,
-                createdAt: new Date().toISOString(),
-              });
+            await tx.execute(
+              sql`INSERT INTO event_complexes (event_id, complex_id, created_at) 
+                  VALUES (${event.id}, ${complexId}, ${new Date().toISOString()})`
+            );
           }
 
           // Create field size assignments
@@ -1270,19 +1267,14 @@ export function registerRoutes(app: Express): Server {
           }
 
           // Update complex assignments
-          await tx
-            .delete(eventComplexes)
-            .where(eq(eventComplexes.eventId, eventId));
+          await tx.execute(sql`DELETE FROM event_complexes WHERE event_id = ${eventId}`);
 
           if (eventData.selectedComplexIds && eventData.selectedComplexIds.length > 0) {
             for (const complexId of eventData.selectedComplexIds) {
-              await tx
-                .insert(eventComplexes)
-                .values({
-                  eventId,
-                  complexId,
-                  createdAt: new Date().toISOString(),
-                });
+              await tx.execute(
+                sql`INSERT INTO event_complexes (event_id, complex_id, created_at) 
+                    VALUES (${eventId}, ${complexId}, ${new Date().toISOString()})`
+              );
             }
           }
 
@@ -1388,18 +1380,13 @@ export function registerRoutes(app: Express): Server {
           }
 
           // Update complex assignments
-          await tx
-            .delete(eventComplexes)
-            .where(eq(eventComplexes.eventId, eventId));
+          await tx.execute(sql`DELETE FROM event_complexes WHERE event_id = ${eventId}`);
 
           for (const complexId of eventData.selectedComplexIds) {
-            await tx
-              .insert(eventComplexes)
-              .values({
-                eventId,
-                complexId,
-                createdAt: new Date().toISOString(),
-              });
+            await tx.execute(
+              sql`INSERT INTO event_complexes (event_id, complex_id, created_at) 
+                  VALUES (${eventId}, ${complexId}, ${new Date().toISOString()})`
+            );
           }
 
           // Update field size assignments
@@ -2076,7 +2063,7 @@ export function registerRoutes(app: Express): Server {
         await db.transaction(async (tx) => {
           // Delete related records first
           await tx.delete(eventAgeGroups).where(eq(eventAgeGroups.eventId, eventId));
-          await tx.delete(eventComplexes).where(eq(eventComplexes.eventId, eventId));
+          await tx.execute(sql`DELETE FROM event_complexes WHERE event_id = ${eventId}`);
           await tx.delete(eventFieldSizes).where(eq(eventFieldSizes.eventId, eventId));
           await tx.delete(teams).where(eq(teams.eventId, eventId));
 
