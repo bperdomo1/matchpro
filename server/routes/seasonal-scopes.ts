@@ -46,7 +46,7 @@ router.get('/:id/in-use', async (req, res) => {
 
     const result = await db.select()
       .from(events)
-      .where(eq(events.seasonalScopeId, scopeId))
+      .where(sql`${events.seasonalScopeId} = ${scopeId}`)
       .limit(1);
 
     const inUse = result.length > 0;
@@ -72,7 +72,7 @@ router.delete('/:id', async (req, res) => {
     // Check if the scope is in use
     const result = await db.select()
       .from(events)
-      .where(eq(events.seasonalScopeId, scopeId))
+      .where(sql`${events.seasonalScopeId} = ${scopeId}`)
       .limit(1);
 
     if (result.length > 0) {
