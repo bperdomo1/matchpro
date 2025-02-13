@@ -24,6 +24,8 @@ import {
   householdInvitations,
   roles,
   adminRoles,
+  eventComplexes,
+  eventFieldSizes,
 } from "@db/schema";
 import fs from "fs/promises";
 import path from "path";
@@ -1155,6 +1157,10 @@ export function registerRoutes(app: Express): Server {
 
         // Start a transaction to create event and related records
         await db.transaction(async (tx) => {
+          if (!eventData.ageGroups || eventData.ageGroups.length === 0) {
+            throw new Error("Please select at least one age group");
+          }
+
           // Create the event
           const [event] = await tx
             .insert(events)
