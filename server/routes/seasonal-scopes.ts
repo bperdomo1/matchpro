@@ -51,7 +51,7 @@ router.get('/:id/in-use', async (req, res) => {
 
     // Check if any events are using age groups from this scope
     const eventsUsingScope = await db.query.eventAgeGroups.findFirst({
-      where: eq(eventAgeGroups.seasonalScopeId, scopeId)
+      where: (fields, { eq }) => eq(fields.seasonalScopeId, scopeId)
     });
 
     res.json({
@@ -74,7 +74,7 @@ router.delete('/:id', async (req, res) => {
 
     // Check if any events are using age groups from this scope
     const eventsUsingScope = await db.query.eventAgeGroups.findFirst({
-      where: eq(eventAgeGroups.seasonalScopeId, scopeId)
+      where: (fields, { eq }) => eq(fields.seasonalScopeId, scopeId)
     });
 
     if (eventsUsingScope) {
