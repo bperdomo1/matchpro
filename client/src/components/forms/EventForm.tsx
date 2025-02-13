@@ -1101,8 +1101,8 @@ const getTabValidationState = () => {
 
 const tabErrors = getTabValidationState();
 
-return (
-  <div className="w-full max-w-7xl mx-auto px-4 py-6">
+  return (
+    <div className="w-full max-w-7xl mx-auto px-4 py-6">
     <Card>
       <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as EventTab)}>
