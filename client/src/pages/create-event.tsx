@@ -893,11 +893,6 @@ export default function CreateEvent() {
       ) || [];
 
       // Prepare event data
-      const selectedScope = seasonalScopesQuery.data?.find(scope => scope.id === selectedScopeId);
-      const selectedAgeGroups = selectedScope?.ageGroups.filter(group =>
-        selectedAgeGroupIds.includes(group.id)
-      ) || [];
-
       const eventData = {
         name: formValues.name || "",
         startDate: formValues.startDate || "",
