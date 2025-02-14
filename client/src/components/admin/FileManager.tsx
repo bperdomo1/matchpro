@@ -25,6 +25,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Copy, Trash2, Loader2, Upload, Eye } from "lucide-react";
 
@@ -33,9 +34,38 @@ export function FileManager({ className }: FileManagerProps) {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const [newFileName, setNewFileName] = useState("");
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const renameMutation = useMutation({
+    mutationFn: async ({ fileId, newName }: { fileId: string; newName: string }) => {
+      const response = await fetch(`/api/files/${fileId}/rename`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newName }),
+      });
+      if (!response.ok) throw new Error('Failed to rename file');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['files'] });
+      setRenameDialogOpen(false);
+      toast({ title: "Success", description: "File renamed successfully" });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to rename file",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleRename = () => {
+    if (!selectedFile || !newFileName.trim()) return;
+    renameMutation.mutate({ fileId: selectedFile.id, newName: newFileName.trim() });
+  };
 
   // Query for fetching files
   const filesQuery = useQuery({
@@ -53,7 +83,7 @@ export function FileManager({ className }: FileManagerProps) {
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', file, file.name); // Use original filename
 
       const response = await fetch('/api/files/upload', {
         method: 'POST',
@@ -227,6 +257,17 @@ export function FileManager({ className }: FileManagerProps) {
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedFile(file);
+                            setRenameDialogOpen(true);
+                          }}
+                        >
+                          {/* Add a rename icon here */}
+                          Rename
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -236,6 +277,22 @@ export function FileManager({ className }: FileManagerProps) {
           )}
         </CardContent>
       </Card>
-      </div>
+      <Dialog open={renameDialogOpen} onClose={() => setRenameDialogOpen(false)}>
+        <DialogHeader>
+          <DialogTitle>Rename File</DialogTitle>
+        </DialogHeader>
+        <DialogContent>
+          <Input
+            placeholder="New file name"
+            value={newFileName}
+            onChange={(e) => setNewFileName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogFooter>
+          <Button onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleRename} type="submit">Rename</Button>
+        </DialogFooter>
+      </Dialog>
+    </div>
   );
 }
