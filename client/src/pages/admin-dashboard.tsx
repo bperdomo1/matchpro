@@ -94,13 +94,13 @@ function AdminBanner() {
   const { settings } = useOrganizationSettings();
   
   return (
-    <div className="w-full bg-white shadow-sm border-b">
-      <div className="container mx-auto px-4 py-4">
+    <div className="w-full bg-white shadow-sm border-b sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-2">
         <div className="flex justify-center items-center">
           <img
             src={settings?.logoUrl || "/attached_assets/MatchPro.ai_Stacked_Color.png"}
             alt="Organization Logo"
-            className="h-16 object-contain"
+            className="h-12 object-contain"
           />
         </div>
       </div>
@@ -1665,9 +1665,11 @@ function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 overflow-auto">
-        {/* Welcome Card */}
-        <Card className="mb-6">
+      <div className="flex-1 overflow-auto">
+        <AdminBanner />
+        <div className="p-8">
+          {/* Welcome Card */}
+          <Card className="mb-6">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -1684,6 +1686,7 @@ function AdminDashboard() {
         </Card>
 
         {renderView()}
+      </div>
       </div>
 
       <UpdatesLogModal
