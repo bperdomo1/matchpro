@@ -67,25 +67,27 @@ router.post('/upload', (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const fileUrl = `/uploads/${req.file.filename}`;
-    const fileInfo = {
-      id: uuidv4(),
-      name: req.file.originalname,
-      url: fileUrl,
-      type: req.file.mimetype,
-      size: req.file.size,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    try {
+      const fileUrl = `/uploads/${req.file.filename}`;
+      const fileInfo = {
+        id: uuidv4(),
+        name: req.file.originalname,
+        url: fileUrl,
+        type: req.file.mimetype,
+        size: req.file.size,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(fileInfo);
-  } catch (error) {
-    console.error('File upload error:', error);
-    res.status(500).json({ 
-      error: 'Failed to upload file',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+      res.setHeader('Content-Type', 'application/json');
+      res.status(200).json(fileInfo);
+    } catch (error) {
+      console.error('File upload error:', error);
+      res.status(500).json({ 
+        error: 'Failed to upload file',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   });
 });
 
