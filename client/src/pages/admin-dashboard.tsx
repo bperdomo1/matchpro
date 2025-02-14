@@ -1761,7 +1761,9 @@ function SettingsView({ activeSettingsView }: { activeSettingsView: SettingsView
       return (
         <BrandingPreviewProvider>
           <div className="grid grid-cols-2 gap-6">
-            <OrganizationSettingsForm />
+            <div className="col-span-1">
+              <OrganizationSettingsForm />
+            </div>
             <BrandingPreview />
           </div>
         </BrandingPreviewProvider>
