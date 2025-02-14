@@ -893,6 +893,11 @@ export default function CreateEvent() {
       ) || [];
 
       // Prepare event data
+      const selectedScope = seasonalScopesQuery.data?.find(scope => scope.id === selectedScopeId);
+      const selectedAgeGroups = selectedScope?.ageGroups.filter(group =>
+        selectedAgeGroupIds.includes(group.id)
+      ) || [];
+
       const eventData = {
         name: formValues.name || "",
         startDate: formValues.startDate || "",
@@ -902,22 +907,17 @@ export default function CreateEvent() {
         details: formValues.details || "",
         agreement: formValues.agreement || "",
         refundPolicy: formValues.refundPolicy || "",
-        ageGroups: selectedAgeGroups.map(group => {
-          const scoringRule = scoringRules.find(rule =>
-            rule.id === (editingScoringRule?.id || scoringRules[0]?.id)
-          )?.id || '';
-
-          return {
-            id: generateId(),
-            gender: group.gender as "Male" | "Female" | "Coed",            projectedTeams: 20,
-            birthDateStart: new Date(group.minBirthYear, 0, 1).toISOString(),
-            birthDateEnd: new Date(group.maxBirthYear, 11, 31).toISOString(),
-            scoringRule,
-            ageGroup: group.ageGroup,
-            fieldSize: "11v11" as FieldSize,
-            amountDue: 0
-          };
-        }),
+        ageGroups: selectedAgeGroups.map(group => ({
+          id: generateId(),
+          gender: group.gender as "Male" | "Female" | "Coed",
+          projectedTeams: 20,
+          birthDateStart: new Date(group.minBirthYear, 0, 1).toISOString(),
+          birthDateEnd: new Date(group.maxBirthYear, 11, 31).toISOString(),
+          scoringRule: scoringRules[0]?.id || '',
+          ageGroup: group.ageGroup,
+          fieldSize: "11v11" as FieldSize,
+          amountDue: 0
+        })),
         complexFieldSizes: eventFieldSizes,
         selectedComplexIds: selectedComplexes.map(complex => complex.id),
         branding: {
