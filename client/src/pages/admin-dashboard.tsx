@@ -1424,6 +1424,7 @@ function AdminDashboard() {
   const { user, logout } = useUser();
   const [, setLocation] = useLocation();
   const [activeView, setActiveView] = useState<View>('events');
+  const [showWelcome, setShowWelcome] = useState(true);
   const [activeSettingsView, setActiveSettingsView] = useState<SettingsView>('general');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showUpdatesLog, setShowUpdatesLog] = useState(false);
@@ -1669,21 +1670,29 @@ function AdminDashboard() {
         <AdminBanner />
         <div className="p-8">
           {/* Welcome Card */}
-          <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <UserCircle className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold">Welcome back, {user?.firstName}!</h2>
-                <p className="text-muted-foreground">
-                  Manage your organization's activities and settings from this dashboard.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          {showWelcome && (
+            <Card className="mb-6 relative">
+              <button 
+                onClick={() => setShowWelcome(false)}
+                className="absolute top-2 right-2 p-2 hover:bg-muted rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <UserCircle className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">Welcome back, {user?.firstName}!</h2>
+                    <p className="text-muted-foreground">
+                      Manage your organization's activities and settings from this dashboard.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
         {renderView()}
       </div>
