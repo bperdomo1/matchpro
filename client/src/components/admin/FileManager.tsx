@@ -33,8 +33,7 @@ export function FileManager({ className }: FileManagerProps) {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const [newFileName, setNewFileName] = useState("");
-  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
-  const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -206,10 +205,7 @@ export function FileManager({ className }: FileManagerProps) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => {
-                            setPreviewFile(file);
-                            setPreviewDialogOpen(true);
-                          }}
+                          onClick={() => window.open(file.url, '_blank')}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -240,18 +236,6 @@ export function FileManager({ className }: FileManagerProps) {
           )}
         </CardContent>
       </Card>
-      <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
-        <DialogHeader>
-          <DialogTitle>
-            {previewFile ? previewFile.name : 'File Preview'}
-          </DialogTitle>
-        </DialogHeader>
-        <DialogContent>
-          {previewFile && (
-            <iframe src={previewFile.url} title={previewFile.name} width="100%" height="400px"/>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+      </div>
   );
 }
