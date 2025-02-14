@@ -952,8 +952,7 @@ export default function CreateEvent() {
         throw new Error("Please select at least one age group from the chosen seasonal scope");
       }
 
-      const formValues = form.getValues();
-      if (!formValues.name || !formValues.startDate || !formValues.endDate || !formValues.timezone || !formValues.applicationDeadline) {
+      if (!eventData.name || !eventData.startDate || !eventData.endDate || !eventData.timezone || !eventData.applicationDeadline) {
         throw new Error("Please fill in all required event information fields");
       }
 
