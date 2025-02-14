@@ -1430,10 +1430,21 @@ function AdminDashboard() {
   const [showUpdatesLog, setShowUpdatesLog] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      return; // Wait for user data to load
+    }
     if (!isAdminUser(user)) {
       setLocation("/");
     }
   }, [user, setLocation]);
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   const [showLogoutOverlay, setShowLogoutOverlay] = useState(false);
 
