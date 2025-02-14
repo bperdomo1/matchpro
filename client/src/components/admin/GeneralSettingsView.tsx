@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrganizationSettingsForm } from "./OrganizationSettingsForm";
@@ -46,7 +47,9 @@ export function GeneralSettingsView() {
               <CardTitle>Organization Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <OrganizationSettingsForm />
+              <BrandingPreviewProvider>
+                <OrganizationSettingsForm />
+              </BrandingPreviewProvider>
             </CardContent>
           </Card>
         </TabsContent>
