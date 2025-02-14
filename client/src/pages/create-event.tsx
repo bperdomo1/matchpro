@@ -1060,6 +1060,20 @@ export default function CreateEvent() {
 
             {selectedScopeId && (
               <div className="border rounded-lg p-4 mt-4">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="select-all"
+                      checked={selectedAgeGroupIds.length === seasonalScopesQuery.data?.find(scope => scope.id === selectedScopeId)?.ageGroups.length}
+                      onCheckedChange={(checked) => {
+                        const scope = seasonalScopesQuery.data?.find(scope => scope.id === selectedScopeId);
+                        if (!scope) return;
+                        setSelectedAgeGroupIds(checked ? scope.ageGroups.map(group => group.id) : []);
+                      }}
+                    />
+                    <Label htmlFor="select-all">Select All</Label>
+                  </div>
+                </div>
                 <Table>
                   <TableHeader>
                     <TableRow>
