@@ -91,13 +91,15 @@ import { FileManager } from "@/components/admin/FileManager";
 
 
 function AdminBanner() {
+  const { settings } = useOrganizationSettings();
+  
   return (
     <div className="w-full bg-white shadow-sm border-b">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-center items-center">
           <img
-            src="/attached_assets/MatchPro.ai_Stacked_Color.png"
-            alt="MatchPro Logo"
+            src={settings?.logoUrl || "/attached_assets/MatchPro.ai_Stacked_Color.png"}
+            alt="Organization Logo"
             className="h-16 object-contain"
           />
         </div>
