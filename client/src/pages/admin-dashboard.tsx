@@ -100,7 +100,7 @@ function AdminBanner() {
           <img
             src={settings?.logoUrl || "/attached_assets/MatchPro.ai_Stacked_Color.png"}
             alt="Organization Logo"
-            className="w-auto h-16 md:h-20 max-w-[280px] md:max-w-[320px] object-contain"
+            className="w-auto h-48 md:h-60 max-w-[840px] md:max-w-[960px] object-contain"
           />
         </div>
       </div>
