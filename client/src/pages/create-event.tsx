@@ -960,9 +960,17 @@ export default function CreateEvent() {
         throw new Error("Please select at least one complex for the event");
       }
 
+      // Ensure age groups are selected
+      if (!selectedAgeGroupIds.length) {
+        throw new Error("Please select at least one age group from the chosen seasonal scope");
+      }
+
       const response = await fetch('/api/admin/events', {
         method: 'POST',
         body: formData,
+        headers: {
+          'Accept': 'application/json',
+        }
       });
 
       if (!response.ok) {
