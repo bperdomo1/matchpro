@@ -277,21 +277,35 @@ export function FileManager({ className }: FileManagerProps) {
           )}
         </CardContent>
       </Card>
-      <Dialog open={renameDialogOpen} onClose={() => setRenameDialogOpen(false)}>
-        <DialogHeader>
-          <DialogTitle>Rename File</DialogTitle>
-        </DialogHeader>
-        <DialogContent>
-          <Input
-            placeholder="New file name"
-            value={newFileName}
-            onChange={(e) => setNewFileName(e.target.value)}
-          />
+      <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Rename File</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Input
+              placeholder="New file name"
+              value={newFileName}
+              onChange={(e) => setNewFileName(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          <DialogFooter className="sm:justify-between">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setRenameDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              onClick={handleRename}
+            >
+              Rename
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogFooter>
-          <Button onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleRename} type="submit">Rename</Button>
-        </DialogFooter>
       </Dialog>
     </div>
   );
