@@ -20,8 +20,14 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const baseName = path.parse(file.originalname).name;
     const ext = path.extname(file.originalname);
-    const uniqueId = uuidv4().slice(0, 8);
-    const safeFileName = `${baseName}-${uniqueId}${ext}`.replace(/[^a-zA-Z0-9-_.]/g, '_');
+    const safeFileName = `${baseName}${ext}`.replace(/[^a-zA-Z0-9-_.]/g, '_');
+    
+    // Check if file exists
+    if (fs.existsSync(path.join(uploadsDir, safeFileName))) {
+      cb(new Error('File already exists'), '');
+      return;
+    }
+    
     cb(null, safeFileName);
   }
 });
@@ -48,8 +54,15 @@ const upload = multer({
 });
 
 // Handle file upload
-router.post('/upload', upload.single('file'), (req, res) => {
-  try {
+router.post('/upload', (req, res) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) {
+      if (err.message === 'File already exists') {
+        return res.status(409).json({ error: 'A file with this name already exists' });
+      }
+      return res.status(400).json({ error: err.message });
+    }
+
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -73,7 +86,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
       error: 'Failed to upload file',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
-  }
+  });
 });
 
 // Get all files
