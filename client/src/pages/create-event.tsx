@@ -943,6 +943,24 @@ export default function CreateEvent() {
       // Log the data being sent
       console.log('Submitting event data:', eventData);
 
+      // Validate required event data before making request
+      if (!selectedScopeId) {
+        throw new Error("Please select a seasonal scope first");
+      }
+
+      if (selectedAgeGroupIds.length === 0) {
+        throw new Error("Please select at least one age group from the chosen seasonal scope");
+      }
+
+      const formValues = form.getValues();
+      if (!formValues.name || !formValues.startDate || !formValues.endDate || !formValues.timezone || !formValues.applicationDeadline) {
+        throw new Error("Please fill in all required event information fields");
+      }
+
+      if (selectedComplexIds.length === 0) {
+        throw new Error("Please select at least one complex for the event");
+      }
+
       const response = await fetch('/api/admin/events', {
         method: 'POST',
         body: formData,
@@ -950,7 +968,7 @@ export default function CreateEvent() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create event');
+        throw new Error(errorData.error || 'Failed to create event. Please check all required fields.');
       }
 
       toast({
