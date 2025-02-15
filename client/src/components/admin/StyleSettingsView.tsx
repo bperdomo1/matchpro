@@ -35,7 +35,7 @@ const colors = {
     description: "Customize the login and register page appearance",
     colors: {},
     settings: {
-      logoUrl: "/attached_assets/MatchPro.ai_Stacked_Color.png"
+      logoUrl: "/uploads/MatchProAI_Linear_Black.png"
     }
   },
   interface: {
