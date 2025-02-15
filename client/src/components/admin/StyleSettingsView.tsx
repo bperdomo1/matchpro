@@ -150,12 +150,12 @@ export function StyleSettingsView() {
             <CardTitle>Color Sections</CardTitle>
           </CardHeader>
           <CardContent>
+            <Tabs value={activeSection} onValueChange={setActiveSection} orientation="vertical">
             <TabsList className="flex flex-col w-full space-y-2">
               {Object.entries(colors).map(([key, section]) => (
                 <TabsTrigger
                   key={key}
                   value={key}
-                  onClick={() => setActiveSection(key)}
                   className={`justify-start w-full ${
                     activeSection === key ? "bg-primary/10" : ""
                   }`}
@@ -164,6 +164,7 @@ export function StyleSettingsView() {
                 </TabsTrigger>
               ))}
             </TabsList>
+          </Tabs>
           </CardContent>
         </Card>
 
