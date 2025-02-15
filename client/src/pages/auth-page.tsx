@@ -85,7 +85,7 @@ export default function AuthPage() {
         <Card className="w-full bg-white/95 backdrop-blur-sm shadow-xl border-0">
           <CardHeader className="space-y-3 pb-6">
             <div className="flex justify-center">
-              <div className="w-20 h-20">
+              <div className="w-100 h-100">
                 <img 
                   src="/uploads/MatchProAI_Linear_Black.png" 
                   alt="MatchPro Logo" 
