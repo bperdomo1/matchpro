@@ -87,7 +87,7 @@ export default function AuthPage() {
             <div className="flex justify-center">
               <div className="w-20 h-20">
                 <img 
-                  src="/attached_assets/MatchPro.ai_Stacked_Color.png" 
+                  src="/uploads/MatchProAI_Linear_Black.png" 
                   alt="MatchPro Logo" 
                   className="w-full h-full object-contain"
                 />
