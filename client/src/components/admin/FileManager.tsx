@@ -77,8 +77,12 @@ export function FileManager({ className, onFileSelect, allowMultiple = false }: 
     queryFn: async () => {
       const response = await fetch(`/api/files${currentFolder ? `?folderId=${currentFolder}` : ''}`);
       if (!response.ok) throw new Error('Failed to fetch files');
-      return response.json() as Promise<FileItem[]>;
+      const data = await response.json();
+      return data as FileItem[];
     },
+    refetchOnWindowFocus: true,
+    refetchInterval: 5000, // Refetch every 5 seconds
+    retry: 3
   });
 
   const foldersQuery = useQuery({
