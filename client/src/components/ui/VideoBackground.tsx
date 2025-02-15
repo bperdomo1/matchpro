@@ -12,13 +12,13 @@ export function VideoBackground({ className }: VideoBackgroundProps) {
   ];
 
   return (
-    <div className={cn("absolute inset-0 -z-10 overflow-hidden", className)}>
+    <div className={cn("fixed inset-0 z-0 overflow-hidden", className)}>
       <video
         autoPlay
         muted
         loop
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover"
+        className="fixed top-0 left-0 min-w-full min-h-full w-auto h-auto object-cover"
       >
         {videos.map((src, index) => (
           <source key={index} src={src} type="video/mp4" />
