@@ -8,8 +8,7 @@ interface VideoBackgroundProps {
 export function VideoBackground({ className }: VideoBackgroundProps) {
   const videos = [
     "/videos/soccer1.mp4",
-    "/videos/soccer2.mp4",
-    "/videos/soccer3.mp4"
+    "/videos/soccer2.mp4"
   ];
 
   return (
