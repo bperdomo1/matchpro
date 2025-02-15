@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,7 +77,6 @@ export function StyleSettingsView() {
       },
     }));
 
-    // Update preview immediately
     setPreviewStyles((prev) => ({
       ...prev,
       [colorKey]: value,
@@ -85,10 +85,8 @@ export function StyleSettingsView() {
 
   const handleSave = async () => {
     try {
-      // Save primary color through the theme system
       await setColor(colors.primary.colors.primary);
 
-      // Save other colors through a new API endpoint (to be implemented)
       const response = await fetch('/api/admin/styling', {
         method: 'POST',
         headers: {
@@ -129,10 +127,7 @@ export function StyleSettingsView() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Style Settings</h2>
-        <Button
-          onClick={handleSave}
-          disabled={isLoading}
-        >
+        <Button onClick={handleSave} disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -152,22 +147,23 @@ export function StyleSettingsView() {
             </CardHeader>
             <CardContent className="pt-0">
               <Tabs value={activeSection} onValueChange={setActiveSection} orientation="vertical">
-              <TabsList className="flex flex-col w-full space-y-2">
-              {Object.entries(colors).map(([key, section]) => (
-                <TabsTrigger
-                  key={key}
-                  value={key}
-                  className={`justify-start w-full ${
-                    activeSection === key ? "bg-primary/10" : ""
-                  }`}
-                >
-                  {section.title}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-          </CardContent>
-        </Card>
+                <TabsList className="flex flex-col w-full space-y-2">
+                  {Object.entries(colors).map(([key, section]) => (
+                    <TabsTrigger
+                      key={key}
+                      value={key}
+                      className={`justify-start w-full ${
+                        activeSection === key ? "bg-primary/10" : ""
+                      }`}
+                    >
+                      {section.title}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
 
         <Card className="col-span-2">
           <CardHeader className="flex flex-row justify-between items-center">
