@@ -14,7 +14,49 @@ interface ColorSection {
   colors: {
     [key: string]: string;
   };
+  description?: string;
 }
+
+const colors: { [key: string]: ColorSection } = {
+  primary: {
+    title: "Brand Colors",
+    description: "Main colors that define your brand identity",
+    colors: {
+      primary: "hsl(var(--primary))",
+      secondary: "hsl(134 59% 49%)",
+      accent: "hsl(32 100% 50%)"
+    }
+  },
+  status: {
+    title: "Status Colors",
+    description: "Colors used to indicate different states",
+    colors: {
+      success: "hsl(134 59% 49%)",
+      warning: "hsl(32 100% 50%)",
+      destructive: "hsl(var(--destructive))"
+    }
+  },
+  background: {
+    title: "Interface Colors",
+    description: "Colors used for UI elements",
+    colors: {
+      background: "hsl(240 5% 96%)",
+      foreground: "hsl(var(--foreground))",
+      card: "hsl(var(--card))",
+      popover: "hsl(var(--popover))"
+    }
+  },
+  adminRoles: {
+    title: "Admin Role Colors",
+    description: "Colors used to distinguish admin roles",
+    colors: {
+      superAdmin: "#FF5733",
+      tournamentAdmin: "#33FF57",
+      scoreAdmin: "#5733FF",
+      financeAdmin: "#FF33F5"
+    }
+  }
+};
 
 const defaultColors = {
   primary: {
