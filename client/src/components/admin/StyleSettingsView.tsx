@@ -203,6 +203,20 @@ export function StyleSettingsView() {
                       className="h-16 w-16 object-contain bg-gray-50 rounded p-2"
                     />
                   </div>
+                  <Button 
+                    onClick={handleSave} 
+                    disabled={isLoading} 
+                    className="mt-4"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving Logo
+                      </>
+                    ) : (
+                      'Save Logo'
+                    )}
+                  </Button>
                 </div>
               </div>
             ) : (
