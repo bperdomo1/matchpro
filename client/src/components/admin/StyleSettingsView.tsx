@@ -1,12 +1,10 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, RotateCcw } from "lucide-react";
 
 interface ColorSection {
@@ -17,14 +15,24 @@ interface ColorSection {
   description?: string;
 }
 
-const colors: { [key: string]: ColorSection } = {
-  primary: {
+const colors = {
+  branding: {
     title: "Brand Colors",
     description: "Main colors that define your brand identity",
     colors: {
       primary: "hsl(var(--primary))",
       secondary: "hsl(134 59% 49%)",
       accent: "hsl(32 100% 50%)"
+    }
+  },
+  interface: {
+    title: "Interface Colors",
+    description: "Colors used for the application interface",
+    colors: {
+      background: "hsl(240 5% 96%)",
+      foreground: "hsl(var(--foreground))",
+      border: "hsl(var(--border))",
+      muted: "hsl(var(--muted))"
     }
   },
   status: {
@@ -34,16 +42,6 @@ const colors: { [key: string]: ColorSection } = {
       success: "hsl(134 59% 49%)",
       warning: "hsl(32 100% 50%)",
       destructive: "hsl(var(--destructive))"
-    }
-  },
-  background: {
-    title: "Interface Colors",
-    description: "Colors used for UI elements",
-    colors: {
-      background: "hsl(240 5% 96%)",
-      foreground: "hsl(var(--foreground))",
-      card: "hsl(var(--card))",
-      popover: "hsl(var(--popover))"
     }
   },
   adminRoles: {
@@ -58,83 +56,45 @@ const colors: { [key: string]: ColorSection } = {
   }
 };
 
-const defaultColors = {
-  primary: {
-    title: "Primary Colors",
-    colors: {
-      primary: "#0066FF",
-      secondary: "#A4B5C6",
-    },
-  },
-  buttons: {
-    title: "Button Colors",
-    colors: {
-      buttonDefault: "#0066FF",
-      buttonHover: "#0052CC",
-      buttonActive: "#004499",
-    },
-  },
-  interactive: {
-    title: "Interactive Elements",
-    colors: {
-      hoverBackground: "#F5F6F7",
-      activeBackground: "#ECEDEF",
-    },
-  },
-  navigation: {
-    title: "Navigation Colors",
-    colors: {
-      navBackground: "#FFFFFF",
-      navText: "#1A1B1E",
-      navHover: "#F5F6F7",
-    },
-  },
-  adminRoles: {
-    title: "Admin Role Colors",
-    colors: {
-      superAdmin: "#E63946",
-      tournamentAdmin: "#0066FF",
-      scoreAdmin: "#2A9D8F",
-      financeAdmin: "#7B61FF",
-    },
-  },
-};
-
 export function StyleSettingsView() {
   const { currentColor, setColor, isLoading } = useTheme();
-  const [activeSection, setActiveSection] = useState("primary");
-  const [colors, setColors] = useState(defaultColors);
-  const { toast } = useToast();
+  const [activeSection, setActiveSection] = useState("branding");
   const [previewStyles, setPreviewStyles] = useState<{ [key: string]: string }>({});
+  const { toast } = useToast();
 
   const handleColorChange = (section: string, colorKey: string, value: string) => {
-    setColors((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        colors: {
-          ...prev[section].colors,
-          [colorKey]: value,
-        },
-      },
-    }));
-
     setPreviewStyles((prev) => ({
       ...prev,
       [colorKey]: value,
     }));
+
+    if (colorKey === "primary") {
+      setColor(value);
+    }
+  };
+
+  const handleReset = (section: string) => {
+    const defaultColors = colors[section as keyof typeof colors].colors;
+    Object.entries(defaultColors).forEach(([key, value]) => {
+      handleColorChange(section, key, value);
+    });
+
+    toast({
+      title: "Reset Complete",
+      description: `${colors[section as keyof typeof colors].title} reset to defaults`,
+    });
   };
 
   const handleSave = async () => {
     try {
-      await setColor(colors.primary.colors.primary);
+      await setColor(previewStyles.primary || colors.branding.colors.primary);
 
       const response = await fetch('/api/admin/styling', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(colors),
+        body: JSON.stringify(previewStyles), // Send previewStyles instead of colors
       });
 
       if (!response.ok) {
@@ -154,16 +114,6 @@ export function StyleSettingsView() {
     }
   };
 
-  const handleReset = (section: string) => {
-    setColors((prev) => ({
-      ...prev,
-      [section]: defaultColors[section as keyof typeof defaultColors],
-    }));
-    toast({
-      title: "Reset Complete",
-      description: `${defaultColors[section as keyof typeof defaultColors].title} reset to defaults`,
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -183,32 +133,35 @@ export function StyleSettingsView() {
 
       <div className="grid grid-cols-4 gap-6">
         <div className="col-span-1">
-          <div className="sticky top-0">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle>Color Sections</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex flex-col gap-2">
-                  {Object.entries(colors).map(([key, section]) => (
-                    <Button
-                      key={key}
-                      variant={activeSection === key ? "secondary" : "ghost"}
-                      className="justify-start w-full text-left"
-                      onClick={() => setActiveSection(key)}
-                    >
-                      {section.title}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="sticky top-4">
+            <CardHeader className="pb-3">
+              <CardTitle>Color Sections</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-2">
+                {Object.entries(colors).map(([key, section]) => (
+                  <Button
+                    key={key}
+                    variant={activeSection === key ? "secondary" : "ghost"}
+                    className="justify-start w-full text-left"
+                    onClick={() => setActiveSection(key)}
+                  >
+                    {section.title}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        <Card className="col-span-2">
+        <Card className="col-span-3">
           <CardHeader className="flex flex-row justify-between items-center">
-            <CardTitle>{colors[activeSection as keyof typeof colors].title}</CardTitle>
+            <div>
+              <CardTitle>{colors[activeSection as keyof typeof colors].title}</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                {colors[activeSection as keyof typeof colors].description}
+              </p>
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -219,7 +172,7 @@ export function StyleSettingsView() {
             </Button>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               {Object.entries(colors[activeSection as keyof typeof colors].colors).map(
                 ([key, value]) => (
                   <div key={key} className="space-y-2">
@@ -230,12 +183,12 @@ export function StyleSettingsView() {
                       <Input
                         type="color"
                         id={key}
-                        value={value}
+                        value={previewStyles[key] || value}
                         onChange={(e) => handleColorChange(activeSection, key, e.target.value)}
                         className="w-12 h-12 p-1"
                       />
                       <Input
-                        value={value}
+                        value={previewStyles[key] || value}
                         onChange={(e) => handleColorChange(activeSection, key, e.target.value)}
                         className="font-mono"
                       />
@@ -243,40 +196,6 @@ export function StyleSettingsView() {
                   </div>
                 )
               )}
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-4">Preview</h3>
-              <div className="p-4 border rounded-lg">
-                <div className="space-y-4">
-                  {activeSection === "buttons" && (
-                    <div className="space-x-2">
-                      <Button
-                        style={{
-                          backgroundColor: previewStyles.buttonDefault,
-                          "--hover-bg": previewStyles.buttonHover,
-                          "--active-bg": previewStyles.buttonActive,
-                        } as any}
-                      >
-                        Default Button
-                      </Button>
-                    </div>
-                  )}
-                  {activeSection === "adminRoles" && (
-                    <div className="space-x-2">
-                      {Object.entries(colors.adminRoles.colors).map(([role, color]) => (
-                        <span
-                          key={role}
-                          className="px-2 py-1 rounded text-white text-sm"
-                          style={{ backgroundColor: color }}
-                        >
-                          {role.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>
