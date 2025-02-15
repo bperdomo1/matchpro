@@ -46,14 +46,6 @@ const defaultColors = {
       navHover: "hsl(220 14.3% 95.9%)",
     },
   },
-  navigation: {
-    title: "Navigation Colors",
-    colors: {
-      navBackground: "hsl(0 0% 100%)",
-      navText: "hsl(222.2 47.4% 11.2%)",
-      navHover: "hsl(220 14.3% 95.9%)",
-    },
-  },
   adminRoles: {
     title: "Admin Role Colors",
     colors: {
