@@ -139,30 +139,29 @@ export function StyleSettingsView() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-4 gap-6">
         <div className="col-span-1">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle>Color Sections</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Tabs value={activeSection} onValueChange={setActiveSection} orientation="vertical">
-                <TabsList className="flex flex-col w-full space-y-2">
+          <div className="sticky top-0">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle>Color Sections</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="flex flex-col gap-2">
                   {Object.entries(colors).map(([key, section]) => (
-                    <TabsTrigger
+                    <Button
                       key={key}
-                      value={key}
-                      className={`justify-start w-full ${
-                        activeSection === key ? "bg-primary/10" : ""
-                      }`}
+                      variant={activeSection === key ? "secondary" : "ghost"}
+                      className="justify-start w-full text-left"
+                      onClick={() => setActiveSection(key)}
                     >
                       {section.title}
-                    </TabsTrigger>
+                    </Button>
                   ))}
-                </TabsList>
-              </Tabs>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <Card className="col-span-2">
