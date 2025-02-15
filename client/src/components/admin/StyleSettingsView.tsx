@@ -188,21 +188,20 @@ export function StyleSettingsView() {
             {activeSection === 'loginScreen' ? (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label>Login Page Logo</Label>
-                  <div className="flex items-center gap-4">
+                  <Label>Login Page Logo URL</Label>
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <Input
+                        placeholder="Enter logo URL (e.g., /uploads/logo.png)"
+                        value={previewStyles.logoUrl || colors.loginScreen.settings.logoUrl}
+                        onChange={(e) => handleColorChange('loginScreen', 'logoUrl', e.target.value)}
+                      />
+                    </div>
                     <img 
-                      src={colors.loginScreen.settings.logoUrl} 
+                      src={previewStyles.logoUrl || colors.loginScreen.settings.logoUrl}
                       alt="Login logo preview" 
                       className="h-16 w-16 object-contain bg-gray-50 rounded p-2"
                     />
-                    <Button 
-                      variant="outline"
-                      onClick={() => {
-                        // FileManager dialog will be implemented later
-                      }}
-                    >
-                      Change Logo
-                    </Button>
                   </div>
                 </div>
               </div>
