@@ -96,37 +96,46 @@ router.post('/upload', (req, res) => {
 // Get all files
 router.get('/', async (req, res) => {
   try {
+    console.log('Checking uploads directory:', uploadsDir);
     const files = [];
-    if (fs.existsSync(uploadsDir)) {
-      const filenames = fs.readdirSync(uploadsDir);
-      for (const filename of filenames) {
-        try {
-          const filePath = path.join(uploadsDir, filename);
-          const stats = fs.statSync(filePath);
-          if (stats.isFile()) {
-            const mimeType = path.extname(filename).toLowerCase();
-            const type = mimeType.startsWith('.') ? 
-              (mimeType === '.jpg' || mimeType === '.jpeg' || mimeType === '.png' || mimeType === '.gif') ? 'image' :
-              (mimeType === '.mp4' || mimeType === '.webm') ? 'video' :
-              'document' : 'unknown';
-            
-            files.push({
-              id: path.parse(filename).name,
-              name: filename,
-              url: `/uploads/${filename}`,
-              type,
-              size: stats.size,
-              createdAt: stats.birthtime.toISOString(),
-              updatedAt: stats.mtime.toISOString(),
-              folderId: null
-            });
-          }
-        } catch (err) {
-          console.error(`Error processing file ${filename}:`, err);
-          // Continue with next file
+    
+    if (!fs.existsSync(uploadsDir)) {
+      console.log('Creating uploads directory');
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    
+    const filenames = fs.readdirSync(uploadsDir);
+    console.log('Found files:', filenames);
+    
+    for (const filename of filenames) {
+      try {
+        const filePath = path.join(uploadsDir, filename);
+        const stats = fs.statSync(filePath);
+        
+        if (stats.isFile()) {
+          const ext = path.extname(filename).toLowerCase();
+          const type = 
+            ['.jpg', '.jpeg', '.png', '.gif'].includes(ext) ? 'image' :
+            ['.mp4', '.webm'].includes(ext) ? 'video' :
+            'document';
+          
+          files.push({
+            id: path.parse(filename).name,
+            name: filename,
+            url: `/uploads/${filename}`,
+            type,
+            size: stats.size,
+            createdAt: stats.birthtime.toISOString(),
+            updatedAt: stats.mtime.toISOString(),
+            folderId: null
+          });
         }
+      } catch (err) {
+        console.error(`Error processing file ${filename}:`, err);
       }
     }
+    
+    console.log('Returning files:', files.length);
     res.json(files);
   } catch (error) {
     console.error('Error fetching files:', error);
