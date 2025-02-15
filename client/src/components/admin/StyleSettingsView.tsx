@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const colors = {
     title: "Brand Colors",
     description: "Main colors that define your brand identity",
     colors: {
-      primary: "hsl(var(--primary))",
+      primary: "hsl(0 0% 0%)",
       secondary: "hsl(134 59% 49%)",
       accent: "hsl(32 100% 50%)"
     }
@@ -42,11 +43,11 @@ const colors = {
     description: "Colors used for the application interface",
     colors: {
       background: "hsl(240 5% 96%)",
-      foreground: "hsl(var(--foreground))",
-      border: "hsl(var(--border))",
-      muted: "hsl(var(--muted))",
-      hover: "hsl(32 100% 50%)", // Orange hover state
-      active: "hsl(134 59% 49%)" // Green active state
+      foreground: "hsl(0 0% 0%)",
+      border: "hsl(0 0% 80%)",
+      muted: "hsl(0 0% 60%)",
+      hover: "hsl(32 100% 50%)",
+      active: "hsl(134 59% 49%)"
     }
   },
   status: {
@@ -55,17 +56,17 @@ const colors = {
     colors: {
       success: "hsl(134 59% 49%)",
       warning: "hsl(32 100% 50%)",
-      destructive: "hsl(var(--destructive))"
+      destructive: "hsl(0 84% 60%)"
     }
   },
   adminRoles: {
     title: "Admin Role Colors",
     description: "Colors used to distinguish admin roles",
     colors: {
-      superAdmin: "#FF5733",
-      tournamentAdmin: "#33FF57",
-      scoreAdmin: "#5733FF",
-      financeAdmin: "#FF33F5"
+      superAdmin: "hsl(0 70% 60%)",
+      tournamentAdmin: "hsl(120 70% 60%)",
+      scoreAdmin: "hsl(240 70% 60%)",
+      financeAdmin: "hsl(300 70% 60%)"
     }
   }
 };
@@ -102,13 +103,12 @@ export function StyleSettingsView() {
   const handleSave = async () => {
     try {
       await setColor(previewStyles.primary || colors.branding.colors.primary);
-
       const response = await fetch('/api/admin/styling', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(previewStyles), // Send previewStyles instead of colors
+        body: JSON.stringify(previewStyles),
       });
 
       if (!response.ok) {
@@ -127,7 +127,6 @@ export function StyleSettingsView() {
       });
     }
   };
-
 
   return (
     <div className="space-y-6">
@@ -199,8 +198,7 @@ export function StyleSettingsView() {
                     <Button 
                       variant="outline"
                       onClick={() => {
-                        // Open FileManager dialog for logo selection
-                        // Will be implemented in the next step
+                        // FileManager dialog will be implemented later
                       }}
                     >
                       Change Logo
@@ -211,29 +209,30 @@ export function StyleSettingsView() {
             ) : (
               <div className="grid grid-cols-2 gap-6">
                 {Object.entries(colors[activeSection as keyof typeof colors].colors).map(
-                ([key, value]) => (
-                  <div key={key} className="space-y-2">
-                    <Label htmlFor={key}>
-                      {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
-                    </Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="color"
-                        id={key}
-                        value={previewStyles[key] || value}
-                        onChange={(e) => handleColorChange(activeSection, key, e.target.value)}
-                        className="w-12 h-12 p-1"
-                      />
-                      <Input
-                        value={previewStyles[key] || value}
-                        onChange={(e) => handleColorChange(activeSection, key, e.target.value)}
-                        className="font-mono"
-                      />
+                  ([key, value]) => (
+                    <div key={key} className="space-y-2">
+                      <Label htmlFor={key}>
+                        {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+                      </Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="color"
+                          id={key}
+                          value={previewStyles[key] || value}
+                          onChange={(e) => handleColorChange(activeSection, key, e.target.value)}
+                          className="w-12 h-12 p-1"
+                        />
+                        <Input
+                          value={previewStyles[key] || value}
+                          onChange={(e) => handleColorChange(activeSection, key, e.target.value)}
+                          className="font-mono"
+                        />
+                      </div>
                     </div>
-                  </div>
-                )
-              )}
-            </div>
+                  )
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
