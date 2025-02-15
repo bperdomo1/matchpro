@@ -145,13 +145,14 @@ export function StyleSettingsView() {
       </div>
 
       <div className="grid grid-cols-3 gap-6">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Color Sections</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs value={activeSection} onValueChange={setActiveSection} orientation="vertical">
-            <TabsList className="flex flex-col w-full space-y-2">
+        <div className="col-span-1">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Color Sections</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Tabs value={activeSection} onValueChange={setActiveSection} orientation="vertical">
+              <TabsList className="flex flex-col w-full space-y-2">
               {Object.entries(colors).map(([key, section]) => (
                 <TabsTrigger
                   key={key}
