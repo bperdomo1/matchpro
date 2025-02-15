@@ -96,19 +96,37 @@ router.post('/upload', (req, res) => {
 // Get all files
 router.get('/', async (req, res) => {
   try {
-    // We'll implement database fetching here later
-    const files = fs.readdirSync(uploadsDir).map(filename => {
-      const stats = fs.statSync(path.join(uploadsDir, filename));
-      return {
-        id: path.parse(filename).name,
-        name: filename,
-        url: `/uploads/${filename}`,
-        type: path.extname(filename).slice(1),
-        size: stats.size,
-        createdAt: stats.birthtime.toISOString(),
-        updatedAt: stats.mtime.toISOString(),
-      };
-    });
+    const files = [];
+    if (fs.existsSync(uploadsDir)) {
+      const filenames = fs.readdirSync(uploadsDir);
+      for (const filename of filenames) {
+        try {
+          const filePath = path.join(uploadsDir, filename);
+          const stats = fs.statSync(filePath);
+          if (stats.isFile()) {
+            const mimeType = path.extname(filename).toLowerCase();
+            const type = mimeType.startsWith('.') ? 
+              (mimeType === '.jpg' || mimeType === '.jpeg' || mimeType === '.png' || mimeType === '.gif') ? 'image' :
+              (mimeType === '.mp4' || mimeType === '.webm') ? 'video' :
+              'document' : 'unknown';
+            
+            files.push({
+              id: path.parse(filename).name,
+              name: filename,
+              url: `/uploads/${filename}`,
+              type,
+              size: stats.size,
+              createdAt: stats.birthtime.toISOString(),
+              updatedAt: stats.mtime.toISOString(),
+              folderId: null
+            });
+          }
+        } catch (err) {
+          console.error(`Error processing file ${filename}:`, err);
+          // Continue with next file
+        }
+      }
+    }
     res.json(files);
   } catch (error) {
     console.error('Error fetching files:', error);
