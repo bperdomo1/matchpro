@@ -143,6 +143,7 @@ export function FileManager({ className, onFileSelect }: FileManagerProps) {
     accept: {
       'image/*': ALLOWED_FILE_TYPES.images,
       'text/*': ALLOWED_FILE_TYPES.documents,
+      'video/*': ALLOWED_FILE_TYPES.videos,
     },
   });
 
