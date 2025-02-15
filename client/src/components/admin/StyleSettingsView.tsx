@@ -15,6 +15,10 @@ interface ColorSection {
   description?: string;
 }
 
+interface LoginScreenSettings {
+  logoUrl: string;
+}
+
 const colors = {
   branding: {
     title: "Brand Colors",
@@ -23,6 +27,14 @@ const colors = {
       primary: "hsl(var(--primary))",
       secondary: "hsl(134 59% 49%)",
       accent: "hsl(32 100% 50%)"
+    }
+  },
+  loginScreen: {
+    title: "Login Screen",
+    description: "Customize the login and register page appearance",
+    colors: {},
+    settings: {
+      logoUrl: "/attached_assets/MatchPro.ai_Stacked_Color.png"
     }
   },
   interface: {
@@ -174,8 +186,31 @@ export function StyleSettingsView() {
             </Button>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-6">
-              {Object.entries(colors[activeSection as keyof typeof colors].colors).map(
+            {activeSection === 'loginScreen' ? (
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label>Login Page Logo</Label>
+                  <div className="flex items-center gap-4">
+                    <img 
+                      src={colors.loginScreen.settings.logoUrl} 
+                      alt="Login logo preview" 
+                      className="h-16 w-16 object-contain bg-gray-50 rounded p-2"
+                    />
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        // Open FileManager dialog for logo selection
+                        // Will be implemented in the next step
+                      }}
+                    >
+                      Change Logo
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-6">
+                {Object.entries(colors[activeSection as keyof typeof colors].colors).map(
                 ([key, value]) => (
                   <div key={key} className="space-y-2">
                     <Label htmlFor={key}>
