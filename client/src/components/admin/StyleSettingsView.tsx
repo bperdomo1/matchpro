@@ -32,7 +32,9 @@ const colors = {
       background: "hsl(240 5% 96%)",
       foreground: "hsl(var(--foreground))",
       border: "hsl(var(--border))",
-      muted: "hsl(var(--muted))"
+      muted: "hsl(var(--muted))",
+      hover: "hsl(32 100% 50%)", // Orange hover state
+      active: "hsl(134 59% 49%)" // Green active state
     }
   },
   status: {
