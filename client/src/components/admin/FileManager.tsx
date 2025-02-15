@@ -238,7 +238,10 @@ export function FileManager({ className, onFileSelect }: FileManagerProps) {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleSelect(file)}
+                          onClick={() => {
+                            window.open(file.url, '_blank');
+                            handleSelect(file);
+                          }}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
