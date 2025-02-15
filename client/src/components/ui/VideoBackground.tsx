@@ -6,18 +6,26 @@ interface VideoBackgroundProps {
 }
 
 export function VideoBackground({ className }: VideoBackgroundProps) {
+  const videos = [
+    "/videos/soccer1.mp4",
+    "/videos/soccer2.mp4"
+  ];
+
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden" style={{ zIndex: -1 }}>
+    <div className={cn("fixed inset-0 -z-10 overflow-hidden", className)}>
       <video
         autoPlay
-        muted
+        muted={true}
         loop
         playsInline
+        preload="auto"
         className="absolute top-0 left-0 w-full h-full object-cover"
       >
-        <source src="/videos/soccer1.mp4" type="video/mp4" />
+        {videos.map((src, index) => (
+          <source key={index} src={src} type="video/mp4" />
+        ))}
       </video>
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/5" />
     </div>
   );
 }
