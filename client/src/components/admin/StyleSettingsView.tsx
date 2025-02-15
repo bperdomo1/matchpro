@@ -19,40 +19,40 @@ const defaultColors = {
   primary: {
     title: "Primary Colors",
     colors: {
-      primary: "hsl(221.2 83.2% 53.3%)",
-      secondary: "hsl(215 20.2% 65.1%)",
+      primary: "#0066FF",
+      secondary: "#A4B5C6",
     },
   },
   buttons: {
     title: "Button Colors",
     colors: {
-      buttonDefault: "hsl(221.2 83.2% 53.3%)",
-      buttonHover: "hsl(221.2 83.2% 47.3%)",
-      buttonActive: "hsl(221.2 83.2% 43.3%)",
+      buttonDefault: "#0066FF",
+      buttonHover: "#0052CC",
+      buttonActive: "#004499",
     },
   },
   interactive: {
     title: "Interactive Elements",
     colors: {
-      hoverBackground: "hsl(220 14.3% 95.9%)",
-      activeBackground: "hsl(220 14.3% 93.9%)",
+      hoverBackground: "#F5F6F7",
+      activeBackground: "#ECEDEF",
     },
   },
   navigation: {
     title: "Navigation Colors",
     colors: {
-      navBackground: "hsl(0 0% 100%)",
-      navText: "hsl(222.2 47.4% 11.2%)",
-      navHover: "hsl(220 14.3% 95.9%)",
+      navBackground: "#FFFFFF",
+      navText: "#1A1B1E",
+      navHover: "#F5F6F7",
     },
   },
   adminRoles: {
     title: "Admin Role Colors",
     colors: {
-      superAdmin: "hsl(0 72.2% 50.6%)",
-      tournamentAdmin: "hsl(221.2 83.2% 53.3%)",
-      scoreAdmin: "hsl(142.1 76.2% 36.3%)",
-      financeAdmin: "hsl(262.1 83.3% 57.8%)",
+      superAdmin: "#E63946",
+      tournamentAdmin: "#0066FF",
+      scoreAdmin: "#2A9D8F",
+      financeAdmin: "#7B61FF",
     },
   },
 };
