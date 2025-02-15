@@ -103,12 +103,21 @@ export function StyleSettingsView() {
   const handleSave = async () => {
     try {
       await setColor(previewStyles.primary || colors.branding.colors.primary);
+      const updatedStyles = {
+        ...previewStyles,
+        loginScreen: {
+          settings: {
+            logoUrl: previewStyles.logoUrl || colors.loginScreen.settings.logoUrl
+          }
+        }
+      };
+      
       const response = await fetch('/api/admin/styling', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(previewStyles),
+        body: JSON.stringify(updatedStyles),
       });
 
       if (!response.ok) {
