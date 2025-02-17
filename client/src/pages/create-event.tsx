@@ -964,6 +964,7 @@ export default function CreateEvent() {
       const response = await fetch('/api/admin/events', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
         headers: {
           'Accept': 'application/json',
         }
