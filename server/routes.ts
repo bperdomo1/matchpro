@@ -1385,7 +1385,7 @@ export function registerRoutes(app: Express): Server {
         // Start a transaction to create event and related records
         await db.transaction(async (tx) => {
           // Skip age group validation if seasonal scope is being used
-          if (!eventData.ageGroups?.length && !eventData.selectedAgeGroupIds?.length) {
+          if ((!eventData.ageGroups || eventData.ageGroups.length === 0) && (!eventData.selectedAgeGroupIds || eventData.selectedAgeGroupIds.length === 0)) {
             throw new Error("Please select at least one age group");
           }
 
