@@ -868,9 +868,21 @@ export default function CreateEvent() {
 
   const handleCreateEvent = async () => {
     try {
-      if (!selectedScopeId) {
+      const formValues = form.getValues();
+
+      // Validate required fields
+      if (!formValues.name || !formValues.startDate || !formValues.endDate || !formValues.timezone || !formValues.applicationDeadline) {
         toast({
           title: "Error",
+          description: "Please fill in all required event information fields",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!selectedScopeId) {
+        toast({
+          title: "Error", 
           description: "Please select a seasonal scope first",
           variant: "destructive",
         });
@@ -887,7 +899,6 @@ export default function CreateEvent() {
       }
 
       setIsSaving(true);
-      const formValues = form.getValues();
       const selectedScope = seasonalScopesQuery.data?.find(scope => scope.id === selectedScopeId);
       const selectedAgeGroups = selectedScope?.ageGroups.filter(group =>
         selectedAgeGroupIds.includes(group.id)
@@ -905,7 +916,7 @@ export default function CreateEvent() {
         refundPolicy: formValues.refundPolicy || "",
         ageGroups: selectedAgeGroups.map(group => ({
           id: generateId(),
-          gender: group.gender as "Male" | "Female" | "Coed",
+          gender: group.gender as"Male" | "Female" | "Coed",
           projectedTeams: 20,
           birthDateStart: new Date(group.minBirthYear, 0, 1).toISOString(),
           birthDateEnd: new Date(group.maxBirthYear, 11, 31).toISOString(),
