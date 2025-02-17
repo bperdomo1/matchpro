@@ -1678,7 +1678,7 @@ export function registerRoutes(app: Express): Server {
     });
 
     // Add this new endpoint to get event details for editing
-    app.get('/api/admin/events/:id/edit', isAdmin, async (req, res) => {
+    app.get('/api/admin/events/:id/edit', async (req, res) => {
       try {
         const eventId = req.params.id;
 
