@@ -996,7 +996,7 @@ export function registerRoutes(app: Express): Server {
           accent: '#FF8C00',
           background: '#F5F5F6',
           foreground: '#000000',
-          border: '#CCCCCC',
+          border: '#CCCCCCCC',
           muted: '#999999',
           hover: '#FF8C00',
           active: '#32CD32',
@@ -1932,7 +1932,7 @@ export function registerRoutes(app: Express): Server {
             .from(eventComplexes)
             .innerJoin(fields, eq(eventComplexes.complexId, fields.complexId))
             .innerJoin(complexes, eq(eventComplexes.complexId, complexes.id))
-            .whereeq(eventComplexes.eventId, eventId));
+            .where(eq(eventComplexes.eventId, eventId));
 
           // 4. Generate time slots for each day
           const startDate = new Date(event.startDate);
