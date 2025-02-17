@@ -1021,7 +1021,7 @@ export function registerRoutes(app: Express): Server {
     app.post('/api/admin/styling', isAdmin, async (req, res) => {
       try {
         const styleConfig = req.body;
-        
+
         // Update organization settings with the new colors
         const [settings] = await db
           .select()
@@ -1365,9 +1365,8 @@ export function registerRoutes(app: Express): Server {
             return res.status(400).send("Invalid event data format");
         }
 
-        if (!eventData || !Array.isArray(eventData.selectedAgeGroupIds) || eventData.selectedAgeGroupIds.length === 0) {
-            return res.status(400).json({ error: "Please select at least one age group" });
-        }
+        // Age groups selection has been moved to seasonal scope selection
+        // No validation needed here as it's handled in the UI
 
         // Sanitize the data
         const sanitizedEventData = {
@@ -1933,7 +1932,7 @@ export function registerRoutes(app: Express): Server {
             .from(eventComplexes)
             .innerJoin(fields, eq(eventComplexes.complexId, fields.complexId))
             .innerJoin(complexes, eq(eventComplexes.complexId, complexes.id))
-            .where(eq(eventComplexes.eventId, eventId));
+            .whereeq(eventComplexes.eventId, eventId));
 
           // 4. Generate time slots for each day
           const startDate = new Date(event.startDate);
