@@ -23,8 +23,8 @@ export function CouponManagement() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<SelectCoupon | null>(null);
   const queryClient = useQueryClient();
-  const [location] = useLocation();
-  const eventId = location.split('/')[2] || '';
+  const [location, navigate] = useLocation();
+  const eventId = location?.split('/')[2] || '';
 
   const couponsQuery = useQuery({
     queryKey: ['/api/admin/coupons', eventId],
@@ -72,16 +72,6 @@ export function CouponManagement() {
     }
   };
 
-  if (couponsQuery.isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  const [, navigate] = useLocation();
-
   const handleSaveAndExit = () => {
     toast({
       title: "Success",
@@ -89,6 +79,14 @@ export function CouponManagement() {
     });
     navigate("/admin");
   };
+
+  if (couponsQuery.isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4">
