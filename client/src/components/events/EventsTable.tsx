@@ -277,9 +277,13 @@ export function EventsTable() {
                           <Eye className="mr-2 h-4 w-4" />
                           View Registration Link
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="text-red-600"
                           onClick={async () => {
+                            if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+                              return;
+                            }
+                            
                             try {
                               toast({
                                 title: "Deleting event...",
@@ -291,10 +295,12 @@ export function EventsTable() {
                                 headers: {
                                   'Content-Type': 'application/json',
                                 },
+                                credentials: 'include'
                               });
 
                               if (!response.ok) {
-                                throw new Error('Failed to delete event');
+                                const errorData = await response.json();
+                                throw new Error(errorData.message || 'Failed to delete event');
                               }
 
                               toast({
@@ -302,9 +308,10 @@ export function EventsTable() {
                                 description: "Event deleted successfully",
                               });
 
-                              // Refetch events
-                              eventsQuery.refetch();
+                              // Force refetch events
+                              await eventsQuery.refetch();
                             } catch (error) {
+                              console.error('Delete error:', error);
                               toast({
                                 title: "Error",
                                 description: error instanceof Error ? error.message : "Failed to delete event",
