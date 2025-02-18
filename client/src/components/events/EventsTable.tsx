@@ -177,13 +177,13 @@ export function EventsTable() {
               <TableRow>
                 <TableHead className="font-semibold cursor-pointer" onClick={() => handleSort("name")}>
                   <div className="flex items-center">
-                    Name
+                    Event Name
                     <SortIcon field="name" />
                   </div>
                 </TableHead>
                 <TableHead className="font-semibold cursor-pointer" onClick={() => handleSort("date")}>
                   <div className="flex items-center">
-                    Start Date
+                    Date
                     <SortIcon field="date" />
                   </div>
                 </TableHead>
