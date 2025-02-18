@@ -138,6 +138,15 @@ export function EventsTable() {
     );
   };
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
   if (eventsQuery.isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -201,7 +210,12 @@ export function EventsTable() {
                   </div>
                 </TableHead>
                 <TableHead>End Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead className="font-semibold cursor-pointer" onClick={() => handleSort("status")}>
+                  <div className="flex items-center">
+                    Status
+                    <SortIcon field="status" />
+                  </div>
+                </TableHead>
                 <TableHead>Application Deadline</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
