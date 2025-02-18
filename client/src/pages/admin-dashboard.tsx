@@ -50,6 +50,8 @@ import {
   Flag,
   CalendarDays,
   ImageIcon,
+  Archive,
+  Clock,
 } from "lucide-react";
 import {
   Table,
@@ -996,7 +998,7 @@ function ComplexesView() {
     },
     onError: (error) => {
       toast({
-        title: "Error",
+        title: ""Error",
         description: error instanceof Error ? error.message: "Failed to update field",
         variant: "destructive",
       });
@@ -1201,7 +1203,7 @@ function EventsView() {
   const [filteredEvents, setFilteredEvents] = useState<any[]>([]);
   const [showArchived, setShowArchived] = useState(false);
   const queryClient = useQueryClient();
-  
+
   const eventsQuery = useQuery({
     queryKey: ['/api/admin/events', showArchived],
     queryFn: async () => {
@@ -1282,7 +1284,7 @@ function EventsView() {
                   const now = new Date();
                   const events = eventsQuery.data.filter((event: any) => {
                     if (value === 'all') return true;
-                    
+
                     const start = new Date(event.startDate);
                     const end = new Date(event.endDate);
                     end.setHours(23, 59, 59, 999);
@@ -1290,7 +1292,7 @@ function EventsView() {
                     if (value === 'past' && now > end) return true;
                     if (value === 'active' && now >= start && now <= end) return true;
                     if (value === 'upcoming' && now < start) return true;
-                    
+
                     return false;
                   });
                   setFilteredEvents(events);
