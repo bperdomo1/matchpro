@@ -23,8 +23,8 @@ export function CouponManagement() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<SelectCoupon | null>(null);
   const queryClient = useQueryClient();
-  const [, params] = useLocation();
-  const eventId = params.split('/')[2];
+  const [location] = useLocation();
+  const eventId = location.split('/')[2] || '';
 
   const couponsQuery = useQuery({
     queryKey: ['/api/admin/coupons', eventId],
