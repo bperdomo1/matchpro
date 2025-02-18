@@ -1199,6 +1199,7 @@ function EventsView() {
   const { user } = useUser();
   const { toast } = useToast();
   const [filteredEvents, setFilteredEvents] = useState<any[]>([]);
+  const [selectedEvents, setSelectedEvents] = useState<number[]>([]); // Add state for selected events
   const eventsQuery = useQuery({
     queryKey: ['/api/admin/events'],
     queryFn: async () => {
@@ -1238,6 +1239,38 @@ function EventsView() {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-2">
+                {selectedEvents.length > 0 && (
+                  <Button
+                    variant="destructive"
+                    onClick={async () => {
+                      try {
+                        const response = await fetch('/api/admin/events/bulk', {
+                          method: 'DELETE',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ eventIds: selectedEvents }),
+                        });
+
+                        if (!response.ok) throw new Error('Failed to delete events');
+
+                        setSelectedEvents([]);
+                        eventsQuery.refetch();
+                        toast({
+                          title: "Success",
+                          description: `${selectedEvents.length} events deleted successfully`,
+                        });
+                      } catch (error) {
+                        toast({
+                          title: "Error",
+                          description: "Failed to delete events",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
+                  >
+                    <Trash className="mr-2 h-4 w-4" />
+                    Delete Selected ({selectedEvents.length})
+                  </Button>
+                )}
                 <Input
                   placeholder="Search events..."
                   className="w-[300px]"
@@ -1247,7 +1280,7 @@ function EventsView() {
                   const now = new Date();
                   const events = eventsQuery.data.filter((event: any) => {
                     if (value === 'all') return true;
-                    
+
                     const start = new Date(event.startDate);
                     const end = new Date(event.endDate);
                     end.setHours(23, 59, 59, 999);
@@ -1255,7 +1288,7 @@ function EventsView() {
                     if (value === 'past' && now > end) return true;
                     if (value === 'active' && now >= start && now <= end) return true;
                     if (value === 'upcoming' && now < start) return true;
-                    
+
                     return false;
                   });
                   setFilteredEvents(events);
@@ -1276,14 +1309,37 @@ function EventsView() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>
+                    <input type="checkbox" onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedEvents(filteredEvents.map((event: any) => event.id));
+                      } else {
+                        setSelectedEvents([]);
+                      }
+                    }} />
+                  </TableHead>
                   <TableHead>Event Name</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              </TableHeader><TableBody>
+              </TableHeader>
+              <TableBody>
                 {filteredEvents.map((event: any) => (
                   <TableRow key={event.id}>
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        checked={selectedEvents.includes(event.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedEvents([...selectedEvents, event.id]);
+                          } else {
+                            setSelectedEvents(selectedEvents.filter((id) => id !== event.id));
+                          }
+                        }}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">{event.name}</TableCell>
                     <TableCell>{event.startDate} - {event.endDate}</TableCell>
                     <TableCell>
