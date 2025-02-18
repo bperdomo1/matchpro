@@ -1235,7 +1235,23 @@ function EventsView() {
                   placeholder="Search events..."
                   className="w-[300px]"
                 />
-                <Select defaultValue="all">
+                <Select defaultValue="all" onValueChange={(value) => {
+                  const filteredEvents = eventsQuery.data?.filter((event: any) => {
+                    if (value === 'all') return true;
+                    
+                    const now = new Date();
+                    const start = new Date(event.startDate);
+                    const end = new Date(event.endDate);
+                    end.setHours(23, 59, 59, 999);
+
+                    if (value === 'past' && now > end) return true;
+                    if (value === 'active' && now >= start && now <= end) return true;
+                    if (value === 'upcoming' && now < start) return true;
+                    
+                    return false;
+                  });
+                  eventsQuery.data = filteredEvents;
+                }}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
