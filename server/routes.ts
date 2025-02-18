@@ -93,7 +93,7 @@ export function registerRoutes(app: Express): Server {
     app.get('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
         const eventId = req.params.id; // Remove parseInt since ID is string
-
+        
         // Simplified query to get basic event data
         const event = await db
           .select({
@@ -1393,7 +1393,7 @@ export function registerRoutes(app: Express): Server {
     // Event creation endpoint
     app.post('/api/admin/events', isAdmin, async (req, res) => {
       try {
-        const formData = { ...req.body, id: crypto.generateEventId() };
+        const formData = req.body;
 
         // Ensure we have valid data
         if (!formData || typeof formData !== 'object') {
@@ -1402,7 +1402,7 @@ export function registerRoutes(app: Express): Server {
           });
         }
 
-        const { name, startDate, endDate, timezone, applicationDeadline, id } = formData;
+        const { name, startDate, endDate, timezone, applicationDeadline } = formData;
 
         if (!name || !startDate || !endDate || !applicationDeadline) {
           return res.status(400).json({ 
@@ -1414,7 +1414,6 @@ export function registerRoutes(app: Express): Server {
         const [newEvent] = await db
           .insert(events)
           .values({
-            id,
             name,
             startDate,
             endDate,
@@ -1940,7 +1939,7 @@ export function registerRoutes(app: Express): Server {
                   updatedAt: new Date().toISOString(),
                 });
 
-                //                // Add break time before next game
+                // Add break time before next game
                 currentTime = new Date(endTime.getTime() + (breakBetweenGames * 60 * 1000));
               }
             }

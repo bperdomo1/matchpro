@@ -8,7 +8,8 @@ const generateEventId = () => {
   const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   const length = 12;
   let result = '';
-  const values = randomBytes(length);
+  const values = new Uint8Array(length);
+  crypto.getRandomValues(values);
   for (let i = 0; i < length; i++) {
     result += chars[values[i] % chars.length];
   }

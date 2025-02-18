@@ -246,7 +246,7 @@ export function EventsTable() {
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => {
-                            const registrationUrl = `${window.location.origin}/event-registration/${event.id}`;
+                            const registrationUrl = `${window.location.origin}/register/event/${event.id}`;
                             toast({
                               title: "Registration Link",
                               description: (
