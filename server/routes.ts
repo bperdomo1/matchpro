@@ -93,7 +93,7 @@ export function registerRoutes(app: Express): Server {
     app.get('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
         const eventId = req.params.id; // Remove parseInt since ID is string
-        
+
         // Simplified query to get basic event data
         const event = await db
           .select({
@@ -994,8 +994,7 @@ export function registerRoutes(app: Express): Server {
             .returning();
         } else {
           [settings] = await db
-            .insert(organizationSettings)
-            .values({
+            .insert(organizationSettings)            .values({
               ...updatedSettings,
               createdAt: new Date().toISOString(),
             })
@@ -1937,8 +1936,7 @@ export function registerRoutes(app: Express): Server {
                   endTime: endTime.toISOString(),
                   dayIndex,
                   createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                });
+                  updatedAt: new Date().toISOString(),                });
 
                 // Add break time before next game
                 currentTime = new Date(endTime.getTime() + (breakBetweenGames * 60 * 1000));

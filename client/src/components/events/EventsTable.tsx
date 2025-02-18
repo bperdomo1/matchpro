@@ -281,8 +281,16 @@ export function EventsTable() {
                           className="text-red-600"
                           onClick={async () => {
                             try {
+                              toast({
+                                title: "Deleting event...",
+                                description: "Please wait while the event is being deleted.",
+                              });
+                              
                               const response = await fetch(`/api/admin/events/${event.id}`, {
                                 method: 'DELETE',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                },
                               });
 
                               if (!response.ok) {
