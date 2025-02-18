@@ -5,11 +5,10 @@ import { promisify } from "util";
 const scryptAsync = promisify(scrypt);
 
 const generateEventId = () => {
-  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  const length = 12;
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const length = 10;
   let result = '';
-  const values = new Uint8Array(length);
-  crypto.getRandomValues(values);
+  const values = randomBytes(length);
   for (let i = 0; i < length; i++) {
     result += chars[values[i] % chars.length];
   }
