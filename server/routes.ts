@@ -1357,13 +1357,7 @@ export function registerRoutes(app: Express): Server {
     // Event creation endpoint
     app.post('/api/admin/events', isAdmin, async (req, res) => {
       try {
-        let formData;
-        
-        if (req.headers['content-type']?.includes('multipart/form-data')) {
-          formData = JSON.parse(req.body.data);
-        } else {
-          formData = req.body;
-        }
+        const formData = req.body;
 
         // Ensure we have valid data
         if (!formData || typeof formData !== 'object') {
