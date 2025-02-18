@@ -5,8 +5,15 @@ import { promisify } from "util";
 const scryptAsync = promisify(scrypt);
 
 const generateEventId = () => {
-  // Generate a random 10-digit integer to stay within safe bounds
-  return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const length = 12;
+  let result = '';
+  const values = new Uint8Array(length);
+  crypto.getRandomValues(values);
+  for (let i = 0; i < length; i++) {
+    result += chars[values[i] % chars.length];
+  }
+  return result;
 };
 
 export const crypto = {
