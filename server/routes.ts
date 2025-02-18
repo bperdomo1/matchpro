@@ -1357,7 +1357,13 @@ export function registerRoutes(app: Express): Server {
     // Event creation endpoint
     app.post('/api/admin/events', isAdmin, async (req, res) => {
       try {
-        let formData = req.body;
+        let formData;
+        
+        if (req.headers['content-type']?.includes('multipart/form-data')) {
+          formData = JSON.parse(req.body.data);
+        } else {
+          formData = req.body;
+        }
 
         // Ensure we have valid data
         if (!formData || typeof formData !== 'object') {
@@ -1366,7 +1372,7 @@ export function registerRoutes(app: Express): Server {
           });
         }
 
-        const { name, startDate, endDate, applicationDeadline } = formData;
+        const { name, startDate, endDate, timezone, applicationDeadline } = formData;
 
         if (!name || !startDate || !endDate || !applicationDeadline) {
           return res.status(400).json({ 
@@ -1381,7 +1387,9 @@ export function registerRoutes(app: Express): Server {
             name,
             startDate,
             endDate,
+            timezone: timezone || 'America/New_York',
             applicationDeadline,
+            status: 'draft',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           })
