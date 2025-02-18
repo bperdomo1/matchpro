@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -72,7 +71,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
     mutationFn: async (data: CouponFormValues) => {
       const response = await fetch("/api/admin/coupons", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
           ...data,
           eventId,
@@ -80,18 +79,22 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
         }),
       });
 
+      const contentType = response.headers.get("content-type");
       if (!response.ok) {
-        const error = await response.text();
-        try {
-          const errorJson = JSON.parse(error);
-          throw new Error(errorJson.message || "Failed to create coupon");
-        } catch {
-          throw new Error(error || "Failed to create coupon");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to create coupon");
+        } else {
+          const errorText = await response.text();
+          throw new Error("Invalid server response");
         }
       }
 
-      const responseData = await response.json();
-      return responseData;
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Invalid response format from server");
+      }
+
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["/api/admin/coupons"]);
@@ -114,7 +117,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
     mutationFn: async (data: CouponFormValues) => {
       const response = await fetch(`/api/admin/coupons/${couponToEdit.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
           ...data,
           eventId,
@@ -122,9 +125,19 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
         }),
       });
 
+      const contentType = response.headers.get("content-type");
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to update coupon");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to update coupon");
+        } else {
+          const errorText = await response.text();
+          throw new Error("Invalid server response");
+        }
+      }
+
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Invalid response format from server");
       }
 
       return response.json();
