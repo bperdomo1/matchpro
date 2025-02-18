@@ -2288,6 +2288,38 @@ export function registerRoutes(app: Express): Server {
       }
     });
 
+    // Bulk delete events endpoint
+    app.delete('/api/admin/events/bulk', isAdmin, async (req, res) => {
+      try {
+        const { eventIds } = req.body;
+
+        if (!Array.isArray(eventIds) || eventIds.length === 0) {
+          return res.status(400).json({ message: "No events selected" });
+        }
+
+        // Start a transaction to handle cascade deletion
+        await db.transaction(async (tx) => {
+          // Delete related records first
+          await tx.delete(eventAgeGroups).where(inArray(eventAgeGroups.eventId, eventIds));
+          await tx.execute(sql`DELETE FROM event_complexes WHERE event_id = ANY(${eventIds})`);
+          await tx.delete(eventFieldSizes).where(inArray(eventFieldSizes.eventId, eventIds));
+          await tx.delete(teams).where(inArray(teams.eventId, eventIds));
+
+          // Finally delete the events
+          await tx.delete(events).where(inArray(events.id, eventIds));
+        });
+
+        res.json({ message: "Events deleted successfully" });
+      } catch (error) {
+        console.error('Error deleting events:', error);
+        let errorMessage = "Failed to delete events";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        res.status(500).send(errorMessage);
+      }
+    });
+
     app.delete('/api/admin/events/:id', isAdmin, async (req, res) => {
       try {
         const eventId = req.params.id;
