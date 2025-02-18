@@ -5,14 +5,12 @@ import { promisify } from "util";
 const scryptAsync = promisify(scrypt);
 
 const generateEventId = () => {
-  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const length = 10;
-  let result = '';
-  const values = randomBytes(length);
-  for (let i = 0; i < length; i++) {
-    result += chars[values[i] % chars.length];
-  }
-  return result;
+  // Generate a random 10-digit number
+  const min = 1000000000; // 10 digits
+  const max = 9999999999;
+  const buffer = randomBytes(4);
+  const value = buffer.readUInt32BE(0);
+  return min + (value % (max - min));
 };
 
 export const crypto = {
