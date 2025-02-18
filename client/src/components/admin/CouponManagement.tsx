@@ -39,9 +39,16 @@ export function CouponManagement() {
     mutationFn: async (couponId: number) => {
       const response = await fetch(`/api/admin/coupons/${couponId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
-      if (!response.ok) throw new Error('Failed to delete coupon');
-      return response.json();
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to delete coupon');
+      }
+      const data = await response.json();
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['/api/admin/coupons', eventId]);

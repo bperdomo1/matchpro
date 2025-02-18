@@ -81,11 +81,17 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to create coupon");
+        const error = await response.text();
+        try {
+          const errorJson = JSON.parse(error);
+          throw new Error(errorJson.message || "Failed to create coupon");
+        } catch {
+          throw new Error(error || "Failed to create coupon");
+        }
       }
 
-      return response.json();
+      const responseData = await response.json();
+      return responseData;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["/api/admin/coupons"]);
