@@ -1263,13 +1263,29 @@ function EventsView() {
                     <TableCell className="font-medium">{event.name}</TableCell>
                     <TableCell>{event.startDate} - {event.endDate}</TableCell>
                     <TableCell>
-                      <Badge variant="outline" className={
-                        event.status === 'open' ? "bg-green-50 text-green-700" :
-                          event.status === 'closed' ? "bg-red-50 text-red-700" :
-                            "bg-yellow-50 text-yellow-700"
-                      }>
-                        {event.status}
-                      </Badge>
+                      {(() => {
+                        const now = new Date();
+                        const start = new Date(event.startDate);
+                        const end = new Date(event.endDate);
+                        end.setHours(23, 59, 59, 999);
+
+                        let status = "Upcoming";
+                        let colorClass = "bg-yellow-50 text-yellow-700";
+
+                        if (now > end) {
+                          status = "Past";
+                          colorClass = "bg-red-50 text-red-700";
+                        } else if (now >= start && now <= end) {
+                          status = "Active";
+                          colorClass = "bg-green-50 text-green-700";
+                        }
+
+                        return (
+                          <Badge variant="outline" className={colorClass}>
+                            {status}
+                          </Badge>
+                        );
+                      })()}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
