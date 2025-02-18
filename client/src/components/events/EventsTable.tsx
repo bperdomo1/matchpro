@@ -61,6 +61,7 @@ const calculateEventStatus = (startDate: string, endDate: string): Event["status
   const now = new Date();
   const start = new Date(startDate);
   const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999); // Set to end of day
 
   if (now > end) {
     return "past";
