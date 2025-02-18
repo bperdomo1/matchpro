@@ -1,6 +1,7 @@
+
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link2, Archive, ArchiveRestore } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Link2, Edit, FileQuestion, User, TagsIcon, Printer, AlertTriangle, MoreHorizontal, ChevronUp, ChevronDown, Search } from "lucide-react";
 import { useLocation } from "wouter";
 import {
   Table,
@@ -20,21 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { formatDate } from "@/lib/utils";
-import {
-  Calendar,
-  Edit,
-  FileQuestion,
-  User,
-  TagsIcon,
-  Printer,
-  AlertTriangle,
-  MoreHorizontal,
-  ChevronUp,
-  ChevronDown,
-  Search,
-} from "lucide-react";
 import { Loader2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -45,23 +31,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/utils";
 
 interface Event {
   id: number;
   name: string;
   startDate: string;
   endDate: string;
-  status: "past" | "active" | "upcoming";
   applicationsReceived: number;
   teamsAccepted: number;
   applicationDeadline: string;
 }
 
-const calculateEventStatus = (startDate: string, endDate: string): Event["status"] => {
+const calculateEventStatus = (startDate: string, endDate: string) => {
   const now = new Date();
   const start = new Date(startDate);
   const end = new Date(endDate);
-  end.setHours(23, 59, 59, 999); // Set to end of day
+  end.setHours(23, 59, 59, 999);
 
   if (now > end) {
     return "past";
@@ -77,14 +63,10 @@ type SortDirection = "asc" | "desc";
 
 export function EventsTable() {
   const [, navigate] = useLocation();
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Event["status"] | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<"past" | "active" | "upcoming" | "all">("all");
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [selectedEventIds, setSelectedEventIds] = useState<number[]>([]);
-
-  const queryClient = useQueryClient();
 
   const eventsQuery = useQuery<Event[]>({
     queryKey: ["/api/admin/events"],
@@ -94,17 +76,15 @@ export function EventsTable() {
         throw new Error("Failed to fetch events");
       }
       const events = await response.json();
-      return events.map((event: Event) => ({
-        ...event,
-        status: calculateEventStatus(event.startDate, event.endDate),
-      }));
+      return events;
     },
   });
 
   const filterEvents = (events: Event[]) => {
     return events.filter((event) => {
+      const status = calculateEventStatus(event.startDate, event.endDate);
       const matchesSearch = event.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus = statusFilter === "all" || event.status === statusFilter;
+      const matchesStatus = statusFilter === "all" || status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   };
@@ -122,7 +102,7 @@ export function EventsTable() {
         case "teams":
           return multiplier * (a.teamsAccepted - b.teamsAccepted);
         case "status":
-          return multiplier * a.status.localeCompare(b.status);
+          return multiplier * calculateEventStatus(a.startDate, a.endDate).localeCompare(calculateEventStatus(b.startDate, b.endDate));
         default:
           return 0;
       }
@@ -179,7 +159,7 @@ export function EventsTable() {
                 className="pl-9 w-[300px]"
               />
             </div>
-            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as Event["status"] | "all")}>
+            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as typeof statusFilter)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -229,14 +209,15 @@ export function EventsTable() {
                   <TableCell>
                     <Badge
                       variant={
-                        event.status === "past"
+                        calculateEventStatus(event.startDate, event.endDate) === "past"
                           ? "secondary"
-                          : event.status === "active"
+                          : calculateEventStatus(event.startDate, event.endDate) === "active"
                           ? "default"
                           : "outline"
                       }
                     >
-                      {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+                      {calculateEventStatus(event.startDate, event.endDate).charAt(0).toUpperCase() + 
+                       calculateEventStatus(event.startDate, event.endDate).slice(1)}
                     </Badge>
                   </TableCell>
                   <TableCell>{formatDate(event.applicationDeadline)}</TableCell>
