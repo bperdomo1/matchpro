@@ -1255,8 +1255,6 @@ function EventsView() {
                   <TableHead>Event Name</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Teams</TableHead>
-                  <TableHead>Location</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader><TableBody>
@@ -1273,8 +1271,6 @@ function EventsView() {
                         {event.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{event.teamCount}/{event.maxTeams}</TableCell>
-                    <TableCell>{event.location}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
