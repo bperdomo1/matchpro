@@ -190,6 +190,6 @@ export function CouponManagement() {
         eventId={eventId}
         couponToEdit={selectedCoupon}
       />
-    </>
+    </div>
   );
 }
