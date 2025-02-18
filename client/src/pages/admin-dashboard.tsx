@@ -1404,7 +1404,30 @@ function EventsView() {
                             Generate Registration Link
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem 
+                            className="text-red-600"
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(`/api/admin/events/${event.id}`, {
+                                  method: 'DELETE',
+                                });
+
+                                if (!response.ok) throw new Error('Failed to delete event');
+
+                                eventsQuery.refetch();
+                                toast({
+                                  title: "Success",
+                                  description: "Event deleted successfully",
+                                });
+                              } catch (error) {
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to delete event",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
                             <Trash className="mr-2 h-4 w-4" />
                             Delete
                           </DropdownMenuItem>
