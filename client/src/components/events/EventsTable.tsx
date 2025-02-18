@@ -58,7 +58,7 @@ const calculateEventStatus = (startDate: string, endDate: string) => {
   }
 };
 
-type SortField = "name" | "date" | "applications" | "teams" | "status";
+type SortField = "name" | "date" | "applications" | "status";
 type SortDirection = "asc" | "desc";
 
 export function EventsTable() {
@@ -99,8 +99,6 @@ export function EventsTable() {
           return multiplier * (new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
         case "applications":
           return multiplier * (a.applicationsReceived - b.applicationsReceived);
-        case "teams":
-          return multiplier * (a.teamsAccepted - b.teamsAccepted);
         case "status":
           return multiplier * calculateEventStatus(a.startDate, a.endDate).localeCompare(calculateEventStatus(b.startDate, b.endDate));
         default:
