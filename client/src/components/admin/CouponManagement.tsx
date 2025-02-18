@@ -82,52 +82,80 @@ export function CouponManagement() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Coupon Management</h2>
-        <Button onClick={() => setIsAddModalOpen(true)}>
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 font-inter">Coupon Management</h2>
+        <Button 
+          onClick={() => setIsAddModalOpen(true)}
+          className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Coupon
         </Button>
       </div>
-      <Card>
-        <CardContent className="p-0">
+      <Card className="border border-gray-200 shadow-sm rounded-lg">
+        <CardContent className="p-4">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Expires</TableHead>
-                <TableHead>Uses</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+              <TableRow className="border-b border-gray-200 bg-gray-50">
+                <TableHead className="font-semibold text-gray-700">Code</TableHead>
+                <TableHead className="font-semibold text-gray-700">Type</TableHead>
+                <TableHead className="font-semibold text-gray-700">Amount</TableHead>
+                <TableHead className="font-semibold text-gray-700">Expires</TableHead>
+                <TableHead className="font-semibold text-gray-700">Uses</TableHead>
+                <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                <TableHead className="text-right font-semibold text-gray-700">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {couponsQuery.data?.map((coupon: SelectCoupon) => (
-                <TableRow key={coupon.id}>
-                  <TableCell className="font-medium">{coupon.code}</TableCell>
+                <TableRow 
+                  key={coupon.id}
+                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                >
+                  <TableCell className="font-medium text-gray-900">{coupon.code}</TableCell>
                   <TableCell>
-                    <Badge variant={coupon.discountType === 'percentage' ? 'secondary' : 'outline'}>
+                    <Badge 
+                      variant={coupon.discountType === 'percentage' ? 'secondary' : 'outline'}
+                      className={
+                        coupon.discountType === 'percentage' 
+                          ? 'bg-[#6B7280] text-white' 
+                          : 'border-[#6B7280] text-[#6B7280]'
+                      }
+                    >
                       {coupon.discountType === 'percentage' ? `${coupon.amount}%` : `$${coupon.amount}`}
                     </Badge>
                   </TableCell>
-                  <TableCell>{coupon.amount}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-gray-700">{coupon.amount}</TableCell>
+                  <TableCell className="text-gray-700">
                     {coupon.expirationDate ? 
                       new Date(coupon.expirationDate).toLocaleDateString() : 
                       'No expiration'
                     }
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-gray-700">
                     {coupon.usageCount} {coupon.maxUses ? `/ ${coupon.maxUses}` : ''}
                   </TableCell>
-                  <TableCell>{coupon.isActive ? 'Active' : 'Inactive'}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" onClick={() => handleEditCoupon(coupon)}>
+                  <TableCell>
+                    <Badge 
+                      variant={coupon.isActive ? 'default' : 'secondary'}
+                      className={coupon.isActive ? 'bg-[#10B981] text-white' : 'bg-[#6B7280] text-white'}
+                    >
+                      {coupon.isActive ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => handleEditCoupon(coupon)}
+                      className="text-[#6B7280] hover:text-[#2563EB] hover:bg-blue-50"
+                    >
                       Edit
                     </Button>
-                    <Button variant="destructive" onClick={() => handleDeleteCoupon(coupon.id)}>
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => handleDeleteCoupon(coupon.id)}
+                      className="text-[#EF4444] hover:bg-red-50"
+                    >
                       Delete
                     </Button>
                   </TableCell>

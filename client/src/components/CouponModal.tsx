@@ -150,9 +150,9 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="sm:max-w-[500px] p-6 bg-white rounded-xl shadow-lg">
+        <DialogHeader className="mb-6">
+          <DialogTitle className="text-2xl font-bold text-gray-900">
             {couponToEdit ? "Edit Coupon" : "Create New Coupon"}
           </DialogTitle>
         </DialogHeader>
