@@ -2326,7 +2326,10 @@ export function registerRoutes(app: Express): Server {
 
         // Start a transaction to handle cascade deletion
         await db.transaction(async (tx) => {
-          // Delete tournament groups first to remove the foreign key reference
+          // First delete teams to remove references to age groups
+          await tx.delete(teams).where(eq(teams.eventId, eventId));
+
+          // Then delete tournament groups
           await tx.delete(tournamentGroups).where(eq(tournamentGroups.eventId, eventId));
           
           // Delete other related records
