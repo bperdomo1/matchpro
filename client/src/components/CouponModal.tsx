@@ -81,20 +81,21 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
 
       const contentType = response.headers.get("content-type");
       if (!response.ok) {
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to create coupon");
-        } else {
-          const errorText = await response.text();
-          throw new Error("Invalid server response");
+        const errorText = await response.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || "Failed to create coupon");
+        } catch {
+          throw new Error(errorText || "Failed to create coupon");
         }
       }
 
-      if (!contentType || !contentType.includes("application/json")) {
+      const responseData = await response.text();
+      try {
+        return JSON.parse(responseData);
+      } catch {
         throw new Error("Invalid response format from server");
       }
-
-      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["/api/admin/coupons"]);
