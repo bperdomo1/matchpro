@@ -1198,6 +1198,7 @@ function EventsView() {
   const [, navigate] = useLocation();
   const { user } = useUser();
   const { toast } = useToast();
+  const [filteredEvents, setFilteredEvents] = useState<any[]>([]);
   const eventsQuery = useQuery({
     queryKey: ['/api/admin/events'],
     queryFn: async () => {
@@ -1206,6 +1207,12 @@ function EventsView() {
       return response.json();
     }
   });
+
+  useEffect(() => {
+    if (eventsQuery.data) {
+      setFilteredEvents(eventsQuery.data);
+    }
+  }, [eventsQuery.data]);
 
   if (eventsQuery.isLoading) {
     return (
@@ -1236,10 +1243,11 @@ function EventsView() {
                   className="w-[300px]"
                 />
                 <Select defaultValue="all" onValueChange={(value) => {
-                  const filteredEvents = eventsQuery.data?.filter((event: any) => {
+                  if (!eventsQuery.data) return;
+                  const now = new Date();
+                  const events = eventsQuery.data.filter((event: any) => {
                     if (value === 'all') return true;
                     
-                    const now = new Date();
                     const start = new Date(event.startDate);
                     const end = new Date(event.endDate);
                     end.setHours(23, 59, 59, 999);
@@ -1250,7 +1258,7 @@ function EventsView() {
                     
                     return false;
                   });
-                  eventsQuery.data = filteredEvents;
+                  setFilteredEvents(events);
                 }}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Status" />
@@ -1274,7 +1282,7 @@ function EventsView() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader><TableBody>
-                {eventsQuery.data?.map((event: any) => (
+                {filteredEvents.map((event: any) => (
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">{event.name}</TableCell>
                     <TableCell>{event.startDate} - {event.endDate}</TableCell>
