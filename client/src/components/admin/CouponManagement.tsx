@@ -80,19 +80,38 @@ export function CouponManagement() {
     );
   }
 
+  const [, navigate] = useLocation();
+
+  const handleSaveAndExit = () => {
+    toast({
+      title: "Success",
+      description: "All changes have been saved",
+    });
+    navigate("/admin");
+  };
+
   return (
-    <>
+    <div className="max-w-6xl mx-auto px-4">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 font-inter">Coupon Management</h2>
-        <Button 
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Coupon
-        </Button>
+        <div className="flex gap-4">
+          <Button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Coupon
+          </Button>
+          <Button 
+            onClick={handleSaveAndExit}
+            variant="outline"
+            className="border-[#6B7280] text-[#6B7280] hover:bg-gray-50"
+          >
+            Save & Exit
+          </Button>
+        </div>
       </div>
-      <Card className="border border-gray-200 shadow-sm rounded-lg">
+      <Card className="border border-gray-200 shadow-sm rounded-lg mb-8">
         <CardContent className="p-4">
           <Table>
             <TableHeader>
