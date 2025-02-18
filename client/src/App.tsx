@@ -54,7 +54,7 @@ function Router() {
       </Route>
       <Route path="/household" component={HouseholdPage} />
       <Route path="/chat" component={ChatPage} />
-      <Route path="/register/event/:eventId" component={EventRegistration} /> {/* Added registration route */}
+      <Route path="/event-registration/:eventId" component={EventRegistration} /> {/* Added registration route */}
       <Route path="/">
         {user.isAdmin ? <AdminDashboard /> : <UserDashboard />}
       </Route>
