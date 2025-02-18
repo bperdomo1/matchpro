@@ -1383,6 +1383,10 @@ function EventsView() {
                             <Eye className="mr-2 h-4 w-4" />
                             View Details
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate(`/admin/events/${event.id}/coupons`)}>
+                            <Ticket className="mr-2 h-4 w-4" />
+                            Create Coupons
+                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             onClick={() => {
