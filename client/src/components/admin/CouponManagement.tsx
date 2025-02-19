@@ -194,7 +194,7 @@ export function CouponManagement() {
                     {coupon.usageCount} {coupon.maxUses ? `/ ${coupon.maxUses}` : ''}
                   </TableCell>
                   <TableCell>
-                    {events?.find(event => event.id === coupon.eventId)?.name || 'No Event'}
+                    {events?.find(event => event.id === coupon.eventId)?.name || 'Global Coupon'}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button 
