@@ -7,11 +7,11 @@ import { z } from "zod";
 const couponSchema = z.object({
   code: z.string().min(1, "Code is required"),
   discountType: z.enum(["percentage", "fixed"]),
-  amount: z.number().positive("Amount must be positive"),
-  expirationDate: z.string().datetime().optional(),
-  description: z.string().optional(),
-  eventId: z.number().optional(),
-  maxUses: z.number().positive("Max uses must be positive").optional(),
+  amount: z.coerce.number().positive("Amount must be positive"),
+  expirationDate: z.string().datetime().nullable().optional(),
+  description: z.string().nullable().optional(),
+  eventId: z.coerce.number().nullable().optional(),
+  maxUses: z.coerce.number().positive("Max uses must be positive").nullable().optional(),
   isActive: z.boolean().default(true),
 });
 
