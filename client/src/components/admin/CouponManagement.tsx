@@ -155,28 +155,28 @@ export function CouponManagement() {
           </Button>
         </div>
       </div>
-      <Card className="border border-gray-200 shadow-sm rounded-lg mb-8">
-        <CardContent className="p-4">
+      <Card className="border border-gray-100 shadow-lg rounded-xl mb-8 overflow-hidden">
+        <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-gray-200 bg-gray-50">
-                <TableHead className="font-semibold text-gray-700">Code</TableHead>
-                <TableHead className="font-semibold text-gray-700">Type</TableHead>
-                <TableHead className="font-semibold text-gray-700">Amount</TableHead>
-                <TableHead className="font-semibold text-gray-700">Expires</TableHead>
-                <TableHead className="font-semibold text-gray-700">Uses</TableHead>
-                <TableHead className="font-semibold text-gray-700">Event</TableHead>
-                <TableHead className="text-right font-semibold text-gray-700">Actions</TableHead>
+              <TableRow className="border-b border-gray-100 bg-white">
+                <TableHead className="font-semibold text-gray-900 px-6 py-4">Code</TableHead>
+                <TableHead className="font-semibold text-gray-900 px-6 py-4">Type</TableHead>
+                <TableHead className="font-semibold text-gray-900 px-6 py-4">Amount</TableHead>
+                <TableHead className="font-semibold text-gray-900 px-6 py-4">Expires</TableHead>
+                <TableHead className="font-semibold text-gray-900 px-6 py-4">Uses</TableHead>
+                <TableHead className="font-semibold text-gray-900 px-6 py-4">Event</TableHead>
+                <TableHead className="text-right font-semibold text-gray-900 px-6 py-4">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {couponsQuery.data?.map((coupon: SelectCoupon) => (
                 <TableRow 
                   key={coupon.id}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                  className="border-b border-gray-50 hover:bg-gray-50/50 transition-all duration-200"
                 >
-                  <TableCell className="font-medium text-gray-900">{coupon.code}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium text-gray-900 px-6 py-4">{coupon.code}</TableCell>
+                  <TableCell className="px-6 py-4">
                     <Badge 
                       variant={coupon.discount_type === 'percentage' ? 'secondary' : 'outline'}
                       className={
