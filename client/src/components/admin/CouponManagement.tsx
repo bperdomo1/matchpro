@@ -31,7 +31,8 @@ export function CouponManagement() {
     queryKey: ['/api/admin/coupons', eventId],
     queryFn: async () => {
       try {
-        const response = await fetch(`/api/admin/coupons?eventId=${eventId}`, {
+        const url = eventId ? `/api/admin/coupons?eventId=${eventId}` : '/api/admin/coupons';
+        const response = await fetch(url, {
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
