@@ -76,6 +76,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
       expirationDate: couponToEdit?.expiration_date || "",
       description: couponToEdit?.description || "",
       eventId: couponToEdit?.event_id?.toString() || eventId?.toString() || "",
+      accountingNumber: couponToEdit?.accounting_number || "",
     },
   });
 
