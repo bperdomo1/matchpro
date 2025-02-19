@@ -55,6 +55,15 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
   const queryClient = useQueryClient();
   const [hasExpiration, setHasExpiration] = useState(couponToEdit?.expirationDate ? true : false);
 
+  const eventsQuery = useQuery({
+    queryKey: ['/api/admin/events'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/events');
+      if (!response.ok) throw new Error('Failed to fetch events');
+      return response.json();
+    }
+  });
+
   const form = useForm<CouponFormValues>({
     resolver: zodResolver(couponFormSchema),
     defaultValues: {
@@ -64,6 +73,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
       hasExpiration: !!couponToEdit?.expirationDate,
       expirationDate: couponToEdit?.expirationDate || "",
       description: couponToEdit?.description || "",
+      eventId: couponToEdit?.eventId || eventId || "",
     },
   });
 
@@ -181,6 +191,35 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="eventId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Event</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value?.toString()}
+                    disabled={!!eventId}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an event" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {eventsQuery.data?.map((event: any) => (
+                        <SelectItem key={event.id} value={event.id.toString()}>
+                          {event.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="code"
