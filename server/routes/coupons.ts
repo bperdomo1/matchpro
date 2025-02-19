@@ -91,17 +91,17 @@ export async function updateCoupon(req: Request, res: Response) {
     const validatedData = couponSchema.partial().parse(req.body);
 
     const result = await db.execute(sql`
-      UPDATE coupons SET 
-        code = ${validatedData.code},
-        discount_type = ${validatedData.discountType},
-        amount = ${validatedData.amount},
-        expiration_date = ${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null},
-        description = ${validatedData.description},
-        event_id = ${validatedData.eventId},
-        max_uses = ${validatedData.maxUses},
-        is_active = ${validatedData.isActive},
-        accounting_number = ${validatedData.accountingNumber},
-        updated_at = NOW()
+      UPDATE coupons 
+      SET code = ${validatedData.code},
+          discount_type = ${validatedData.discountType},
+          amount = ${validatedData.amount},
+          expiration_date = ${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null},
+          description = ${validatedData.description || null},
+          event_id = ${validatedData.eventId ? Number(validatedData.eventId) : null},
+          max_uses = ${validatedData.maxUses || null},
+          is_active = ${validatedData.isActive},
+          accounting_number = ${validatedData.accountingNumber || null},
+          updated_at = NOW()
       WHERE id = ${Number(id)}
       RETURNING *;
     `);
