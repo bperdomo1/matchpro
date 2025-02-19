@@ -178,17 +178,19 @@ export function CouponManagement() {
                   <TableCell className="font-medium text-gray-900">{coupon.code}</TableCell>
                   <TableCell>
                     <Badge 
-                      variant={coupon.discountType === 'percentage' ? 'secondary' : 'outline'}
+                      variant={coupon.discount_type === 'percentage' ? 'secondary' : 'outline'}
                       className={
-                        coupon.discountType === 'percentage' 
+                        coupon.discount_type === 'percentage' 
                           ? 'bg-[#6B7280] text-white' 
                           : 'border-[#6B7280] text-[#6B7280]'
                       }
                     >
-                      {coupon.discountType === 'percentage' ? 'Percentage' : 'Dollar'}
+                      {coupon.discount_type === 'percentage' ? 'Percentage' : 'Fixed'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-gray-700">{coupon.amount}</TableCell>
+                  <TableCell className="text-gray-700">
+                    {coupon.discount_type === 'percentage' ? `${coupon.amount}%` : `$${coupon.amount}`}
+                  </TableCell>
                   <TableCell className="text-gray-700">
                     {coupon.expirationDate ? 
                       new Date(coupon.expirationDate).toLocaleDateString() : 
