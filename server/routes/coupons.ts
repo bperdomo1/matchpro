@@ -19,9 +19,8 @@ export async function createCoupon(req: Request, res: Response) {
   try {
     const validatedData = couponSchema.parse(req.body);
     
-    if (!validatedData.eventId) {
-      return res.status(400).json({ error: "Event ID is required" });
-    }
+    // Allow null eventId for global coupons
+    const eventIdToUse = validatedData.eventId || null;
 
     // Check if code exists for this event
     const [existingCoupon] = await db.execute(sql`
