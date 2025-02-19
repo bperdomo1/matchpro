@@ -2576,6 +2576,64 @@ export function registerRoutes(app: Express): Server {
       }
     });
 
+    app.post('/api/admin/form-templates', isAdmin, async (req, res) => {
+      try {
+        const { name, description, isPublished, fields } = req.body;
+
+        await db.transaction(async (tx) => {
+          // Create form template
+          const [template] = await tx
+            .insert(eventFormTemplates)
+            .values({
+              name,
+              description,
+              isPublished: isPublished || false,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            })
+            .returning();
+
+          // Create fields
+          if (fields?.length) {
+            for (const field of fields) {
+              const [newField] = await tx
+                .insert(formFields)
+                .values({
+                  templateId: template.id,
+                  label: field.label,
+                  type: field.type,
+                  required: field.required,
+                  order: field.order,
+                  placeholder: field.placeholder,
+                  helpText: field.helpText,
+                  validation: field.validation
+                })
+                .returning();
+
+              // Create options for dropdown fields
+              if (field.type === 'dropdown' && field.options?.length) {
+                await tx
+                  .insert(formFieldOptions)
+                  .values(
+                    field.options.map((option: any, index: number) => ({
+                      fieldId: newField.id,
+                      label: option.label,
+                      value: option.value,
+                      order: option.order || index
+                    }))
+                  );
+              }
+            }
+          }
+        });
+
+        res.status(201).json({ message: "Form template created successfully" });
+      } catch (error) {
+        console.error('Error creating form template:', error);
+        res.status(500).json({ error: "Failed to create form template" });
+      }
+    });
+
     app.post('/api/admin/events/:id/form-template', isAdmin, async (req, res) => {
       try {
         const eventId = req.params.id;
