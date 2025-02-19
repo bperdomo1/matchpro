@@ -89,14 +89,14 @@ export async function updateCoupon(req: Request, res: Response) {
     
     const result = await db.execute(sql`
       UPDATE coupons SET 
-        code = ${validatedData.code || null},
-        discount_type = ${validatedData.discountType || null},
-        amount = ${validatedData.amount || null},
+        code = COALESCE(${validatedData.code}, code),
+        discount_type = COALESCE(${validatedData.discountType}, discount_type),
+        amount = COALESCE(${validatedData.amount}, amount),
         expiration_date = ${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null},
-        description = ${validatedData.description || null},
-        event_id = ${validatedData.eventId || null},
-        max_uses = ${validatedData.maxUses || null},
-        is_active = ${validatedData.isActive},
+        description = ${validatedData.description},
+        event_id = ${validatedData.eventId !== undefined ? validatedData.eventId : null},
+        max_uses = COALESCE(${validatedData.maxUses}, max_uses),
+        is_active = COALESCE(${validatedData.isActive}, is_active),
         updated_at = NOW()
       WHERE id = ${Number(id)}
       RETURNING *
