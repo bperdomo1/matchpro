@@ -24,7 +24,7 @@ export function CouponManagement() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<SelectCoupon | null>(null);
   const queryClient = useQueryClient();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const eventId = location?.split('/').pop() || '';
 
   const couponsQuery = useQuery({
