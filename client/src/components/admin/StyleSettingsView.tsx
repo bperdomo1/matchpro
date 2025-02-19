@@ -43,7 +43,7 @@ const colors = {
     title: "Interface Colors",
     description: "Colors used for the application interface",
     colors: {
-      background: "#568FCB",
+      background: "#FFFFFF",
       foreground: "#000000",
       border: "#CCCCCC",
       muted: "#999999",
