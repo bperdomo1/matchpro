@@ -7,7 +7,7 @@ import { z } from "zod";
 const couponSchema = z.object({
   code: z.string().min(1, "Code is required"),
   discountType: z.enum(["percentage", "fixed"]),
-  amount: z.coerce.number().positive("Amount must be positive"),
+  amount: z.coerce.number().min(0, "Amount must be 0 or greater"),
   expirationDate: z.string().datetime().nullable().optional(),
   description: z.string().nullable().optional(),
   eventId: z.union([z.coerce.number().positive(), z.null()]).optional(),
@@ -88,19 +88,18 @@ export async function updateCoupon(req: Request, res: Response) {
     const validatedData = couponSchema.partial().parse(req.body);
     
     const result = await db.execute(sql`
-      UPDATE coupons
-      SET 
-        code = COALESCE(${validatedData.code}, code),
-        discount_type = COALESCE(${validatedData.discountType}, discount_type),
-        amount = COALESCE(${validatedData.amount}, amount),
-        expiration_date = COALESCE(${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null}, expiration_date),
-        description = COALESCE(${validatedData.description}, description),
-        event_id = COALESCE(${validatedData.eventId}, event_id),
-        max_uses = COALESCE(${validatedData.maxUses}, max_uses),
-        is_active = COALESCE(${validatedData.isActive}, is_active),
+      UPDATE coupons SET 
+        code = ${validatedData.code || null},
+        discount_type = ${validatedData.discountType || null},
+        amount = ${validatedData.amount || null},
+        expiration_date = ${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null},
+        description = ${validatedData.description || null},
+        event_id = ${validatedData.eventId || null},
+        max_uses = ${validatedData.maxUses || null},
+        is_active = ${validatedData.isActive},
         updated_at = NOW()
       WHERE id = ${Number(id)}
-      RETURNING *;
+      RETURNING *
     `);
 
     if (result.rows.length === 0) {
