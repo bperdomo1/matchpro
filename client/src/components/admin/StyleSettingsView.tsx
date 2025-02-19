@@ -66,15 +66,19 @@ export function StyleSettingsView() {
         }), {})
       }), {});
 
-      await updateStyleConfig(colorValues);
+      const response = await updateStyleConfig(colorValues);
       
-      // Apply all colors immediately
-      Object.entries(colorValues).forEach(([key, value]) => {
-        document.documentElement.style.setProperty(`--${key}`, value);
-        if (key === 'background') {
-          document.body.style.backgroundColor = value;
-        }
-      });
+      if (response.settings) {
+        // Apply all colors immediately
+        Object.entries(response.settings).forEach(([key, value]) => {
+          if (key === 'backgroundColor') {
+            document.documentElement.style.setProperty('--background', value);
+            document.body.style.backgroundColor = value;
+          } else {
+            document.documentElement.style.setProperty(`--${key}`, value);
+          }
+        });
+      }
       
       toast({
         title: "Success",

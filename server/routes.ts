@@ -1356,33 +1356,35 @@ export function registerRoutes(app: Express): Server {
           .from(organizationSettings)
           .limit(1);
 
+        const updatedSettings = {
+          primaryColor: styleConfig.primary,
+          secondaryColor: styleConfig.secondary,
+          backgroundColor: styleConfig.background,
+          foregroundColor: styleConfig.foreground,
+          accentColor: styleConfig.accent,
+          borderColor: styleConfig.border,
+          logoUrl: styleConfig.logoUrl,
+          updatedAt: new Date().toISOString(),
+        };
+
         if (settings) {
           await db
             .update(organizationSettings)
-            .set({
-              primaryColor: styleConfig.primary,
-              secondaryColor: styleConfig.secondary,
-              backgroundColor: styleConfig.background,
-              foregroundColor: styleConfig.foreground,
-              accentColor: styleConfig.accent,
-              borderColor: styleConfig.border,
-              logoUrl: styleConfig.logoUrl,
-              updatedAt: new Date().toISOString(),
-            })
+            .set(updatedSettings)
             .where(eq(organizationSettings.id, settings.id));
         } else {
           await db
             .insert(organizationSettings)
             .values({
-              primaryColor: styleConfig.primary,
-              secondaryColor: styleConfig.secondary,
-              logoUrl: styleConfig.logoUrl,
+              ...updatedSettings,
               createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
             });
         }
 
-        res.json({ message: "Styling settings updated successfully" });
+        res.json({ 
+          message: "Styling settings updated successfully",
+          settings: updatedSettings
+        });
       } catch (error) {
         console.error('Error updating styling settings:', error);
         res.status(500).send("Failed to update styling settings");
