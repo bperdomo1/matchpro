@@ -2539,12 +2539,12 @@ export function registerRoutes(app: Express): Server {
                       json_build_object(
                         'id', ${formFieldOptions.id},
                         'label', ${formFieldOptions.label},
-                        'value', ${formFieldOptions.value}
-                      )
+                        'value', ${formFieldOptions.value},
+                        'order', ${formFieldOptions.order}
+                      ) ORDER BY ${formFieldOptions.order}
                     )
                     FROM ${formFieldOptions}
                     WHERE ${formFieldOptions.fieldId} = ${formFields.id}
-                    ORDER BY ${formFieldOptions.order}
                   )
                 )
               ELSE NULL END
