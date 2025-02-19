@@ -191,33 +191,45 @@ export function CouponManagement() {
                   <TableCell className="text-gray-700">
                     {coupon.discount_type === 'percentage' ? `${coupon.amount}%` : `$${coupon.amount}`}
                   </TableCell>
-                  <TableCell className="text-gray-700">
+                  <TableCell className="px-6 py-4 text-gray-700">
                     {coupon.expirationDate ? 
                       new Date(coupon.expirationDate).toLocaleDateString() : 
-                      'No expiration'
+                      <span className="text-gray-500">No expiration</span>
                     }
                   </TableCell>
-                  <TableCell className="text-gray-700">
-                    {coupon.usageCount} {coupon.maxUses ? `/ ${coupon.maxUses}` : ''}
+                  <TableCell className="px-6 py-4 text-gray-700">
+                    <span className="inline-flex items-center gap-1">
+                      <span>{coupon.usageCount}</span>
+                      {coupon.maxUses && (
+                        <>
+                          <span className="text-gray-400">/</span>
+                          <span>{coupon.maxUses}</span>
+                        </>
+                      )}
+                    </span>
                   </TableCell>
-                  <TableCell>
-                    {events?.find(event => event.id === coupon.eventId)?.name || 'Global Coupon'}
+                  <TableCell className="px-6 py-4">
+                    <span className="text-gray-700">
+                      {events?.find(event => event.id === coupon.eventId)?.name || 'Global Coupon'}
+                    </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => handleEditCoupon(coupon)}
-                      className="text-[#6B7280] hover:text-[#2563EB] hover:bg-blue-50"
-                    >
-                      Edit
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => handleDeleteCoupon(coupon.id)}
-                      className="text-[#EF4444] hover:bg-red-50"
-                    >
-                      Delete
-                    </Button>
+                  <TableCell className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => handleEditCoupon(coupon)}
+                        className="text-[#6B7280] hover:text-[#2563EB] hover:bg-blue-50/80 transition-colors"
+                      >
+                        Edit
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        onClick={() => handleDeleteCoupon(coupon.id)}
+                        className="text-[#EF4444] hover:bg-red-50/80 transition-colors"
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
