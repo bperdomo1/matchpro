@@ -995,7 +995,7 @@ function ComplexesView() {
       setIsFieldModalOpen(false);
       setSelectedField(null);
     },
-    onError: ((error) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error instanceof Error ? error.message: "Failed to update field",
