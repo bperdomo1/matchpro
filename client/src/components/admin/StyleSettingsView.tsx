@@ -67,6 +67,10 @@ export function StyleSettingsView() {
       }), {});
 
       await updateStyleConfig(colorValues);
+      // Apply the background color immediately
+      document.documentElement.style.setProperty('--background', colorValues.background);
+      document.body.style.backgroundColor = colorValues.background;
+      
       toast({
         title: "Success",
         description: "Theme colors updated successfully"
