@@ -101,7 +101,8 @@ export default function EventApplicationForm() {
           name: template.name,
           description: template.description,
           isPublished: template.isPublished,
-          fields: template.fields
+          fields: template.fields,
+          eventId
         })
       });
 
