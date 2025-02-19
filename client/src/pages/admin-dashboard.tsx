@@ -1553,6 +1553,18 @@ function AdminDashboard() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showUpdatesLog, setShowUpdatesLog] = useState(false);
 
+  // Add Form Templates to the navigation
+  const formTemplatesButton = (
+    <Button
+      variant={activeView === 'formTemplates' ? 'secondary' : 'ghost'}
+      className="w-full justify-start"
+      onClick={() => setActiveView('formTemplates')}
+    >
+      <FormInput className="mr-2 h-4 w-4" />
+      Form Templates
+    </Button>
+  );
+
   useEffect(() => {
     if (!user) {
       return; // Wait for user data to load
@@ -1651,6 +1663,8 @@ function AdminDashboard() {
               <Shield className="mr-2 h-4 w-4" />
               Administrators
             </Button>
+
+            {formTemplatesButton}
 
             <Button
               variant={activeView === 'events' ? 'secondary' : 'ghost'}
