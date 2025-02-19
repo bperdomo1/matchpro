@@ -68,18 +68,11 @@ export async function createCoupon(req: Request, res: Response) {
 export async function getCoupons(req: Request, res: Response) {
   try {
     const eventId = req.query.eventId;
-    let query;
+    let query = sql`SELECT * FROM coupons`;
     
-    if (!eventId) {
-      return res.status(400).json({ error: "Event ID is required" });
+    if (eventId && !isNaN(Number(eventId))) {
+      query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)} OR event_id IS NULL`;
     }
-
-    const numericEventId = Number(eventId);
-    if (isNaN(numericEventId)) {
-      return res.status(400).json({ error: "Invalid event ID" });
-    }
-
-    query = sql`SELECT * FROM coupons WHERE event_id = ${numericEventId}`;
     
     const result = await db.execute(query);
     res.json(result.rows);

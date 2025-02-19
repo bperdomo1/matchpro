@@ -25,7 +25,7 @@ export function CouponManagement() {
   const [selectedCoupon, setSelectedCoupon] = useState<SelectCoupon | null>(null);
   const queryClient = useQueryClient();
   const [location, navigate] = useLocation();
-  const eventId = location?.includes('/events/') ? location.split('/events/')[1]?.split('/')[0] : '';
+  const eventId = location?.split('/').pop() || '';
 
   const eventsQuery = useQuery({
     queryKey: ['/api/admin/events'],
@@ -42,8 +42,7 @@ export function CouponManagement() {
     queryKey: ['/api/admin/coupons', eventId],
     queryFn: async () => {
       try {
-        // Only fetch coupons for specific event
-        const url = `/api/admin/coupons?eventId=${eventId}`;
+        const url = eventId ? `/api/admin/coupons?eventId=${eventId}` : '/api/admin/coupons';
         const response = await fetch(url, {
           headers: {
             "Accept": "application/json",
