@@ -200,7 +200,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
                   <Select 
                     onValueChange={field.onChange} 
                     defaultValue={field.value?.toString()}
-                    disabled={!!eventId}
+                    disabled={!!eventId && !couponToEdit}
                   >
                     <FormControl>
                       <SelectTrigger>
