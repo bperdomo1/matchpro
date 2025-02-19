@@ -172,10 +172,15 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
 
   const onSubmit = async (data: CouponFormValues) => {
     try {
+      const submissionData = {
+        ...data,
+        eventId: eventId ? Number(eventId) : null
+      };
+      
       if (couponToEdit) {
-        await updateCouponMutation.mutateAsync(data);
+        await updateCouponMutation.mutateAsync(submissionData);
       } else {
-        await createCouponMutation.mutateAsync(data);
+        await createCouponMutation.mutateAsync(submissionData);
       }
     } catch (error) {
       console.error('Form submission error:', error);
