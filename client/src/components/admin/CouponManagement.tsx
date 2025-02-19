@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { CouponModal } from "@/components/CouponModal";
 import type { SelectCoupon } from "@db/schema";
 
+import { AdminBanner } from "./AdminBanner";
+
 export function CouponManagement() {
   const { toast } = useToast();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -113,7 +115,9 @@ export function CouponManagement() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4">
+    <>
+      <AdminBanner />
+      <div className="max-w-6xl mx-auto px-4">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 font-inter">Coupon Management</h2>
         <div className="flex gap-4">
@@ -213,5 +217,6 @@ export function CouponManagement() {
         couponToEdit={selectedCoupon}
       />
     </div>
+    </>
   );
 }
