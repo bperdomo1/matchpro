@@ -136,7 +136,10 @@ export function CouponManagement() {
         <h2 className="text-3xl font-bold text-gray-900 font-inter">Coupon Management</h2>
         <div className="flex gap-4">
           <Button 
-            onClick={() => setIsAddModalOpen(true)}
+            onClick={() => {
+              setSelectedCoupon(null);
+              setIsAddModalOpen(true);
+            }}
             disabled={!eventId}
             className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white"
           >
