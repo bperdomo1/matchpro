@@ -30,11 +30,9 @@ export function CouponManagement() {
   const couponsQuery = useQuery({
     queryKey: ['/api/admin/coupons', eventId],
     queryFn: async () => {
-      if (!eventId) {
-        return [];
-      }
       try {
-        const response = await fetch(`/api/admin/coupons?eventId=${eventId}`, {
+        const url = eventId ? `/api/admin/coupons?eventId=${eventId}` : '/api/admin/coupons';
+        const response = await fetch(url, {
           headers: {
             "Accept": "application/json",
             "Content-Type": "application/json"
@@ -52,8 +50,7 @@ export function CouponManagement() {
         console.error('Error fetching coupons:', error);
         throw error;
       }
-    },
-    enabled: !!eventId
+    }
   });
 
   const deleteCouponMutation = useMutation({
