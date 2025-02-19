@@ -2578,13 +2578,18 @@ export function registerRoutes(app: Express): Server {
 
     app.post('/api/admin/form-templates', isAdmin, async (req, res) => {
       try {
-        const { name, description, isPublished, fields } = req.body;
+        const { name, description, isPublished, fields, eventId } = req.body;
+
+        if (!eventId) {
+          return res.status(400).json({ error: "Event ID is required" });
+        }
 
         await db.transaction(async (tx) => {
           // Create form template
           const [template] = await tx
             .insert(eventFormTemplates)
             .values({
+              eventId,
               name,
               description,
               isPublished: isPublished || false,
