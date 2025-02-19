@@ -70,13 +70,16 @@ export async function getCoupons(req: Request, res: Response) {
     const eventId = req.query.eventId;
     let query;
     
-    if (eventId && !isNaN(Number(eventId))) {
-      // Only fetch coupons specific to this event (no global coupons)
-      query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)}`;
-    } else {
-      // Fetch all coupons when no event is specified
-      query = sql`SELECT * FROM coupons`;
+    if (!eventId) {
+      return res.status(400).json({ error: "Event ID is required" });
     }
+
+    const numericEventId = Number(eventId);
+    if (isNaN(numericEventId)) {
+      return res.status(400).json({ error: "Invalid event ID" });
+    }
+
+    query = sql`SELECT * FROM coupons WHERE event_id = ${numericEventId}`;
     
     const result = await db.execute(query);
     res.json(result.rows);
