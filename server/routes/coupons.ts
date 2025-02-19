@@ -56,7 +56,7 @@ export async function getCoupons(req: Request, res: Response) {
     const eventId = req.query.eventId;
     let query = sql`SELECT * FROM coupons`;
     
-    if (eventId) {
+    if (eventId && !isNaN(Number(eventId))) {
       query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)}`;
     }
     
