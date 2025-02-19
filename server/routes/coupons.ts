@@ -18,20 +18,23 @@ const couponSchema = z.object({
 export async function createCoupon(req: Request, res: Response) {
   try {
     const validatedData = couponSchema.parse(req.body);
-    
+
     // Allow null eventId for global coupons
     const eventIdToUse = validatedData.eventId || null;
 
     // Check if code exists for this event
     const existingCoupon = await db.execute(sql`
       SELECT id FROM coupons 
-      WHERE code = ${validatedData.code}
+      WHERE LOWER(code) = LOWER(${validatedData.code})
     `);
 
     if (existingCoupon.rows.length > 0) {
-      return res.status(400).json({ error: "Coupon code already exists" });
+      return res.status(400).json({ 
+        error: "Coupon code already exists",
+        code: "DUPLICATE_CODE"
+      });
     }
-    
+
     const result = await db.execute(sql`
       INSERT INTO coupons (
         code,
@@ -68,7 +71,7 @@ export async function getCoupons(req: Request, res: Response) {
   try {
     const eventId = req.query.eventId;
     let query;
-    
+
     if (!eventId) {
       query = sql`SELECT * FROM coupons`;
     } else {
@@ -78,7 +81,7 @@ export async function getCoupons(req: Request, res: Response) {
       }
       query = sql`SELECT * FROM coupons WHERE event_id = ${numericEventId}`;
     }
-    
+
     const result = await db.execute(query);
     res.json(result.rows);
   } catch (error) {
@@ -91,7 +94,7 @@ export async function updateCoupon(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const validatedData = couponSchema.partial().parse(req.body);
-    
+
     const result = await db.execute(sql`
       UPDATE coupons SET 
         code = ${validatedData.code},

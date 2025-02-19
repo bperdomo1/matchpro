@@ -33,12 +33,13 @@ import { Loader2 } from "lucide-react";
 import { z } from "zod";
 
 const couponFormSchema = z.object({
-  code: z.string().min(1, "Coupon code is required"),
+  code: z.string().min(1, "Coupon code is required").trim(),
   discountType: z.enum(["fixed", "percentage"]),
   amount: z.number().min(0, "Amount must be positive"),
   hasExpiration: z.boolean(),
   expirationDate: z.string().optional(),
   description: z.string().optional(),
+  isActive: z.boolean().default(true),
 });
 
 type CouponFormValues = z.infer<typeof couponFormSchema>;
