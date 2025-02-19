@@ -30,6 +30,10 @@ import {
   eventFieldSizes,
   files,
   coupons,
+  eventFormTemplates,
+  formFields,
+  formFieldOptions,
+  formResponses,
 } from "@db/schema";
 import fs from "fs/promises";
 import path from "path";
