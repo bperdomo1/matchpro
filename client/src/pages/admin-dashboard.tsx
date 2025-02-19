@@ -89,6 +89,7 @@ import { FieldEditor } from "@/components/FieldEditor";
 import { UpdatesLogModal } from "@/components/admin/UpdatesLogModal";
 import { useDropzone } from 'react-dropzone';
 import { FileManager } from "@/components/admin/FileManager";
+import { FormTemplatesView } from "@/components/admin/FormTemplatesView"; // Import the component
 
 
 function AdminBanner() {
@@ -1623,7 +1624,7 @@ function AdminDashboard() {
       case 'coupons':
         return <CouponManagement />;
       case 'formTemplates':
-        return <FormTemplatesView />; // Add this line
+        return <FormTemplatesView />;
       default:
         return <div>Feature coming soon</div>;
     }
