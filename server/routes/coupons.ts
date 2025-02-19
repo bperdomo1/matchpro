@@ -97,14 +97,14 @@ export async function updateCoupon(req: Request, res: Response) {
 
     const result = await db.execute(sql`
       UPDATE coupons SET 
-        code = ${validatedData.code},
-        discount_type = ${validatedData.discountType},
-        amount = ${validatedData.amount},
+        code = ${validatedData.code || null},
+        discount_type = ${validatedData.discountType || null},
+        amount = ${validatedData.amount || null},
         expiration_date = ${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null},
-        description = ${validatedData.description},
-        event_id = ${validatedData.eventId},
-        max_uses = ${validatedData.maxUses},
-        is_active = ${validatedData.isActive},
+        description = ${validatedData.description || null},
+        event_id = ${validatedData.eventId || null},
+        max_uses = ${validatedData.maxUses || null},
+        is_active = ${validatedData.isActive === undefined ? true : validatedData.isActive},
         updated_at = NOW()
       WHERE id = ${Number(id)}
       RETURNING *;
