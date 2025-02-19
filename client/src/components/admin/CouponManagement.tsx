@@ -155,27 +155,27 @@ export function CouponManagement() {
           </Button>
         </div>
       </div>
-      <Card className="border border-gray-100 shadow-lg rounded-xl mb-8 overflow-hidden">
+      <Card className="border border-gray-100 shadow-xl rounded-xl mb-8 overflow-hidden bg-white">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-gray-100 bg-white">
-                <TableHead className="font-semibold text-gray-900 px-6 py-4">Code</TableHead>
-                <TableHead className="font-semibold text-gray-900 px-6 py-4">Type</TableHead>
-                <TableHead className="font-semibold text-gray-900 px-6 py-4">Amount</TableHead>
-                <TableHead className="font-semibold text-gray-900 px-6 py-4">Expires</TableHead>
-                <TableHead className="font-semibold text-gray-900 px-6 py-4">Uses</TableHead>
-                <TableHead className="font-semibold text-gray-900 px-6 py-4">Event</TableHead>
-                <TableHead className="text-right font-semibold text-gray-900 px-6 py-4">Actions</TableHead>
+              <TableRow className="border-b border-gray-200 bg-gray-50">
+                <TableHead className="font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Code</TableHead>
+                <TableHead className="font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Type</TableHead>
+                <TableHead className="font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Amount</TableHead>
+                <TableHead className="font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Expires</TableHead>
+                <TableHead className="font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Uses</TableHead>
+                <TableHead className="font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Event</TableHead>
+                <TableHead className="text-right font-bold text-gray-900 px-6 py-5 text-sm uppercase tracking-wider">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {couponsQuery.data?.map((coupon: SelectCoupon) => (
                 <TableRow 
                   key={coupon.id}
-                  className="border-b border-gray-50 hover:bg-gray-50/50 transition-all duration-200"
+                  className="border-b border-gray-100 hover:bg-blue-50/30 transition-all duration-200"
                 >
-                  <TableCell className="font-medium text-gray-900 px-6 py-4">{coupon.code}</TableCell>
+                  <TableCell className="font-medium text-gray-900 px-6 py-5">{coupon.code}</TableCell>
                   <TableCell className="px-6 py-4">
                     <Badge 
                       variant={coupon.discount_type === 'percentage' ? 'secondary' : 'outline'}
