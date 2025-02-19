@@ -23,10 +23,10 @@ export async function createCoupon(req: Request, res: Response) {
     const eventIdToUse = validatedData.eventId || null;
 
     // Check if code exists for this event
-    const [existingCoupon] = await db.execute(sql`
+    const existingCoupon = await db.execute(sql`
       SELECT id FROM coupons 
       WHERE code = ${validatedData.code}
-      AND event_id = ${validatedData.eventId}
+      AND event_id = ${eventIdToUse}
     `);
 
     if (existingCoupon.rows.length > 0) {
