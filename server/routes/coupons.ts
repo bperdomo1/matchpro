@@ -92,15 +92,15 @@ export async function updateCoupon(req: Request, res: Response) {
 
     const result = await db.execute(sql`
       UPDATE coupons 
-      SET code = ${validatedData.code},
-          discount_type = ${validatedData.discountType},
-          amount = ${validatedData.amount},
-          expiration_date = ${validatedData.expirationDate ? new Date(validatedData.expirationDate) : null},
-          description = ${validatedData.description},
-          event_id = ${validatedData.eventId ? Number(validatedData.eventId) : null},
-          max_uses = ${validatedData.maxUses},
-          is_active = ${validatedData.isActive},
-          accounting_number = ${validatedData.accountingNumber},
+      SET code = CASE WHEN ${validatedData.code} IS NOT NULL THEN ${validatedData.code} ELSE code END,
+          discount_type = CASE WHEN ${validatedData.discountType} IS NOT NULL THEN ${validatedData.discountType} ELSE discount_type END,
+          amount = CASE WHEN ${validatedData.amount} IS NOT NULL THEN ${validatedData.amount} ELSE amount END,
+          expiration_date = CASE WHEN ${validatedData.expirationDate} IS NOT NULL THEN ${new Date(validatedData.expirationDate)} ELSE expiration_date END,
+          description = CASE WHEN ${validatedData.description} IS NOT NULL THEN ${validatedData.description} ELSE description END,
+          event_id = CASE WHEN ${validatedData.eventId} IS NOT NULL THEN ${Number(validatedData.eventId)} ELSE event_id END,
+          max_uses = CASE WHEN ${validatedData.maxUses} IS NOT NULL THEN ${validatedData.maxUses} ELSE max_uses END,
+          is_active = CASE WHEN ${validatedData.isActive} IS NOT NULL THEN ${validatedData.isActive} ELSE is_active END,
+          accounting_number = CASE WHEN ${validatedData.accountingNumber} IS NOT NULL THEN ${validatedData.accountingNumber} ELSE accounting_number END,
           updated_at = NOW()
       WHERE id = ${Number(id)}
       RETURNING *;
