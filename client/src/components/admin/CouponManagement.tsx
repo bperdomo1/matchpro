@@ -123,6 +123,7 @@ export function CouponManagement() {
         <div className="flex gap-4">
           <Button 
             onClick={() => setIsAddModalOpen(true)}
+            disabled={!eventId}
             className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white"
           >
             <Plus className="mr-2 h-4 w-4" />

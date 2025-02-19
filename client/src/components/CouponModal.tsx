@@ -46,7 +46,7 @@ type CouponFormValues = z.infer<typeof couponFormSchema>;
 interface CouponModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  eventId?: string;
+  eventId: string;
   couponToEdit?: any;
 }
 
