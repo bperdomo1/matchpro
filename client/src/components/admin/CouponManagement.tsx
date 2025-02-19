@@ -27,6 +27,17 @@ export function CouponManagement() {
   const [location, navigate] = useLocation();
   const eventId = location?.split('/').pop() || '';
 
+  const eventsQuery = useQuery({
+    queryKey: ['/api/admin/events'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/events');
+      if (!response.ok) throw new Error('Failed to fetch events');
+      return response.json();
+    }
+  });
+
+  const events = eventsQuery.data;
+
   const couponsQuery = useQuery({
     queryKey: ['/api/admin/coupons', eventId],
     queryFn: async () => {
@@ -149,7 +160,7 @@ export function CouponManagement() {
                 <TableHead className="font-semibold text-gray-700">Amount</TableHead>
                 <TableHead className="font-semibold text-gray-700">Expires</TableHead>
                 <TableHead className="font-semibold text-gray-700">Uses</TableHead>
-                <TableHead className="font-semibold text-gray-700">Status</TableHead>
+                <TableHead className="font-semibold text-gray-700">Event</TableHead>
                 <TableHead className="text-right font-semibold text-gray-700">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -183,12 +194,7 @@ export function CouponManagement() {
                     {coupon.usageCount} {coupon.maxUses ? `/ ${coupon.maxUses}` : ''}
                   </TableCell>
                   <TableCell>
-                    <Badge 
-                      variant={coupon.isActive ? 'default' : 'secondary'}
-                      className={coupon.isActive ? 'bg-[#10B981] text-white' : 'bg-[#6B7280] text-white'}
-                    >
-                      {coupon.isActive ? 'Active' : 'Inactive'}
-                    </Badge>
+                    {events?.find(event => event.id === coupon.eventId)?.name || 'Global Coupon'}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button 
