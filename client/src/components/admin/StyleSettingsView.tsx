@@ -67,9 +67,14 @@ export function StyleSettingsView() {
       }), {});
 
       await updateStyleConfig(colorValues);
-      // Apply the background color immediately
-      document.documentElement.style.setProperty('--background', colorValues.background);
-      document.body.style.backgroundColor = colorValues.background;
+      
+      // Apply all colors immediately
+      Object.entries(colorValues).forEach(([key, value]) => {
+        document.documentElement.style.setProperty(`--${key}`, value);
+        if (key === 'background') {
+          document.body.style.backgroundColor = value;
+        }
+      });
       
       toast({
         title: "Success",
