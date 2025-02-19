@@ -66,14 +66,14 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
 
   const form = useForm<CouponFormValues>({
     resolver: zodResolver(couponFormSchema),
-    defaultValues: {
+    values: {
       code: couponToEdit?.code || "",
-      discountType: couponToEdit?.discountType || "fixed",
+      discountType: couponToEdit?.discount_type || "fixed",
       amount: couponToEdit?.amount || 0,
-      hasExpiration: !!couponToEdit?.expirationDate,
-      expirationDate: couponToEdit?.expirationDate || "",
+      hasExpiration: !!couponToEdit?.expiration_date,
+      expirationDate: couponToEdit?.expiration_date || "",
       description: couponToEdit?.description || "",
-      eventId: couponToEdit?.eventId || Number(eventId) || null,
+      eventId: couponToEdit?.event_id?.toString() || eventId?.toString() || "",
     },
   });
 
