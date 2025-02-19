@@ -18,7 +18,7 @@ const couponSchema = z.object({
 export async function createCoupon(req: Request, res: Response) {
   try {
     const validatedData = couponSchema.parse(req.body);
-    
+
     // Allow null eventId for global coupons
     const eventIdToUse = validatedData.eventId || null;
 
@@ -26,13 +26,13 @@ export async function createCoupon(req: Request, res: Response) {
     const existingCoupon = await db.execute(sql`
       SELECT id FROM coupons 
       WHERE code = ${validatedData.code}
-      AND event_id = ${eventIdToUse}
+      AND (event_id = ${eventIdToUse} OR (event_id IS NULL AND ${eventIdToUse} IS NULL))
     `);
 
     if (existingCoupon.rows.length > 0) {
       return res.status(400).json({ error: "Coupon code already exists for this event" });
     }
-    
+
     const result = await db.execute(sql`
       INSERT INTO coupons (
         code,
@@ -69,11 +69,20 @@ export async function getCoupons(req: Request, res: Response) {
   try {
     const eventId = req.query.eventId;
     let query = sql`SELECT * FROM coupons`;
-    
-    if (eventId && !isNaN(Number(eventId))) {
-      query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)} OR event_id IS NULL`;
+
+    if (eventId) {
+      // If eventId is provided, get coupons for that event and global coupons (where event_id is null)
+      query = sql`
+        SELECT * FROM coupons 
+        WHERE event_id = ${Number(eventId)} 
+        OR event_id IS NULL 
+        ORDER BY created_at DESC
+      `;
+    } else {
+      // If no eventId, return all coupons
+      query = sql`SELECT * FROM coupons ORDER BY created_at DESC`;
     }
-    
+
     const result = await db.execute(query);
     res.json(result.rows);
   } catch (error) {
@@ -86,7 +95,7 @@ export async function updateCoupon(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const validatedData = couponSchema.partial().parse(req.body);
-    
+
     const result = await db.execute(sql`
       UPDATE coupons SET 
         code = ${validatedData.code},
