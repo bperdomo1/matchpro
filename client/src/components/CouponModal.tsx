@@ -78,7 +78,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
           },
           body: JSON.stringify({
             ...data,
-            eventId,
+            eventId: eventId ? Number(eventId) : null,
             expirationDate: data.hasExpiration ? data.expirationDate : null,
           }),
         });
@@ -124,7 +124,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
           },
           body: JSON.stringify({
             ...data,
-            eventId,
+            eventId: eventId ? Number(eventId) : null,
             expirationDate: data.hasExpiration ? data.expirationDate : null,
           }),
         });
