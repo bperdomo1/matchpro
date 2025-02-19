@@ -169,7 +169,7 @@ export function CouponManagement() {
                           : 'border-[#6B7280] text-[#6B7280]'
                       }
                     >
-                      {coupon.discountType === 'percentage' ? `${coupon.amount}%` : `$${coupon.amount}`}
+                      {coupon.discountType === 'percentage' ? 'Percentage' : 'Dollar'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-gray-700">{coupon.amount}</TableCell>
