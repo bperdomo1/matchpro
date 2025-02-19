@@ -50,6 +50,7 @@ import {
   Flag,
   CalendarDays,
   ImageIcon,
+  FormInput,
 } from "lucide-react";
 import {
   Table,
@@ -2022,6 +2023,7 @@ interface SelectCoupon {
   usageCount: number;
   maxUses: number | null;
   isActive: boolean;
+  description: string;
 }
 
 function CouponManagement() {
