@@ -72,7 +72,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
       discountType: couponToEdit?.discount_type || "fixed",
       amount: couponToEdit?.amount || 0,
       hasExpiration: !!couponToEdit?.expiration_date,
-      expirationDate: couponToEdit?.expiration_date || "",
+      expirationDate: couponToEdit?.expiration_date ? new Date(couponToEdit.expiration_date).toISOString().slice(0, 16) : "",
       description: couponToEdit?.description || "",
       eventId: couponToEdit?.event_id?.toString() || eventId?.toString() || "",
     },

@@ -8,7 +8,7 @@ const couponSchema = z.object({
   code: z.string().min(1, "Code is required"),
   discountType: z.enum(["percentage", "fixed"]),
   amount: z.coerce.number().min(0, "Amount must be 0 or greater"),
-  expirationDate: z.string().datetime().nullable().optional(),
+  expirationDate: z.string().nullable().optional().transform(val => val ? new Date(val).toISOString() : null),
   description: z.string().nullable().optional(),
   eventId: z.union([z.coerce.number().positive(), z.null()]).optional(),
   maxUses: z.coerce.number().positive("Max uses must be positive").nullable().optional(),
