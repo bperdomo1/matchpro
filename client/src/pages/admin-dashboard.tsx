@@ -1001,9 +1001,8 @@ function ComplexesView() {
         description: error instanceof Error ? error.message: "Failed to update field",
         variant: "destructive",
       });
-    },
+    }
   });
-
 
   const handleSubmit = async (data: ComplexFormValues) => {
     try {
