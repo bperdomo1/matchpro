@@ -25,7 +25,7 @@ export function CouponManagement() {
   const [selectedCoupon, setSelectedCoupon] = useState<SelectCoupon | null>(null);
   const queryClient = useQueryClient();
   const [location, navigate] = useLocation();
-  const eventId = location?.split('/').pop() || '';
+  const eventId = location?.includes('/events/') ? location.split('/events/')[1]?.split('/')[0] : '';
 
   const eventsQuery = useQuery({
     queryKey: ['/api/admin/events'],
