@@ -40,6 +40,7 @@ const couponFormSchema = z.object({
   hasExpiration: z.boolean(),
   expirationDate: z.string().optional(),
   description: z.string().optional(),
+  accountingNumber: z.string().optional(),
 });
 
 type CouponFormValues = z.infer<typeof couponFormSchema>;
