@@ -69,12 +69,10 @@ export async function createCoupon(req: Request, res: Response) {
 export async function getCoupons(req: Request, res: Response) {
   try {
     const eventId = req.query.eventId;
-    let query;
+    let query = sql`SELECT * FROM coupons`;
     
     if (eventId && !isNaN(Number(eventId))) {
-      query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)}`;
-    } else {
-      query = sql`SELECT * FROM coupons`;
+      query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)} OR event_id IS NULL`;
     }
     
     const result = await db.execute(query);
