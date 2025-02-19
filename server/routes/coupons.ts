@@ -26,11 +26,10 @@ export async function createCoupon(req: Request, res: Response) {
     const existingCoupon = await db.execute(sql`
       SELECT id FROM coupons 
       WHERE code = ${validatedData.code}
-      AND event_id = ${eventIdToUse}
     `);
 
     if (existingCoupon.rows.length > 0) {
-      return res.status(400).json({ error: "Coupon code already exists for this event" });
+      return res.status(400).json({ error: "Coupon code already exists" });
     }
     
     const result = await db.execute(sql`
