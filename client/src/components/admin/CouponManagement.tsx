@@ -191,11 +191,19 @@ export function CouponManagement() {
                   <TableCell className="text-gray-700">
                     {coupon.discount_type === 'percentage' ? `${coupon.amount}%` : `$${coupon.amount}`}
                   </TableCell>
-                  <TableCell className="px-6 py-4 text-gray-700">
-                    {coupon.expirationDate ? 
-                      new Date(coupon.expirationDate).toLocaleDateString() : 
+                  <TableCell className="px-6 py-4">
+                    {coupon.expirationDate ? (
+                      <span className={`${
+                        new Date(coupon.expirationDate) < new Date() 
+                          ? 'text-red-500' 
+                          : 'text-green-500'
+                      }`}>
+                        {new Date(coupon.expirationDate).toLocaleDateString()} 
+                        {new Date(coupon.expirationDate) < new Date() && ' (Expired)'}
+                      </span>
+                    ) : (
                       <span className="text-gray-500">No expiration</span>
-                    }
+                    )}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-gray-700">
                     <span className="inline-flex items-center gap-1">

@@ -26,6 +26,8 @@ export async function createCoupon(req: Request, res: Response) {
     const existingCoupon = await db.execute(sql`
       SELECT id FROM coupons 
       WHERE LOWER(code) = LOWER(${validatedData.code})
+      AND (expiration_date IS NULL OR expiration_date > NOW())
+      AND is_active = true
     `);
 
     if (existingCoupon.rows.length > 0) {
