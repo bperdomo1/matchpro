@@ -176,7 +176,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
         ...data,
         eventId: eventId ? Number(eventId) : null
       };
-      
+
       if (couponToEdit) {
         await updateCouponMutation.mutateAsync(submissionData);
       } else {
@@ -235,6 +235,9 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
                   <FormControl>
                     <Input {...field} placeholder="SUMMER2024" />
                   </FormControl>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Note: Coupon codes are case-sensitive and must be unique for this event.
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
