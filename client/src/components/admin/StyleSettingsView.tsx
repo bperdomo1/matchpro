@@ -66,20 +66,27 @@ export function StyleSettingsView() {
         }), {})
       }), {});
 
-      const response = await updateStyleConfig(colorValues);
-      
-      if (response.settings) {
-        // Apply all colors immediately
-        Object.entries(response.settings).forEach(([key, value]) => {
-          if (key === 'backgroundColor') {
-            document.documentElement.style.setProperty('--background', value);
-            document.body.style.backgroundColor = value;
-          } else {
-            document.documentElement.style.setProperty(`--${key}`, value);
-          }
+      const response = await fetch('/api/admin/styling', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(colorValues),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update style configuration');
+      }
+
+      // Update local state with returned settings
+      const result = await response.json();
+      if (result.settings) {
+        // Apply colors to document
+        Object.entries(result.settings).forEach(([key, value]) => {
+          document.documentElement.style.setProperty(`--${key}`, value as string);
         });
       }
-      
+
       toast({
         title: "Success",
         description: "Theme colors updated successfully"
