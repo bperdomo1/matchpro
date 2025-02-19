@@ -73,7 +73,7 @@ export function CouponModal({ open, onOpenChange, eventId, couponToEdit }: Coupo
       hasExpiration: !!couponToEdit?.expirationDate,
       expirationDate: couponToEdit?.expirationDate || "",
       description: couponToEdit?.description || "",
-      eventId: couponToEdit?.eventId || Number(eventId) || null,
+      eventId: couponToEdit?.eventId || Number(eventId),
     },
   });
 
