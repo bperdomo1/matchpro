@@ -26,10 +26,11 @@ export async function createCoupon(req: Request, res: Response) {
     const existingCoupon = await db.execute(sql`
       SELECT id FROM coupons 
       WHERE code = ${validatedData.code}
+      AND event_id = ${eventIdToUse}
     `);
 
     if (existingCoupon.rows.length > 0) {
-      return res.status(400).json({ error: "Coupon code already exists" });
+      return res.status(400).json({ error: "Coupon code already exists for this event" });
     }
     
     const result = await db.execute(sql`
@@ -67,16 +68,10 @@ export async function createCoupon(req: Request, res: Response) {
 export async function getCoupons(req: Request, res: Response) {
   try {
     const eventId = req.query.eventId;
-    let query;
+    let query = sql`SELECT * FROM coupons`;
     
-    if (!eventId) {
-      query = sql`SELECT * FROM coupons`;
-    } else {
-      const numericEventId = parseInt(eventId as string, 10);
-      if (isNaN(numericEventId)) {
-        return res.status(400).json({ error: "Invalid event ID format" });
-      }
-      query = sql`SELECT * FROM coupons WHERE event_id = ${numericEventId}`;
+    if (eventId && !isNaN(Number(eventId))) {
+      query = sql`SELECT * FROM coupons WHERE event_id = ${Number(eventId)} OR event_id IS NULL`;
     }
     
     const result = await db.execute(query);
