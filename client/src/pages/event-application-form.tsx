@@ -256,7 +256,7 @@ export default function EventApplicationForm() {
           </div>
 
           <div className="space-y-4">
-            {formTemplate.fields.map((field, fieldIndex) => (
+            {formTemplate.fields?.map((field, fieldIndex) => (
               <Card key={fieldIndex}>
                 <CardContent className="pt-6">
                   <div className="space-y-4">
