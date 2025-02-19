@@ -84,6 +84,9 @@ export function StyleSettingsView() {
         // Apply colors to document
         Object.entries(result.settings).forEach(([key, value]) => {
           document.documentElement.style.setProperty(`--${key}`, value as string);
+          if (key === 'backgroundColor') {
+            document.body.style.backgroundColor = value as string;
+          }
         });
       }
 
