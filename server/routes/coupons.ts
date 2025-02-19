@@ -13,6 +13,7 @@ const couponSchema = z.object({
   eventId: z.union([z.coerce.number().positive(), z.null()]).optional(),
   maxUses: z.coerce.number().positive("Max uses must be positive").nullable().optional(),
   isActive: z.boolean().default(true),
+  accountingNumber: z.string().optional(),
 });
 
 export async function createCoupon(req: Request, res: Response) {
