@@ -43,7 +43,13 @@ export function FormTemplatesView() {
       const response = await fetch(`/api/admin/form-templates/${id}`, {
         method: 'DELETE',
       });
-      if (!response.ok) throw new Error('Failed to delete template');
+      if (!response.ok) {
+        if (response.status === 409) {
+          const data = await response.json();
+          throw new Error(data.message || "Template is in use");
+        }
+        throw new Error('Failed to delete template');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -51,6 +57,13 @@ export function FormTemplatesView() {
       toast({
         title: "Success",
         description: "Template deleted successfully",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
       });
     },
   });
