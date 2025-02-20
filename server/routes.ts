@@ -2769,39 +2769,39 @@ export function registerRoutes(app: Express): Server {
           // Create new fields
           if (fields && Array.isArray(fields)) {
             for (const [index, field] of fields.entries()) {
-            const [newField] = await tx
-              .insert(formFields)
-              .values({
-                templateId: id,
-                label: field.label,
-                type: field.type,
-                required: field.required || false,
-                order: index,
-                placeholder: field.placeholder,
-                helpText: field.helpText,
-                validation: field.validation,
-                createdAt: new Date(),
-                updatedAt: new Date()
-              })
-              .returning();
+              const [newField] = await tx
+                .insert(formFields)
+                .values({
+                  templateId: id,
+                  label: field.label,
+                  type: field.type,
+                  required: field.required || false,
+                  order: index,
+                  placeholder: field.placeholder,
+                  helpText: field.helpText,
+                  validation: field.validation,
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                })
+                .returning();
 
-            // Create options for dropdown fields
-            if (field.type === 'dropdown' && field.options?.length > 0) {
-              await tx
-                .insert(formFieldOptions)
-                .values(
-                  field.options.map((option: any, optionIndex: number) => ({
-                    fieldId: newField.id,
-                    label: option.label,
-                    value: option.value,
-                    order: optionIndex,
-                    createdAt: new Date()
-                  }))
-                );
+              // Create options for dropdown fields
+              if (field.type === 'dropdown' && field.options?.length > 0) {
+                await tx
+                  .insert(formFieldOptions)
+                  .values(
+                    field.options.map((option: any, optionIndex: number) => ({
+                      fieldId: newField.id,
+                      label: option.label,
+                      value: option.value,
+                      order: optionIndex,
+                      createdAt: new Date()
+                    }))
+                  );
+              }
             }
           }
-        }
-      });
+        });
 
         res.json({ message: "Form template updated successfully" });
       } catch (error) {
