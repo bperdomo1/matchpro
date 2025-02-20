@@ -223,7 +223,13 @@ export default function EventApplicationForm() {
               Save as Template
             </Button>
             <Button 
-              onClick={() => saveTemplateMutation.mutate(formTemplate)}
+              onClick={() => {
+                if (!formTemplate.id) {
+                  saveTemplateMutation.mutate(formTemplate);
+                } else {
+                  saveTemplateMutation.mutate({ ...formTemplate }, true);
+                }
+              }}
               disabled={saveTemplateMutation.isLoading}
             >
               {saveTemplateMutation.isLoading ? (
