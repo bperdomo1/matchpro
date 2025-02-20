@@ -109,8 +109,9 @@ export default function EventApplicationForm() {
 
       if (response.status === 409) {
         const data = await response.json();
-        if (confirm("A template with this name already exists. Would you like to overwrite it?")) {
-          return saveAsTemplateMutation.mutate({ ...template }, true);
+        const confirmOverwrite = window.confirm(data.message || "A template with this name already exists. Would you like to overwrite it?");
+        if (confirmOverwrite) {
+          return saveAsTemplateMutation.mutate(template, true);
         }
         throw new Error("Template already exists");
       }
@@ -118,24 +119,13 @@ export default function EventApplicationForm() {
       if (!response.ok) {
         throw new Error("Failed to save template");
       }
-      
-      return response.json();
 
-      if (response.status === 409) {
-        const data = await response.json();
-        const confirmOverwrite = window.confirm(data.message);
-        if (confirmOverwrite) {
-          return saveAsTemplateMutation.mutate(template, true);
-        }
-        return;
-      }
-
-      if (!response.ok) throw new Error('Failed to save template');
-
+      const result = await response.json();
       toast({
         title: "Success",
         description: "Form template saved successfully",
       });
+      return result;
     },
     onError: (error: Error) => {
       toast({
