@@ -37,7 +37,7 @@ export function FormTemplatesView() {
       const templates = await response.json();
       return templates.map((template: any) => ({
         ...template,
-        eventName: template.eventId || 'No Event'
+        eventName: template.eventId?.toString() || 'No Event'
       }));
     }
   });
