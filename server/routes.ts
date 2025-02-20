@@ -2576,7 +2576,7 @@ export function registerRoutes(app: Express): Server {
       }
     });
 
-    app.get('/api/admin/events/form-templates', isAdmin, async (req, res) => {
+    app.get('/api/admin/form-templates', isAdmin, async (req, res) => {
       try {
         const templates = await db
           .select({
@@ -2661,7 +2661,8 @@ export function registerRoutes(app: Express): Server {
               }
             }
           }
-        });
+        }
+      });
 
         res.status(201).json({ message: "Form template created successfully" });
       } catch (error) {
@@ -2766,7 +2767,8 @@ export function registerRoutes(app: Express): Server {
             .where(eq(formFields.templateId, id));
 
           // Create new fields
-          for (const [index, field] of fields.entries()) {
+          if (fields && Array.isArray(fields)) {
+            for (const [index, field] of fields.entries()) {
             const [newField] = await tx
               .insert(formFields)
               .values({
