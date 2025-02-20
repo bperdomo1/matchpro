@@ -76,6 +76,7 @@ export function FormTemplatesView() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Description</TableHead>
+                <TableHead>Event</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Fields</TableHead>
                 <TableHead>Last Modified</TableHead>
@@ -87,6 +88,7 @@ export function FormTemplatesView() {
                 <TableRow key={template.id}>
                   <TableCell className="font-medium">{template.name}</TableCell>
                   <TableCell>{template.description}</TableCell>
+                  <TableCell>{template.eventName || 'No Event'}</TableCell>
                   <TableCell>{template.isPublished ? 'Published' : 'Draft'}</TableCell>
                   <TableCell>{template.fields?.length || 0} fields</TableCell>
                   <TableCell>{new Date(template.updatedAt).toLocaleDateString()}</TableCell>
