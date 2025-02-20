@@ -2576,7 +2576,7 @@ export function registerRoutes(app: Express): Server {
       }
     });
 
-    app.get('/api/admin/events/form-templates', isAdmin, async (req, res) => {
+    app.get('/api/admin/form-templates', isAdmin, async (req, res) => {
       try {
         const templates = await db
           .select({
