@@ -34,7 +34,11 @@ export function FormTemplatesView() {
     queryFn: async () => {
       const response = await fetch('/api/admin/form-templates');
       if (!response.ok) throw new Error('Failed to fetch templates');
-      return response.json();
+      const templates = await response.json();
+      return templates.map((template: any) => ({
+        ...template,
+        eventName: template.eventId || 'No Event'
+      }));
     }
   });
 
