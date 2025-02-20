@@ -93,9 +93,8 @@ export default function EventApplicationForm() {
   });
 
   const saveAsTemplateMutation = useMutation({
-    mutationFn: async (template: FormTemplate, overwrite: boolean = false) => {
-      const url = `/api/admin/form-templates${overwrite ? '?overwrite=true' : ''}`;
-      const response = await fetch(url, {
+    mutationFn: async (template: FormTemplate) => {
+      const response = await fetch(`/api/admin/form-templates`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -107,25 +106,12 @@ export default function EventApplicationForm() {
         })
       });
 
-      if (response.status === 409) {
-        const data = await response.json();
-        const confirmOverwrite = window.confirm(data.message || "A template with this name already exists. Would you like to overwrite it?");
-        if (confirmOverwrite) {
-          return saveAsTemplateMutation.mutate(template, true);
-        }
-        throw new Error("Template already exists");
-      }
+      if (!response.ok) throw new Error('Failed to save template');
 
-      if (!response.ok) {
-        throw new Error("Failed to save template");
-      }
-
-      const result = await response.json();
       toast({
         title: "Success",
         description: "Form template saved successfully",
       });
-      return result;
     },
     onError: (error: Error) => {
       toast({

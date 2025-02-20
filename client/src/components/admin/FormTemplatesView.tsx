@@ -40,7 +40,7 @@ export function FormTemplatesView() {
 
   const deleteTemplateMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/admin/events/${id}/form-template/${id}`, {
+      const response = await fetch(`/api/admin/form-templates/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete template');

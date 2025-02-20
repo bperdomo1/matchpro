@@ -2615,23 +2615,6 @@ export function registerRoutes(app: Express): Server {
           return res.status(400).json({ error: "Event ID is required" });
         }
 
-        // Check if template with same name exists
-        const [existingTemplate] = await db
-          .select()
-          .from(eventFormTemplates)
-          .where(and(
-            eq(eventFormTemplates.name, name),
-            eq(eventFormTemplates.eventId, eventId)
-          ));
-
-        if (existingTemplate && !req.query.overwrite) {
-          return res.status(409).json({ 
-            error: "Template exists",
-            templateId: existingTemplate.id,
-            message: "A template with this name already exists. Would you like to overwrite it?"
-          });
-        }
-
         await db.transaction(async (tx) => {
           // Create form template
           const [template] = await tx
