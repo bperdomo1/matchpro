@@ -2576,7 +2576,7 @@ export function registerRoutes(app: Express): Server {
       }
     });
 
-    app.get('/api/admin/form-templates', isAdmin, async (req, res) => {
+    app.get('/api/admin/events/form-templates', isAdmin, async (req, res) => {
       try {
         const templates = await db
           .select({
@@ -2661,8 +2661,7 @@ export function registerRoutes(app: Express): Server {
               }
             }
           }
-        }
-      });
+        });
 
         res.status(201).json({ message: "Form template created successfully" });
       } catch (error) {
@@ -2767,38 +2766,36 @@ export function registerRoutes(app: Express): Server {
             .where(eq(formFields.templateId, id));
 
           // Create new fields
-          if (fields && Array.isArray(fields)) {
-            for (const [index, field] of fields.entries()) {
-              const [newField] = await tx
-                .insert(formFields)
-                .values({
-                  templateId: id,
-                  label: field.label,
-                  type: field.type,
-                  required: field.required || false,
-                  order: index,
-                  placeholder: field.placeholder,
-                  helpText: field.helpText,
-                  validation: field.validation,
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                })
-                .returning();
+          for (const [index, field] of fields.entries()) {
+            const [newField] = await tx
+              .insert(formFields)
+              .values({
+                templateId: id,
+                label: field.label,
+                type: field.type,
+                required: field.required || false,
+                order: index,
+                placeholder: field.placeholder,
+                helpText: field.helpText,
+                validation: field.validation,
+                createdAt: new Date(),
+                updatedAt: new Date()
+              })
+              .returning();
 
-              // Create options for dropdown fields
-              if (field.type === 'dropdown' && field.options?.length > 0) {
-                await tx
-                  .insert(formFieldOptions)
-                  .values(
-                    field.options.map((option: any, optionIndex: number) => ({
-                      fieldId: newField.id,
-                      label: option.label,
-                      value: option.value,
-                      order: optionIndex,
-                      createdAt: new Date()
-                    }))
-                  );
-              }
+            // Create options for dropdown fields
+            if (field.type === 'dropdown' && field.options?.length > 0) {
+              await tx
+                .insert(formFieldOptions)
+                .values(
+                  field.options.map((option: any, optionIndex: number) => ({
+                    fieldId: newField.id,
+                    label: option.label,
+                    value: option.value,
+                    order: optionIndex,
+                    createdAt: new Date()
+                  }))
+                );
             }
           }
         });
