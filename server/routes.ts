@@ -2800,7 +2800,8 @@ export function registerRoutes(app: Express): Server {
                 );
             }
           }
-        });
+        }
+      });
 
         res.json({ message: "Form template updated successfully" });
       } catch (error) {
