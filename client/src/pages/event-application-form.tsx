@@ -109,6 +109,20 @@ export default function EventApplicationForm() {
 
       if (response.status === 409) {
         const data = await response.json();
+        if (confirm("A template with this name already exists. Would you like to overwrite it?")) {
+          return saveAsTemplateMutation.mutate({ ...template }, true);
+        }
+        throw new Error("Template already exists");
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to save template");
+      }
+      
+      return response.json();
+
+      if (response.status === 409) {
+        const data = await response.json();
         const confirmOverwrite = window.confirm(data.message);
         if (confirmOverwrite) {
           return saveAsTemplateMutation.mutate(template, true);
